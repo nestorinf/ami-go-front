@@ -1,0 +1,177 @@
+// ------------------------------------
+// Horizontal Layout Sidebar Styling
+// ------------------------------------
+
+@media (min-width: 960px) {
+  // @include media-breakpoint-up(lg) {
+  .horizontalstyle {
+    .v-main {
+      padding: 128px 0px 60px 0px !important;
+    }
+    #main-sidebar {
+      height: 64px !important;
+      width: 100% !important;
+      overflow: visible;
+      .v-navigation-drawer__content {
+        display: flex !important;
+        align-items: center;
+        overflow: visible;
+      }
+
+      .single-item {
+        padding: 15px 0;
+        display: block;
+      }
+    }
+    .horizontal-navbar {
+      padding-left: 0;
+      .first-level {
+        &.two-column {
+          .second-level {
+            width: 400px;
+            li {
+              width: 50%;
+              float: left;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+          }
+        }
+        &.mega-dropdown {
+          position: static;
+          .second-level {
+            left: 0;
+            right: 0;
+            max-height: 400px;
+            overflow: auto;
+            margin: 0 auto;
+            li {
+              width: 25%;
+              float: left;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 959px) {
+  .horizontalstyle {
+    .horizontal-navbar {
+      padding-left: 0;
+      display: block;
+      .second-level {
+        position: relative;
+        top: 0;
+        box-shadow: none;
+      }
+      .single-item {
+        padding: 5px;
+      }
+      li {
+        .first-level {
+          li {
+            a {
+              padding: 5px;
+              display: block !important;
+              .sidebar-icon {
+                position: absolute;
+                right: 0;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// 1024
+@media (min-width: 960px) and (max-width: 1263px) {
+  .horizontalstyle {
+    #main-sidebar,
+    .horizontal-header {
+      .container {
+        max-width: 100%;
+      }
+    }
+  }
+}
+
+// toggle button styling\
+
+@media (min-width: 960px) {
+  .v-application .md-none {
+    display: none !important;
+  }
+}
+
+// ---------------------------------
+// Horizontal Layout
+
+@include media-breakpoint-up(lg) {
+  .horizontalstyle {
+    background-color: #eef5f9 !important;
+    .v-main {
+      padding: 128px 0px 60px 0px !important;
+      width: 100%;
+      padding: 12px;
+      margin-right: auto;
+      margin-left: auto;
+    }
+    .page-breadcrumb {
+      margin: -20px -25px 5px -25px;
+    }
+  }
+}
+
+.horizontalstyle {
+  .v-footer {
+    left: 0 !important;
+  }
+
+  .page-breadcrumb {
+    .v-card {
+      background-color: transparent !important;
+    }
+  }
+}
+
+@media (min-width: 1264px) {
+  .horizontalstyle {
+    .v-main {
+      max-width: 1185px;
+    }
+    .horizontal-navbar {
+      .first-level {
+        &.mega-dropdown {
+          .second-level {
+            max-width: 1185px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 1904px) {
+  .horizontalstyle {
+    .v-main {
+      max-width: 1785px;
+    }
+    .horizontal-navbar {
+      .first-level {
+        &.mega-dropdown {
+          .second-level {
+            max-width: 1785px;
+          }
+        }
+      }
+    }
+  }
+}

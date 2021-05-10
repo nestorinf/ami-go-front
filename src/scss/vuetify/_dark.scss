@@ -1,0 +1,53 @@
+.v-application {
+  &.theme--dark {
+    .border-left {
+      border-left: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .border-right {
+      border-right: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .border {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .todo-cards .v-card {
+      background: #255c63;
+    }
+
+    .progress-cards .v-card {
+      background: #1e374e;
+    }
+
+    // input color
+    .v-text-field > .v-input__control > .v-input__slot:before,
+    .v-text-field:not(.v-input--has-state):hover
+      > .v-input__control
+      > .v-input__slot:before {
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    // ------------------------------------
+    // horizontal layout
+    // ------------------------------------
+    &.horizontalstyle {
+      background: #121212 !important;
+      .horizontal-navbar .second-level {
+        background: #1e1e1e;
+      }
+      .horizontal-navbar .first-level a:hover .second-level li a {
+        color: rgba(255, 255, 255, 0.87);
+        &:hover {
+          color: rgba(255, 255, 255, 0.9);
+          i {
+            color: rgba(255, 255, 255, 0.8);
+          }
+        }
+      }
+      .horizontal-navbar .first-level a:hover .second-level li a i {
+        color: rgba(255, 255, 255, 0.54);
+      }
+    }
+  }
+}
