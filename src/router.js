@@ -22,8 +22,16 @@ const router = new Router({
   // This is for the scroll top when click on any router link
   routes: [
     {
+
+      name: "BoxedLogin",
       path: "/",
-      redirect: "dashboards/analytical",
+      component: () => import("@/views/authentication/BoxedLogin"),
+
+    },
+    {
+
+      path: "/home",
+      // redirect: "dashboards/analytical",
       component: () => import("@/layouts/full-layout/Layout"),
       children: [
         // Application
@@ -35,7 +43,7 @@ const router = new Router({
         // Components
         {
           name: "Alerts",
-          path: "components/alerts",
+          path: "home/components/alerts",
           component: () => import("@/views/components/Alerts"),
         },
         {

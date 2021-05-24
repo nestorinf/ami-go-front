@@ -1,0 +1,47 @@
+version: "3"
+
+services:
+#      #Nginx Service
+  ami-go-webserver:
+    image: nginx:alpine
+    container_name: ami-go-webserver
+    restart: unless-stopped
+    tty: true
+    environment:
+    - VIRTUAL_PORT=8080
+    - VIRTUAL_HOST=amigo.front.local
+    ports:
+      - "8080:80"
+     # - "443:443"
+    volumes:
+      - ./:/usr/src
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - Webdevelopment
+  # Server frontend Development
+  amigo-app-front:
+    container_name: amigo-app-front
+    #image: nginx
+    build:
+      context: .
+      dockerfile: ./docker/node/node.development.DockerFile
+    restart: always
+    expose:
+      - "8081"
+    ports:
+      - "8081:8081"   # express
+      #- "443"
+    #ports:
+     # - "8081:80"
+    volumes:
+      - ./:/usr/src
+      - /usr/src/node_modules # esto no me sobreescribe
+    environment:
+      - VIRTUAL_HOST=amigo.front.local
+      #- HOST=amigo-app-front
+      #- PORT=8081
+    networks:
+      - Webdevelopment
+networks:
+  Webdevelopment:
+    external: true
