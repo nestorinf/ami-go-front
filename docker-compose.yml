@@ -19,8 +19,8 @@ services:
     networks:
       - Webdevelopment
   # Server frontend Development
-  amigo-app-front:
-    container_name: amigo-app-front
+  ami-go-app-front:
+    container_name: ami-go-app-front
     #image: nginx
     build:
       context: .

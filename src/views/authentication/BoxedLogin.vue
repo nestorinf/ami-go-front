@@ -117,7 +117,7 @@ export default {
     submit() {
       this.$refs.form.validate();
       if (this.$refs.form.validate(true)) {
-        this.$router.push({ path: "/home" });
+        this.$router.push({ path: "/" });
       }
     }
   }

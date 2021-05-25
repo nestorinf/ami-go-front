@@ -39,18 +39,19 @@
         </v-row>
         <!---If Sidebar Caption -->
         <BaseItemGroup
+        @click="this.returnHome()"
           v-else-if="item.children"
           :key="`group-${i}`"
           :item="item"
         ></BaseItemGroup>
 
-        <BaseItem v-else :key="`item-${i}`" :item="item" />
+        <BaseItem v-else :key="`item-${i}`" :item="item"  />
       </template>
       <!---Sidebar Items -->
     </v-list>
-    <v-divider></v-divider>
+    <!-- <v-divider></v-divider> -->
     <!--- Progress -->
-    <v-list-item two-line>
+    <!-- <v-list-item two-line>
       <v-list-item-content class>
         <v-list-item-title class="d-flex mb-3 align-center">
           <span class="body-2 text-truncate">monthly profit</span>
@@ -75,7 +76,7 @@
           value="54"
         ></v-progress-linear>
       </v-list-item-content>
-    </v-list-item>
+    </v-list-item> -->
     <!--- Progress -->
   </v-navigation-drawer>
 </template>
@@ -105,13 +106,16 @@ export default {
       },
     },
   },
+  methods: {
+    returnHome() {
+      console.log("si");
+    },
+  },
   watch: {
     "$vuetify.breakpoint.smAndDown"(val) {
       this.$emit("update:expandOnHover", !val);
     },
   },
-
-  methods: {},
 };
 </script>
 <style lang="scss">
