@@ -22,6 +22,7 @@
     "devextreme-vue": "^19.2.12",
     "dx-systemjs-vue-browser": "latest",
     "feather-icons": "^4.28.0",
+    "glob": "^7.1.7",
     "instantsearch.css": "^7.4.5",
     "jszip": "^3.6.0",
     "moment": "^2.29.1",
@@ -75,9 +76,12 @@
       "parser": "babel-eslint"
     },
     "rules": {
-      "vue/valid-v-slot": ["error", {
-        "allowModifiers": false
-      }]
+      "vue/valid-v-slot": [
+        "error",
+        {
+          "allowModifiers": false
+        }
+      ]
     }
   },
   "browserslist": [

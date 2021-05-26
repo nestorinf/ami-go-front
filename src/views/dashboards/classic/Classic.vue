@@ -30,9 +30,9 @@
       <v-col cols="12" sm="12" lg="6">
         <TheRecentComments></TheRecentComments>
       </v-col>
-      <v-col cols="12" sm="12" lg="6">
+      <!-- <v-col cols="12" sm="12" lg="6">
         <TheTodoList></TheTodoList>
-      </v-col>
+      </v-col> -->
     </v-row>
   </v-container>
 </template>
@@ -98,8 +98,8 @@ export default {
       import(
         "@/views/dashboards/dashboardComponents/recent-comments/TheRecentComments"
       ),
-    TheTodoList: () =>
-      import("@/views/dashboards/dashboardComponents/todo-list/TheTodoList")
+    // TheTodoList: () =>
+    //   import("@/views/dashboards/dashboardComponents/todo-list/TheTodoList")
   }
 };
 </script>

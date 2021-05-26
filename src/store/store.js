@@ -31,4 +31,41 @@ export default new Vuex.Store({
   },
   actions: {},
   getters: {},
+  modules: {}
 });
+
+
+// const loadStore = () => {
+//   // const files =  path.join('../store/modules/auth/index.js')
+//   // return require(files)
+//   const files = require.context('./modules/', true, /\.js$/)
+//   return files
+  // console.log(files)
+  // const context = require.context('./modules/**/', true, /index.js$/i)
+  // return context.keys()
+  //   .map(context)         // import module
+  //   .map(m => m.default)
+// }
+
+// const loadStore = () => {
+//   return readFileSync('./modules/**/index.js', { encoding: 'uft8' },(err,files)=>{
+//     return files
+//   })
+// }
+// const mg = glob('./modules/**/.js', {mark: true}, function (er, matches) {
+//   console.log("matches", matches)
+// })
+const context = require.context('./modules/', true, /\.js$/i)
+const contextFile = context.keys()
+console.log(contextFile)
+// fs.readdir(__dirname, (err, files) => {
+//   if (err)
+//     console.log(err);
+//   else {
+//     console.log("\nCurrent directory filenames:");
+//     files.forEach(file => {
+//       console.log(file);
+//     })
+//   }
+// })
+// console.log('->',loadStore())
