@@ -2,6 +2,8 @@ FROM node:latest
 
 COPY ["./package.json", "/usr/src/"]
 
+RUN cd /usr/src/; npm install -g npm@7.14.0
+
 WORKDIR /usr/src
 
 RUN npm install
