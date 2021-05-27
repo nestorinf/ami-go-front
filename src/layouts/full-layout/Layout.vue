@@ -15,7 +15,7 @@
     <v-main>
       <v-container fluid class="page-wrapper">
         <router-view />
-        <v-btn
+        <!-- <v-btn
           bottom
           color="success"
           dark
@@ -24,8 +24,8 @@
           right
           @click.stop="setCustomizerDrawer(!Customizer_drawer)"
         >
-          <v-icon>mdi-cog</v-icon>
-        </v-btn>
+        <v-icon>mdi-cog</v-icon> 
+        </v-btn> -->
       </v-container>
     </v-main>
     <!-- ---------------------------------- -->

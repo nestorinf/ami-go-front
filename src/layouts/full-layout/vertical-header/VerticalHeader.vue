@@ -13,11 +13,11 @@
       v-if="navbarColor !== 'white'"
     >
       <span class="logo-icon">
-        <img src="../../../assets/images/logo-light-icon.png" class="mt-2" />
+        <img src="../../../assets/images/logos-04.png" class="mt-2" />
       </span>
-      <span class="logo-text ml-2" :class="`${showLogo ? '' : 'hidelogo'}`">
+      <!-- <span class="logo-text ml-2" :class="`${showLogo ? '' : 'hidelogo'}`">
         <img src="../../../assets/images/logo-light-text.png" class="mt-2" />
-      </span>
+      </span> -->
     </v-toolbar-title>
     <!---Dark Logo part -->
     <v-toolbar-title
@@ -45,9 +45,9 @@
     </div>
     <!---/Toggle sidebar part -->
     <!---Search part -->
-    <v-btn dark icon class="mr-1 d-sm-block d-none" @click="searchbox">
+    <!-- <v-btn dark icon class="mr-1 d-sm-block d-none" @click="searchbox">
       <v-icon>mdi-magnify</v-icon>
-    </v-btn>
+    </v-btn> -->
 
     <v-card v-if="showSearch" class="searchinput">
       <template>
@@ -275,11 +275,11 @@ export default {
       },
     ],
     userprofile: [
-      { title: "My Contacts", to: "/apps/contact" },
-      { title: "My Balance", to: "/apps/contact-grid" },
-      { title: "Inbox", to: "/apps/email/inbox" },
-      { title: "Account Setting", to: "/form-layouts/flformbasic" },
-      { title: "Logout", to: "/authentication/boxedlogin" },
+      // { title: "My Contacts", to: "/apps/contact" },
+      { title: "Mi Perfil", to: "/apps/contact-grid" },
+      // { title: "Inbox", to: "/apps/email/inbox" },
+      // { title: "Account Setting", to: "/form-layouts/flformbasic" },
+      { title: "Salir", to: "/login" },
     ],
     href() {
       return undefined;

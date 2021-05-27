@@ -4,11 +4,12 @@ import "@/scss/vuetify/overrides.scss";
 Vue.use(Vuetify);
 
 const theme = {
-  primary: "#1e88e5", // change header color from here || "#1e88e6", "#21c1d6", "#fc4b6c", "#563dea", "#9C27b0", "#ff9800"
+  primary: "#FF4105", // change header color from here || "#1e88e6", "#21c1d6", "#fc4b6c", "#563dea", "#9C27b0", "#ff9800"
   info: "#1e88e5",
   success: "#21c1d6",
   accent: "#fc4b6c",
   default: "#563dea",
+  redAmigo: "#1e88e5"
 };
 
 export default new Vuetify({

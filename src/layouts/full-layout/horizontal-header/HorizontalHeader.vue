@@ -306,10 +306,10 @@ export default {
       },
     ],
     userprofile: [
-      { title: "My Contacts", to: "/apps/contact" },
-      { title: "My Balance", to: "/apps/contact-grid" },
-      { title: "Inbox", to: "/apps/email/inbox" },
-      { title: "Account Setting", to: "/form-layouts/flformbasic" },
+      // { title: "My Contacts", to: "/apps/contact" },
+      // { title: "My Balance", to: "/apps/contact-grid" },
+      // { title: "Inbox", to: "/apps/email/inbox" },
+      // { title: "Account Setting", to: "/form-layouts/flformbasic" },
       { title: "Logout", to: "/authentication/boxedlogin" },
     ],
     href() {

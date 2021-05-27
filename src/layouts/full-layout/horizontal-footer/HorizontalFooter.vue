@@ -3,8 +3,7 @@
     <v-container class="py-0">
       <v-col cols="12">
         <span class="d-block text-center"
-          >© {{ new Date().getFullYear() }} — Material Pro Admin by
-          <a href="https://www.wrappixel.com/">wrappixel.com</a></span
+          >© {{ new Date().getFullYear() }} — AmiGo Commerce</span
         >
       </v-col>
     </v-container>
