@@ -19,10 +19,10 @@
       </v-list-item-avatar>
 
       <v-list-item-content class="white--text">
-        <v-list-item-title>Dohnathan Deo</v-list-item-title>
-        <v-list-item-subtitle class="caption white--text"
+        <v-list-item-title>{{ authUser }}</v-list-item-title>
+        <!-- <v-list-item-subtitle class="caption white--text"
           >Webdesigner</v-list-item-subtitle
-        >
+        > -->
       </v-list-item-content>
     </v-list-item>
     <!---USer Area -->
@@ -39,13 +39,13 @@
         </v-row>
         <!---If Sidebar Caption -->
         <BaseItemGroup
-        @click="this.returnHome()"
+          @click="this.returnHome()"
           v-else-if="item.children"
           :key="`group-${i}`"
           :item="item"
         ></BaseItemGroup>
 
-        <BaseItem v-else :key="`item-${i}`" :item="item"  />
+        <BaseItem v-else :key="`item-${i}`" :item="item" />
       </template>
       <!---Sidebar Items -->
     </v-list>
@@ -83,6 +83,7 @@
 
 <script>
 import { mapState } from "vuex";
+
 import VerticalSidebarItems from "./VerticalSidebarItems";
 export default {
   name: "Vertical-Sidebar",
@@ -97,6 +98,9 @@ export default {
   }),
   computed: {
     ...mapState(["SidebarColor", "SidebarBg"]),
+    ...mapState("auth", {
+      user: "authUser",
+    }),
     Sidebar_drawer: {
       get() {
         return this.$store.state.Sidebar_drawer;
@@ -110,6 +114,9 @@ export default {
     returnHome() {
       console.log("si");
     },
+  },
+  created() {
+    console.log(this.nameUser);
   },
   watch: {
     "$vuetify.breakpoint.smAndDown"(val) {

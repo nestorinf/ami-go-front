@@ -23,18 +23,18 @@ const router = new Router({
   routes: [...Routes,
   {
     name: "BoxedLogin",
-      path: "/login",
-      component: () => import("@/views/authentication/BoxedLogin"),
+    path: "/login",
+    component: () => import("@/views/authentication/BoxedLogin"),
   }],
 
   // routes: []
-    // Routes,
-    // {
+  // Routes,
+  // {
   //   name: "BoxedLogin",
   //   path: "/login",
   //   component: () => import("@/views/authentication/BoxedLogin"),
   // },
-  
+
   // This is for the scroll top when click on any router link
   // routes: [
   // {
@@ -639,8 +639,13 @@ const router = new Router({
 });
 
 import NProgress from "nprogress";
-
-
+// router.beforeEach((to, from, next) => {
+//   if (to.matched.some((record) => record.meta.requiresAuth)) {
+//     if (!localStorage.getItem('token') || !localStorage.getItem('token')) {
+//       next('/login')
+//     }
+//   }
+// });
 router.beforeResolve((to, from, next) => {
   // If this isn't an initial page load.
   if (to.name) {

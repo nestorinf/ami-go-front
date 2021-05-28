@@ -117,6 +117,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   name: "BoxedLogin",
 
@@ -136,12 +138,28 @@ export default {
     ],
     checkbox: false,
   }),
-  computed: {},
+  computed: {
+    // ...mapGetters({
+    //   authUser: "auth/getAuth",
+    // }),
+  },
   methods: {
+    ...mapActions("auth", ["login"]),
     submit() {
       this.$refs.form.validate();
       if (this.$refs.form.validate(true)) {
-        this.$router.push({ path: "/" });
+        const credentials = {
+          email: this.email,
+          password: this.password,
+        };
+
+        this.login(credentials)
+          .then((response) => {
+            if (response) {
+              this.$router.push({ path: "/" });
+            }
+          })
+          .catch((err) => console.log(err));
       }
     },
   },

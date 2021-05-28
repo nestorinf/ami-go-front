@@ -8,6 +8,7 @@ export default {
             name: 'Dashboard',
             path: '/',
             component: () => import("@/views/dashboards/classic/Classic")
+
         }
     ],
 
@@ -18,6 +19,6 @@ export default {
         icon: "mdi-home",
         to: '/',
         title: "Home",
-        
+
     }
 }

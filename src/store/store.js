@@ -5,7 +5,7 @@ Vue.use(Vuex);
 
 // use method load store modules dynamic
 
-const context = require.context(__dirname + '/modules/', true, /\.js$/i)
+const context = require.context(__dirname + '/modules/', true, /\/$/i)
 const modules = {}
 context.keys().map((e) => {
   const moduleName = e.replaceAll(/(index)|(.js|.ts)\b|[.,/]/g, '')
