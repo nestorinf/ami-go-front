@@ -1,13 +1,18 @@
-import axios from '../axios'
+import { HTTP } from '../axios'
 
 class AuthService {
     path = 'auth'
     login(data) {
-        return axios.post(`${this.path}/login`, data)
+        return HTTP.post(`${this.path}/login`, data)
     }
 
+    logout(token) {
+        return HTTP.get(`${this.path}/logout`, {
+            headers: { 'Authorization': 'Bearer ' + token }
+        })
+    }
     me() {
-        return axios.get(`${this.path}/me`)
+        return HTTP.get(`${this.path}/me`)
     }
 }
 export default new AuthService()

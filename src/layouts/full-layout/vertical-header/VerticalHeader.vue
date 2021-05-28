@@ -184,13 +184,10 @@
       </template>
 
       <v-list>
-        <v-list-item
-          v-for="(item, i) in userprofile"
-          :key="i"
-          :to="item.to"
-          @click="href"
-        >
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        <v-list-item>
+        
+        
+          <v-list-item-title  @click="logout">Salir</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -199,7 +196,7 @@
 </template>
 <script>
 // Utilities
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 export default {
   name: "VerticalHeader",
 
@@ -276,7 +273,7 @@ export default {
     ],
     userprofile: [
       // { title: "My Contacts", to: "/apps/contact" },
-      { title: "Mi Perfil", to: "/apps/contact-grid" },
+      { title: "Mi Perfil", to: "/apps/contact-grid"},
       // { title: "Inbox", to: "/apps/email/inbox" },
       // { title: "Account Setting", to: "/form-layouts/flformbasic" },
       { title: "Salir", to: "/login" },
@@ -291,9 +288,16 @@ export default {
   },
 
   methods: {
+    ...mapActions("auth", ["logout"]),
     ...mapMutations({
       setSidebarDrawer: "SET_SIDEBAR_DRAWER",
     }),
+
+    logout(){
+       this.$router.push("/login" ).catch(()=>{})
+      this.logout()
+    },
+    
     showhideLogo: function () {
       this.showLogo = !this.showLogo;
     },

@@ -19,7 +19,7 @@
       </v-list-item-avatar>
 
       <v-list-item-content class="white--text">
-        <v-list-item-title>{{ authUser }}</v-list-item-title>
+        <v-list-item-title>{{user.name}}</v-list-item-title>
         <!-- <v-list-item-subtitle class="caption white--text"
           >Webdesigner</v-list-item-subtitle
         > -->
@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState,mapGetters } from "vuex";
 
 import VerticalSidebarItems from "./VerticalSidebarItems";
 export default {
@@ -91,6 +91,7 @@ export default {
     expandOnHover: {
       type: Boolean,
       default: false,
+      user: Object
     },
   },
   data: () => ({
@@ -98,8 +99,8 @@ export default {
   }),
   computed: {
     ...mapState(["SidebarColor", "SidebarBg"]),
-    ...mapState("auth", {
-      user: "authUser",
+    ...mapGetters({
+      authUser: "auth/getAuth",
     }),
     Sidebar_drawer: {
       get() {
@@ -112,11 +113,12 @@ export default {
   },
   methods: {
     returnHome() {
-      console.log("si");
+      // console.log("si");
     },
   },
   created() {
-    console.log(this.nameUser);
+    this.user = JSON.parse( localStorage.getItem('user'))
+    
   },
   watch: {
     "$vuetify.breakpoint.smAndDown"(val) {
