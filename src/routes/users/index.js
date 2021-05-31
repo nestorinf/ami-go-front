@@ -1,7 +1,7 @@
 export default {
     path: '/users',
     name: 'Users',
-    component: () => import("@/layouts/full-layout/Layout"), // por defecto siempre
+    // component: () => import("@/layouts/full-layout/Layout"), // por defecto siempre
     children: [
         {
             name: 'Company',

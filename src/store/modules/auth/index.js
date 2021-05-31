@@ -32,22 +32,23 @@ const actions = {
             })
         })
     },
-    
-    logout({commit}) {
-        return new Promise((resolve,reject) => {
+
+    logout({ commit }) {
+        return new Promise((resolve, reject) => {
             commit('setLoading', true)
             const token = localStorage.getItem('token')
             AuthService.logout(token)
-            .then((response) => {
-                commit('setLoading', false)
-                commit('setAuth', {})
-                localStorage.removeItem('token')
-                localStorage.removeItem('user')
-                resolve(response)
-            }).catch((err) => {
-                commit('setLoading', false)
-                reject(err)
-            })
+                .then((response) => {
+
+                    commit('setLoading', false)
+                    commit('setAuth', {})
+                    localStorage.removeItem('token')
+                    localStorage.removeItem('user')
+                    resolve(response)
+                }).catch((err) => {
+                    commit('setLoading', false)
+                    reject(err)
+                })
         })
     }
 }

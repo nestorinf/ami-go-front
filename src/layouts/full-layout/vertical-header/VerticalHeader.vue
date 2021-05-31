@@ -184,10 +184,8 @@
       </template>
 
       <v-list>
-        <v-list-item>
-        
-        
-          <v-list-item-title  @click="logout">Salir</v-list-item-title>
+        <v-list-item @click="logoutUser()">
+          <v-list-item-title>Salir</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -273,7 +271,7 @@ export default {
     ],
     userprofile: [
       // { title: "My Contacts", to: "/apps/contact" },
-      { title: "Mi Perfil", to: "/apps/contact-grid"},
+      { title: "Mi Perfil", to: "/apps/contact-grid" },
       // { title: "Inbox", to: "/apps/email/inbox" },
       // { title: "Account Setting", to: "/form-layouts/flformbasic" },
       { title: "Salir", to: "/login" },
@@ -293,11 +291,17 @@ export default {
       setSidebarDrawer: "SET_SIDEBAR_DRAWER",
     }),
 
-    logout(){
-       this.$router.push("/login" ).catch(()=>{})
+    logoutUser() {
       this.logout()
+        .then((response) => {
+          if (response) {
+            this.$router.push("/login").catch(() => {});
+          }
+          // console.log("hioka", response);
+        })
+        .catch((err) => console.log(err));
     },
-    
+
     showhideLogo: function () {
       this.showLogo = !this.showLogo;
     },

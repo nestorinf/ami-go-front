@@ -1,17 +1,8 @@
 export default {
+
+    name: 'Dashboard',
     path: '/',
-    name: "Home",
-
-    component: () => import("@/layouts/full-layout/Layout"),
-    children: [
-        {
-            name: 'Dashboard',
-            path: '/',
-            component: () => import("@/views/dashboards/classic/Classic")
-
-        }
-    ],
-
+    component: () => import("@/views/dashboards/classic/Classic"),
 
     menu: {
         group: "/",

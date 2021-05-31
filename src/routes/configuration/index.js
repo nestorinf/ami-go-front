@@ -1,14 +1,9 @@
 export default {
-    path: '/configuration',
-    name: 'Configuration',
-    component: () => import("@/layouts/full-layout/Layout"), // por defecto siempre
-    children: [
-        {
-            name: 'Company',
-            path: "company",
-            component: () => import("../../views/modules/configuration/company")
-        }
-    ],
+    name: 'Company',
+    path: "configuration/company",
+    component: () => import("../../views/modules/configuration/company"),
+
+
 
     menu: {
         group: '/configuration',
@@ -26,5 +21,14 @@ export default {
                 to: "references",
             }
         ]
-    }
+    },
+    children: [
+        {
+
+            path: "register",
+            component: () => import("../../views/modules/configuration/company/Register.vue"),
+
+        },
+    ],
+
 }
