@@ -1,7 +1,16 @@
 export default {
-    name: 'Company',
-    path: "configuration/company",
-    component: () => import("../../views/modules/configuration/company"),
+    routes: [
+        {
+            name: 'Company',
+            path: "configuration/company",
+            component: () => import("../../views/modules/configuration/company")
+        },
+        {
+            name: 'Company Register',
+            path: "configuration/company/register",
+            component: () => import("../../views/modules/configuration/company/Register")
+        }
+    ],
 
 
 
@@ -21,14 +30,6 @@ export default {
                 to: "references",
             }
         ]
-    },
-    children: [
-        {
-
-            path: "register",
-            component: () => import("../../views/modules/configuration/company/Register.vue"),
-
-        },
-    ],
+    }
 
 }

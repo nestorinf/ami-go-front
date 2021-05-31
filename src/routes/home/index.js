@@ -1,8 +1,12 @@
 export default {
 
-    name: 'Dashboard',
-    path: '/',
-    component: () => import("@/views/dashboards/classic/Classic"),
+    routes: [
+        {
+            name: 'Dashboard',
+            path: '/',
+            component: () => import("@/views/dashboards/classic/Classic"),
+        }
+    ],
 
     menu: {
         group: "/",

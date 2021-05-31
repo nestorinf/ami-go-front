@@ -1,5 +1,5 @@
 import configuration from './configuration'
-import users from './users'
+
 import home from './home'
 
 // import { readFileSync } from 'fs'
@@ -11,7 +11,6 @@ import home from './home'
 
 export default {
     home,
-    configuration,
-    users
+    configuration
     // security
 }

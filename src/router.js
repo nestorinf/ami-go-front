@@ -3,8 +3,17 @@ import Router from "vue-router";
 import goTo from "vuetify/es5/services/goto";
 import routers from './routes'
 Vue.use(Router);
+
 const Routes = Object.values(routers)
-console.log(Routes)
+const routesData = []
+Routes.map((routes) => {
+  return routes.routes.map((r) => {
+    routesData.push(r)
+    return routesData
+  })
+})
+
+
 const router = new Router({
   mode: "history",
   // base: process.env.BASE_URL,
@@ -30,7 +39,7 @@ const router = new Router({
         authenticated: true
       },
       children: [
-        ...Routes
+        ...routesData
       ]
     },
     {
