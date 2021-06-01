@@ -1,4 +1,6 @@
 import configuration from './configuration'
+import provider from './provider'
+import product from './product'
 
 import home from './home'
 
@@ -11,6 +13,7 @@ import home from './home'
 
 export default {
     home,
-    configuration
-    // security
+    configuration,
+    provider,
+    product
 }

@@ -2,10 +2,10 @@
   <v-card class="mb-7">
     <v-card-text class="pa-5 border-bottom">
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-        Compania
+        Categoria
       </h3>
       <h6 class="subtitle-2 font-weight-light">
-        En este formulario se registran todas las companias
+        En este formulario se registran todos las categorias
       </h6>
     </v-card-text>
     <v-card-text>
@@ -18,27 +18,18 @@
             background-color="transparent"
           ></v-text-field>
         </v-col>
-        <v-col cols="6" lg="6">
-          <v-text-field
-            type="email"
-            v-model="email"
-            label="Email"
-            filled
-            background-color="transparent"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="6" lg="6">
-          <v-text-field
-            v-model="agent"
-            label="Agente"
-            filled
-            background-color="transparent"
-          ></v-text-field>
-        </v-col>
         <v-col cols="12" lg="6">
+          <v-select
+            :items="parent"
+            filled
+            label="Categoria Padre"
+            background-color="transparent"
+          ></v-select>
+        </v-col>
+        <v-col cols="12" lg="12">
           <v-text-field
-            v-model="phone"
-            label="Telefono"
+            v-model="description"
+            label="Descripcion"
             filled
             background-color="transparent"
           ></v-text-field>
@@ -48,7 +39,7 @@
       <v-btn
         color="black"
         class="text-capitalize"
-        to="/configuration/company"
+        to="/products/categories"
         dark
         >Cancelar</v-btn
       >
@@ -58,13 +49,12 @@
 
 <script>
 export default {
-  name: "RegisterCompany",
+  name: "RegisterCategory",
 
   data: () => ({
     name: "",
-    email: "",
-    agent: "",
-    phone: "",
+    description: "",
+    parent: ["Electrodomestico"],
   }),
 };
 </script>

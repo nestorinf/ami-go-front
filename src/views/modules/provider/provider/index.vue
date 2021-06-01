@@ -16,7 +16,7 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'company/register',
+            path: 'provider/register',
           }"
           :headers="headers"
           :items="items"
@@ -33,7 +33,7 @@ import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 
 export default {
-  name: "Company",
+  name: "Provider",
   components: {
     DataTable,
   },
@@ -44,19 +44,19 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Configuracion",
+        text: "Proveedor",
         disabled: false,
         to: "#",
       },
       {
-        text: "Compania",
+        text: "Proveedor",
         disabled: true,
       },
     ],
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Compania",
+    titleForm: "Proveedor",
     headers: [
       {
         text: "Accion",
@@ -69,15 +69,17 @@ export default {
         value: "name",
       },
       { text: "Agente", value: "agent" },
+      { text: "Codigo", value: "code" },
       { text: "Correo", value: "email" },
       { text: "Telefono", value: "phone" },
     ],
     items: [
       {
         id: 1,
-        name: "Tommy Hilfiger",
+        name: "Electronic Sony",
         agent: "Carlos Perez",
-        email: "admin@admin.com",
+        code: "J-8554411",
+        email: "sony@sony.com",
         phone: "+53 698 954 25",
       },
     ],

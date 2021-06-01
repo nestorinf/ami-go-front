@@ -23,13 +23,19 @@
         :loading="loading"
         loading-text="Loading... Please wait"
         class="border"
-      ></v-data-table>
+      >
+        <template v-slot:[`item.action`]="{ items }">
+          <ButtonCrudTable :item="items"></ButtonCrudTable>
+        </template>
+      </v-data-table>
     </v-card>
   </div>
 </template>
 
 <script>
 import ButtonRegister from "./ButtonRegister";
+import ButtonCrudTable from "./ButtonCrudTable";
+
 export default {
   name: "DataTable",
   props: {
@@ -42,6 +48,8 @@ export default {
   },
   components: {
     ButtonRegister,
+
+    ButtonCrudTable,
   },
   data: () => ({
     search: "",

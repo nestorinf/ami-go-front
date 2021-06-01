@@ -2,10 +2,10 @@
   <v-card class="mb-7">
     <v-card-text class="pa-5 border-bottom">
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-        Compania
+        Proveedor
       </h3>
       <h6 class="subtitle-2 font-weight-light">
-        En este formulario se registran todas las companias
+        En este formulario se registran todos los proveedores
       </h6>
     </v-card-text>
     <v-card-text>
@@ -35,6 +35,14 @@
             background-color="transparent"
           ></v-text-field>
         </v-col>
+        <v-col cols="6" lg="6">
+          <v-text-field
+            v-model="code"
+            label="Codigo"
+            filled
+            background-color="transparent"
+          ></v-text-field>
+        </v-col>
         <v-col cols="12" lg="6">
           <v-text-field
             v-model="phone"
@@ -45,11 +53,7 @@
         </v-col>
       </v-row>
       <v-btn color="success" class="text-capitalize mr-2">Guardar</v-btn>
-      <v-btn
-        color="black"
-        class="text-capitalize"
-        to="/configuration/company"
-        dark
+      <v-btn color="black" class="text-capitalize" to="/provider/provider" dark
         >Cancelar</v-btn
       >
     </v-card-text>
@@ -58,12 +62,13 @@
 
 <script>
 export default {
-  name: "RegisterCompany",
+  name: "RegisterProvider",
 
   data: () => ({
     name: "",
     email: "",
     agent: "",
+    code: "",
     phone: "",
   }),
 };

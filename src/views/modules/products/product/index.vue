@@ -16,7 +16,7 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'company/register',
+            path: 'product/register',
           }"
           :headers="headers"
           :items="items"
@@ -33,7 +33,7 @@ import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 
 export default {
-  name: "Company",
+  name: "Product",
   components: {
     DataTable,
   },
@@ -44,19 +44,19 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Configuracion",
+        text: "Producto",
         disabled: false,
         to: "#",
       },
       {
-        text: "Compania",
+        text: "Producto",
         disabled: true,
       },
     ],
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Compania",
+    titleForm: "Producto",
     headers: [
       {
         text: "Accion",
@@ -68,17 +68,21 @@ export default {
         sortable: false,
         value: "name",
       },
-      { text: "Agente", value: "agent" },
-      { text: "Correo", value: "email" },
-      { text: "Telefono", value: "phone" },
+      { text: "SKU", value: "sku" },
+      { text: "Descripcion", value: "description" },
+      { text: "Condiciones", value: "conditions" },
+      { text: "Categoria", value: "category" },
+      { text: "Proveedor", value: "provider" },
     ],
     items: [
       {
         id: 1,
-        name: "Tommy Hilfiger",
-        agent: "Carlos Perez",
-        email: "admin@admin.com",
-        phone: "+53 698 954 25",
+        name: "Sonido home Theater HD",
+        sku: "SNT-00001",
+        description: "Sonido embolvente",
+        conditions: "Este equipo su garantia es de 6 meses",
+        category: "Equipo de sonido",
+        provider: "Electronic Sony",
       },
     ],
   }),

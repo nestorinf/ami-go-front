@@ -16,7 +16,7 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'company/register',
+            path: 'categories/register',
           }"
           :headers="headers"
           :items="items"
@@ -33,7 +33,7 @@ import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 
 export default {
-  name: "Company",
+  name: "Category",
   components: {
     DataTable,
   },
@@ -44,19 +44,19 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Configuracion",
+        text: "Producto",
         disabled: false,
         to: "#",
       },
       {
-        text: "Compania",
+        text: "Categoria",
         disabled: true,
       },
     ],
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Compania",
+    titleForm: "Categoria",
     headers: [
       {
         text: "Accion",
@@ -68,17 +68,17 @@ export default {
         sortable: false,
         value: "name",
       },
-      { text: "Agente", value: "agent" },
-      { text: "Correo", value: "email" },
-      { text: "Telefono", value: "phone" },
+
+      { text: "Descripcion", value: "description" },
+
+      { text: "Categoria Padre", value: "category_father" },
     ],
     items: [
       {
         id: 1,
-        name: "Tommy Hilfiger",
-        agent: "Carlos Perez",
-        email: "admin@admin.com",
-        phone: "+53 698 954 25",
+        name: "Equipos de Sonido",
+        descriptiob: "",
+        category_father: "N/A",
       },
     ],
   }),

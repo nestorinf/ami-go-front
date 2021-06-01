@@ -16,7 +16,7 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'company/register',
+            path: 'commerce-type/register',
           }"
           :headers="headers"
           :items="items"
@@ -49,14 +49,14 @@ export default {
         to: "#",
       },
       {
-        text: "Compania",
+        text: "Tipo de Comercio",
         disabled: true,
       },
     ],
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Compania",
+    titleForm: "Tipo de Comercio",
     headers: [
       {
         text: "Accion",
@@ -68,17 +68,23 @@ export default {
         sortable: false,
         value: "name",
       },
-      { text: "Agente", value: "agent" },
-      { text: "Correo", value: "email" },
-      { text: "Telefono", value: "phone" },
+      { text: "Descripcion", value: "description" },
     ],
     items: [
       {
         id: 1,
-        name: "Tommy Hilfiger",
-        agent: "Carlos Perez",
-        email: "admin@admin.com",
-        phone: "+53 698 954 25",
+        name: "Super Mercado",
+        description: "Tipo de Comercio Super Mercado",
+      },
+      {
+        id: 2,
+        name: "Tiendas",
+        description: "Tipo de Comercio Tiendas",
+      },
+      {
+        id: 3,
+        name: "Restaurantes",
+        description: "Tipo de Comercio Restaurantes",
       },
     ],
   }),
