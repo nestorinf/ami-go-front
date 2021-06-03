@@ -10,6 +10,12 @@ export default {
             path: "provider/provider/register",
             component: () => import("../../views/modules/provider/provider/register")
         },
+        {
+            name: 'Provider Edit',
+            path: "provider/provider/edit/:id",
+            props:true,
+            component: () => import("../../views/modules/provider/provider/register")
+        },
 
     ],
 
@@ -18,11 +24,11 @@ export default {
     menu: {
         group: '/provider',
         title: 'Proveedor',
-        icon: 'mdi-cog',
+        icon: 'mdi-account-group',
         children: [
             {
                 title: "Proveedor",
-                icon: "mdi-comment-outline",
+                icon: "mdi-account-group",
                 to: "provider",
             },
 

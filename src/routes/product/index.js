@@ -27,7 +27,7 @@ export default {
     menu: {
         group: '/products',
         title: 'Productos',
-        icon: 'mdi-cog',
+        icon: 'mdi-basket',
         children: [
             {
                 title: "Categoria",

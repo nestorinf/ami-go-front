@@ -18,12 +18,19 @@
             title: 'Registrar',
             path: 'provider/register',
           }"
-          :headers="headers"
+         :headers="headers"
           :items="items"
           :loading="true"
+          @edit-button="editButton"
+          @remove-button="acceptRemoveCommerceType"
         ></DataTable>
       </v-col>
     </v-card>
+    <DialogConfirm
+      ref="DialogConfirm"
+      @handler-dialog-confirm="removeButton"
+      :message="messageDialog"
+    ></DialogConfirm>
   </v-container>
 </template>
 
@@ -31,11 +38,14 @@
 import DataTable from "../../components/DataTable";
 import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
+import DialogConfirm from "../../components/DialogConfirm";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "Provider",
   components: {
     DataTable,
+    DialogConfirm
   },
 
   data: () => ({
@@ -53,7 +63,7 @@ export default {
         disabled: true,
       },
     ],
-
+    messageDialog: "",
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
     titleForm: "Proveedor",
@@ -69,20 +79,45 @@ export default {
         value: "name",
       },
       { text: "Agente", value: "agent" },
-      { text: "Codigo", value: "code" },
+      { text: "Codigo", value: "code_provider" },
       { text: "Correo", value: "email" },
       { text: "Telefono", value: "phone" },
     ],
-    items: [
-      {
-        id: 1,
-        name: "Electronic Sony",
-        agent: "Carlos Perez",
-        code: "J-8554411",
-        email: "sony@sony.com",
-        phone: "+53 698 954 25",
-      },
-    ],
+    items: [],
+    idDelete: "",
   }),
+
+  computed: {
+    ...mapGetters({ storeProvider: "provider/getProviders" }),
+  },
+  watch: {
+    storeProvider(data) {
+      if (data.length > 0) {
+        this.items = data;
+      }
+    },
+  },
+
+  methods: {
+    ...mapActions({
+      getProvidersData: "provider/getProvidersData",
+      removeProvider: "provider/removeProvider",
+    }),
+    editButton({ id }) {
+      this.$router.push("provider/edit/" + id);
+    },
+    acceptRemoveCommerceType(item) {
+      this.idDelete = item.id;
+      this.$refs.DialogConfirm.changeStateDialog(true);
+    },
+    removeButton() {
+      this.removeProvider(this.idDelete);
+      this.$refs.DialogConfirm.changeStateDialog(false);
+    },
+  },
+
+  mounted() {
+    this.getProvidersData();
+  },
 };
 </script>
