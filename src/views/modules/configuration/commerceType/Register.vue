@@ -9,43 +9,147 @@
       </h6>
     </v-card-text>
     <v-card-text>
-      <v-row>
-        <v-col cols="12" lg="12">
-          <v-text-field
-            v-model="name"
-            label="Nombre"
-            filled
-            background-color="transparent"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" lg="12">
-          <v-text-field
-            v-model="description"
-            label="Descripcion"
-            filled
-            background-color="transparent"
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-btn color="success" class="text-capitalize mr-2">Guardar</v-btn>
-      <v-btn
-        color="black"
-        class="text-capitalize"
-        to="/configuration/commerce-type"
-        dark
-        >Cancelar</v-btn
-      >
+      <v-form ref="form" v-model="valid" lazy-validation>
+        <v-row>
+          <v-col cols="12" lg="12">
+            <v-text-field
+              v-model="form.name"
+              label="Nombre"
+              filled
+              required
+              :rules="rules.nameRule"
+              background-color="transparent"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="12">
+            <v-text-field
+              v-model="form.description"
+              label="Descripcion"
+              filled
+              required
+              :rules="rules.descriptionRule"
+              background-color="transparent"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-btn
+          color="success"
+          @click="save"
+          :disabled="!valid"
+          submit
+          class="text-capitalize mr-2"
+          >Guardar</v-btn
+        >
+        <v-btn
+          color="black"
+          class="text-capitalize"
+          to="/configuration/commerce-type"
+          dark
+          >Cancelar</v-btn
+        >
+      </v-form>
     </v-card-text>
+    <SnackBar
+      :text="textSnackBar"
+      ref="snackBarRef"
+      :snackbar="true"
+    ></SnackBar>
   </v-card>
 </template>
 
 <script>
+import { mapActions } from "vuex";
+import SnackBar from "@/views/modules/components/SnackBar";
 export default {
-  name: "RegisterCompany",
+  name: "RegisterCommerceType",
+  props: {
+    id: String,
+  },
+  components: {
+    SnackBar,
+  },
 
-  data: () => ({
-    name: "",
-    description: "",
-  }),
+  data() {
+    return {
+      textSnackBar: "",
+      valid: true,
+      form: {
+        id: "",
+        name: "",
+        description: "",
+      },
+
+      rules: {
+        nameRule: [(v) => !!v || "el nombre es obligatorio"],
+        descriptionRule: [(v) => !!v || "la descripcion es obligatorio"],
+      },
+    };
+  },
+
+  mounted() {
+    this.setData();
+  },
+  computed: {
+    getCommerceTypes() {
+      return this.$store.state.commerceType.commerceTypes;
+    },
+  },
+  methods: {
+    ...mapActions({
+      createCommerceType: "commerceType/createCommerceType",
+      commerceType: "commerceType/getCommerceTypeById",
+      updateCommerceType: "commerceType/updateCommerceType",
+    }),
+    save() {
+      this.$refs.form.validate();
+      if (this.$refs.form.validate()) {
+        const payload = this.form;
+        if (this.id) {
+          this.update(payload);
+        } else {
+          this.create(payload);
+        }
+      }
+    },
+    setData() {
+      if (this.id) {
+        this.commerceType(this.id).then((result) => {
+          this.form = Object.assign({}, result);
+        });
+      }
+    },
+
+    create(payload) {
+      this.createCommerceType(payload)
+        .then((result) => {
+          if (result) {
+            this.form = {};
+            this.$refs.form.reset();
+            this.$refs.snackBarRef.changeStatusSnackbar(true);
+            this.textSnackBar = "Guardado existosamente!";
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = "Disculpe, ha ocurrido un error";
+        });
+    },
+
+    update(payload) {
+      this.updateCommerceType(payload)
+        .then((result) => {
+          if (result) {
+            this.$refs.snackBarRef.changeStatusSnackbar(true);
+            this.textSnackBar = "Actualizado existosamente!";
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = "Disculpe, ha ocurrido un error";
+        });
+    },
+  },
 };
 </script>

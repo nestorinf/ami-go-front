@@ -24,8 +24,12 @@
         loading-text="Loading... Please wait"
         class="border"
       >
-        <template v-slot:[`item.action`]="{ items }">
-          <ButtonCrudTable :item="items"></ButtonCrudTable>
+        <template v-slot:[`item.action`]="{ item }">
+          <ButtonCrudTable
+            :item="item"
+            @handler-edit="editButton(item)"
+            @handler-remove="removeButton(item)"
+          ></ButtonCrudTable>
         </template>
       </v-data-table>
     </v-card>
@@ -50,6 +54,14 @@ export default {
     ButtonRegister,
 
     ButtonCrudTable,
+  },
+  methods: {
+    editButton(item) {
+      this.$emit("edit-button", item);
+    },
+    removeButton(item) {
+      this.$emit("remove-button", item);
+    },
   },
   data: () => ({
     search: "",

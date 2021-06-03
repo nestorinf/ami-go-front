@@ -9,20 +9,16 @@
 export default {
   name: "ButtonCrudTable",
   props: {
-    item: Array,
+    item: Object,
   },
 
   methods: {
     edit(item) {
-      console.log(item);
+      this.$emit("handler-edit", item);
     },
     remove(item) {
-      console.log(item);
+      this.$emit("handler-remove", item);
     },
-  },
-
-  mounted() {
-    console.log(this.item);
   },
 };
 </script>

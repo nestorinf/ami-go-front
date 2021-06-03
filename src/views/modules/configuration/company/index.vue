@@ -21,9 +21,16 @@
           :headers="headers"
           :items="items"
           :loading="true"
+          @edit-button="editButton"
+          @remove-button="acceptRemoveCommerceType"
         ></DataTable>
       </v-col>
     </v-card>
+    <DialogConfirm
+      ref="DialogConfirm"
+      @handler-dialog-confirm="removeButton"
+      :message="messageDialog"
+    ></DialogConfirm>
   </v-container>
 </template>
 
@@ -31,11 +38,14 @@
 import DataTable from "../../components/DataTable";
 import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
+import DialogConfirm from "../../components/DialogConfirm";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "Company",
   components: {
     DataTable,
+    DialogConfirm,
   },
 
   data: () => ({
@@ -53,6 +63,8 @@ export default {
         disabled: true,
       },
     ],
+
+    messageDialog: "",
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
@@ -72,15 +84,40 @@ export default {
       { text: "Correo", value: "email" },
       { text: "Telefono", value: "phone" },
     ],
-    items: [
-      {
-        id: 1,
-        name: "Tommy Hilfiger",
-        agent: "Carlos Perez",
-        email: "admin@admin.com",
-        phone: "+53 698 954 25",
-      },
-    ],
+    items: [],
+    idDelete: "",
   }),
+
+  computed: {
+    ...mapGetters({ storeCompany: "company/getCompanies" }),
+  },
+  watch: {
+    storeCompany(data) {
+      if (data.length > 0) {
+        this.items = data;
+      }
+    },
+  },
+  methods: {
+    ...mapActions({
+      getCompaniesData: "company/getCompaniesData",
+      removeCompany: "company/removeCompany",
+    }),
+    editButton({ id }) {
+      this.$router.push("company/edit/" + id);
+    },
+    acceptRemoveCommerceType(item) {
+      this.idDelete = item.id;
+      this.$refs.DialogConfirm.changeStateDialog(true);
+    },
+    removeButton() {
+      this.removeCompany(this.idDelete);
+      this.$refs.DialogConfirm.changeStateDialog(false);
+    },
+  },
+
+  mounted() {
+    this.getCompaniesData();
+  },
 };
 </script>

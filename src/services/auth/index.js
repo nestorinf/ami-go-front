@@ -1,4 +1,4 @@
-import { HTTP } from '../axios'
+import HTTP from '../axios'
 
 class AuthService {
     path = 'auth'

@@ -21,9 +21,16 @@
           :headers="headers"
           :items="items"
           :loading="true"
+          @edit-button="editButton"
+          @remove-button="acceptRemoveCommerceType"
         ></DataTable>
       </v-col>
     </v-card>
+    <DialogConfirm
+      ref="DialogConfirm"
+      @handler-dialog-confirm="removeButton"
+      :message="messageDialog"
+    ></DialogConfirm>
   </v-container>
 </template>
 
@@ -31,11 +38,13 @@
 import DataTable from "../../components/DataTable";
 import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
-
+import DialogConfirm from "../../components/DialogConfirm";
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "Company",
   components: {
     DataTable,
+    DialogConfirm,
   },
 
   data: () => ({
@@ -53,6 +62,7 @@ export default {
         disabled: true,
       },
     ],
+    messageDialog: "",
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
@@ -70,23 +80,40 @@ export default {
       },
       { text: "Descripcion", value: "description" },
     ],
-    items: [
-      {
-        id: 1,
-        name: "Super Mercado",
-        description: "Tipo de Comercio Super Mercado",
-      },
-      {
-        id: 2,
-        name: "Tiendas",
-        description: "Tipo de Comercio Tiendas",
-      },
-      {
-        id: 3,
-        name: "Restaurantes",
-        description: "Tipo de Comercio Restaurantes",
-      },
-    ],
+    items: [],
+    idDelete: "",
   }),
+
+  computed: {
+    ...mapGetters({ storeCommerceTypes: "commerceType/getCommerceTypes" }),
+  },
+  watch: {
+    storeCommerceTypes(data) {
+      if (data.length > 0) {
+        this.items = data;
+      }
+    },
+  },
+  methods: {
+    ...mapActions({
+      getCommerceTypeData: "commerceType/getCommerceTypeData",
+      removeCommerceType: "commerceType/removeCommerceType",
+    }),
+    editButton({ id }) {
+      this.$router.push("commerce-type/edit/" + id);
+    },
+    acceptRemoveCommerceType(item) {
+      this.idDelete = item.id;
+      this.$refs.DialogConfirm.changeStateDialog(true);
+    },
+    removeButton() {
+      this.removeCommerceType(this.idDelete);
+      this.$refs.DialogConfirm.changeStateDialog(false);
+    },
+  },
+
+  mounted() {
+    this.getCommerceTypeData();
+  },
 };
 </script>

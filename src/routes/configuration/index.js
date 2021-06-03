@@ -11,6 +11,13 @@ export default {
             component: () => import("../../views/modules/configuration/company/Register")
         },
         {
+            name: 'Company Edit',
+            path: "configuration/company/edit/:id",
+            props: true,
+            component: () => import("../../views/modules/configuration/company/Register")
+        },
+
+        {
             name: 'Commerce Type',
             path: "configuration/commerce-type",
             component: () => import("../../views/modules/configuration/commerceType")
@@ -18,6 +25,12 @@ export default {
         {
             name: 'Commerce Type Register',
             path: "configuration/commerce-type/register",
+            component: () => import("../../views/modules/configuration/commerceType/Register")
+        },
+        {
+            name: 'Commerce Type Edit',
+            path: "configuration/commerce-type/edit/:id",
+            props: true,
             component: () => import("../../views/modules/configuration/commerceType/Register")
         }
     ],
