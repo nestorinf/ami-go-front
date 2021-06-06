@@ -24,6 +24,7 @@ export default new Vuex.Store({
     setHorizontalLayout: false, // Horizontal layout
   },
   mutations: {
+
     SET_SIDEBAR_DRAWER(state, payload) {
       state.Sidebar_drawer = payload;
     },
@@ -38,7 +39,8 @@ export default new Vuex.Store({
     },
     SET_LAYOUT(state, payload) {
       state.setHorizontalLayout = payload;
-    },
+    }
+
   },
   actions: {},
   getters: {},

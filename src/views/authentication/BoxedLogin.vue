@@ -155,9 +155,7 @@ export default {
 
         this.login(credentials)
           .then((response) => {
-            if (response) {
-              this.$router.push({ path: "/" });
-            }
+            return response;
           })
           .catch((err) => console.log(err));
       }

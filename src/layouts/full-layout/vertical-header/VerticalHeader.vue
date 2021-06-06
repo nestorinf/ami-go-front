@@ -49,7 +49,7 @@
       <v-icon>mdi-magnify</v-icon>
     </v-btn> -->
 
-    <v-card v-if="showSearch" class="searchinput">
+    <!-- <v-card v-if="showSearch" class="searchinput">
       <template>
         <v-text-field
           placeholder="Search & hit enter"
@@ -58,7 +58,7 @@
           @click:append="searchbox"
         ></v-text-field>
       </template>
-    </v-card>
+    </v-card> -->
     <!---/Search part -->
     <v-spacer />
     <!---right part -->
@@ -118,15 +118,15 @@
       origin="top right"
       transition="scale-transition"
     >
-      <template v-slot:activator="{ on }">
+      <!-- <template v-slot:activator="{ on }">
         <v-btn dark icon v-on="on" class="mr-2">
           <v-badge color="red" dot>
             <v-icon>mdi-bell</v-icon>
           </v-badge>
         </v-btn>
-      </template>
+      </template> -->
 
-      <v-list>
+      <!-- <v-list>
         <h4 class="px-5 pt-2 py-3 font-weight-medium title">Messages</h4>
         <v-divider></v-divider>
         <v-list-item v-for="(item, i) in messages" :key="i" @click="href">
@@ -142,14 +142,7 @@
                   offset-y="10"
                 >
                   <v-avatar>
-                    <img
-                      :src="
-                        'https://www.wrappixel.com/demos/admin-templates/materialpro-bootstrap-latest/material-pro/src/assets/images/users/' +
-                        item.avatar +
-                        '.jpg'
-                      "
-                      :alt="item.title"
-                    />
+                    <img src="#" :alt="item.title" />
                   </v-avatar>
                 </v-badge>
               </div>
@@ -164,7 +157,7 @@
             </div>
           </v-list-item-title>
         </v-list-item>
-      </v-list>
+      </v-list> -->
     </v-menu>
     <!---Messages -->
     <!---User -->
@@ -207,7 +200,7 @@ export default {
     },
   },
   data: () => ({
-    showLogo: true,
+    showLogo: false,
     showSearch: false,
     notifications: [
       {
@@ -296,6 +289,8 @@ export default {
         .then((response) => {
           if (response) {
             this.$router.push("/login").catch(() => {});
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
           }
           // console.log("hioka", response);
         })

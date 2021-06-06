@@ -1,8 +1,8 @@
 import AuthService from '@/services/auth'
-
+import router from '@/router'
 const state = {
     authUser: {},
-    loading: false,
+    loading: false
 }
 
 const mutations = {
@@ -11,19 +11,27 @@ const mutations = {
     },
     setLoading(state, loading) {
         state.loading = loading
+    },
+    setToken(state, token) {
+        state.token = token
     }
 }
 
 const actions = {
-    login({ commit }, body) {
+    login({ commit, dispatch }, body) {
         return new Promise((resolve, reject) => {
-            commit('setLoading', true)
+            localStorage.clear()
+
+            dispatch('loading/loadingState', true, { root: true })
 
             AuthService.login(body).then(({ data }) => {
-                commit('setLoading', false)
+                dispatch('loading/loadingState', false, { root: true })
+
                 localStorage.setItem('token', data.payload.access_token)
                 localStorage.setItem('user', JSON.stringify(data.payload.user))
                 commit('setAuth', Object.assign({}, data.payload.user))
+                router.push({ path: "/" });
+
                 resolve(data.payload.user)
             }).catch(err => {
 
@@ -33,17 +41,17 @@ const actions = {
         })
     },
 
-    logout({ commit }) {
+    logout({ commit, dispatch }) {
         return new Promise((resolve, reject) => {
             commit('setLoading', true)
-            const token = localStorage.getItem('token')
-            AuthService.logout(token)
+            dispatch('loading/loadingState', true, { root: true })
+            AuthService.logout()
                 .then((response) => {
+
 
                     commit('setLoading', false)
                     commit('setAuth', {})
-                    localStorage.removeItem('token')
-                    localStorage.removeItem('user')
+                    dispatch('loading/loadingState', false, { root: true })
                     resolve(response)
                 }).catch((err) => {
                     commit('setLoading', false)

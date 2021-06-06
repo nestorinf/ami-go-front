@@ -21,11 +21,12 @@ const mutations = {
 
 
 const actions = {
-    getProvidersData({ commit }) {
+    getProvidersData({ commit, dispatch }) {
         return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
             ProviderService.all().then(({ data }) => {
                 const providers = data.payload
-
+                dispatch('loading/loadingState', false, { root: true })
                 commit('setProviders', providers)
 
                 resolve(data.payload)
@@ -37,11 +38,12 @@ const actions = {
         })
     },
 
-    getProviderById({ commit }, id) {
+    getProviderById({ commit, dispatch }, id) {
         return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
             ProviderService.getById(id).then(({ data }) => {
                 const provider = data.payload
-
+                dispatch('loading/loadingState', false, { root: true })
                 commit('setProvider', provider)
 
                 resolve(data.payload)
@@ -53,11 +55,12 @@ const actions = {
         })
     },
 
-    createProvider({ commit }, body) {
+    createProvider({ commit, dispatch }, body) {
         return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
             ProviderService.create(body).then(({ data }) => {
                 const providers = Object.assign({}, data.payload)
-
+                dispatch('loading/loadingState', false, { root: true })
                 commit('setProviders', providers)
 
                 resolve(data.payload)
@@ -68,11 +71,12 @@ const actions = {
             })
         })
     },
-    updateProvider({ commit }, body) {
+    updateProvider({ commit, dispatch }, body) {
         return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
             ProviderService.update(body).then(({ data }) => {
                 const provider = Object.assign({}, data.payload)
-
+                dispatch('loading/loadingState', false, { root: true })
                 commit('setProvider', provider)
 
                 resolve(data.payload)
@@ -84,9 +88,11 @@ const actions = {
         })
     },
 
-    removeProvider({ commit, state }, id) {
+    removeProvider({ commit, dispatch, state }, id) {
         return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
             ProviderService.remove(id).then(({ data }) => {
+                dispatch('loading/loadingState', false, { root: true })
                 const index = state.providers.findIndex(x => x.id === id)
                 const providers = [...state.providers]
                 providers.splice(index, 1)
