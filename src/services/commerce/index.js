@@ -1,7 +1,7 @@
 import HTTP from '../axios'
 
-class CompanyService {
-    path = 'companies'
+class CommerceService {
+    path = 'commerces'
     all() {
         return HTTP.get(`${this.path}`)
     }
@@ -24,4 +24,4 @@ class CompanyService {
 
 
 }
-export default new CompanyService()
+export default new CommerceService()

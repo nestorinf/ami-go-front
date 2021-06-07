@@ -1,20 +1,20 @@
 export default {
     routes: [
         {
-            name: 'Company',
-            path: "configuration/company",
-            component: () => import("../../views/modules/configuration/company")
+            name: 'Commerce',
+            path: "configuration/commerce",
+            component: () => import("../../views/modules/configuration/commerce")
         },
         {
-            name: 'Company Register',
-            path: "configuration/company/register",
-            component: () => import("../../views/modules/configuration/company/Register")
+            name: 'Commerce Register',
+            path: "configuration/commerce/register",
+            component: () => import("../../views/modules/configuration/commerce/Register")
         },
         {
-            name: 'Company Edit',
-            path: "configuration/company/edit/:id",
+            name: 'Commerce Edit',
+            path: "configuration/commerce/edit/:id",
             props: true,
-            component: () => import("../../views/modules/configuration/company/Register")
+            component: () => import("../../views/modules/configuration/commerce/Register")
         },
 
         {
@@ -48,9 +48,9 @@ export default {
                 to: "commerce-type",
             },
             {
-                title: "Compañia",
+                title: "Comercio",
                 icon: "mdi-comment-outline",
-                to: "company",
+                to: "commerce",
             },
             // {
             //     title: "Referencias",
