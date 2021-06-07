@@ -32,7 +32,23 @@ export default {
             path: "configuration/commerce-type/edit/:id",
             props: true,
             component: () => import("../../views/modules/configuration/commerceType/Register")
-        }
+        },
+        {
+            name: 'Payment Type',
+            path: "configuration/payment-type",
+            component: () => import("../../views/modules/configuration/paymentType")
+        },
+        {
+            name: 'Payment Type Register',
+            path: "configuration/payment-type/register",
+            component: () => import("../../views/modules/configuration/paymentType/Register")
+        },
+        {
+            name: 'Payment Type Edit',
+            path: "configuration/payment-type/edit/:id",
+            props: true,
+            component: () => import("../../views/modules/configuration/paymentType/Register")
+        },
     ],
 
 
@@ -51,6 +67,11 @@ export default {
                 title: "Comercio",
                 icon: "mdi-comment-outline",
                 to: "commerce",
+            },
+            {
+                title: "Tipos de Pago",
+                icon: "mdi-comment-outline",
+                to: "payment-type",
             },
             // {
             //     title: "Referencias",
