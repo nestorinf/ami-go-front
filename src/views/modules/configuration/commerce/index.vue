@@ -16,13 +16,13 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'company/register',
+            path: 'commerce/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveCommerceType"
+          @remove-button="acceptRemoveCommerce"
         ></DataTable>
       </v-col>
     </v-card>
@@ -42,7 +42,7 @@ import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
-  name: "Company",
+  name: "Commerce",
   components: {
     DataTable,
     DialogConfirm,
@@ -59,7 +59,7 @@ export default {
         to: "#",
       },
       {
-        text: "Compania",
+        text: "Comercio",
         disabled: true,
       },
     ],
@@ -68,20 +68,24 @@ export default {
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Compania",
+    titleForm: "Comercio",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
       {
-        text: "Nombre",
+        text: "Tipo de Comercio",
+        value: "commerce_type",
+      },
+      {
+        text: "Nombre del Comercio",
         align: "start",
         sortable: false,
         value: "name",
       },
-      { text: "Agente", value: "agent" },
-      { text: "Correo", value: "email" },
+      { text: "Persona Contacto", value: "agent" },
+      { text: "Email Comercio", value: "email" },
       { text: "Telefono", value: "phone" },
     ],
     items: [],
@@ -89,10 +93,10 @@ export default {
   }),
 
   computed: {
-    ...mapGetters({ storeCompany: "company/getCompanies" }),
+    ...mapGetters({ storeCommerce: "commerce/getCommerces" }),
   },
   watch: {
-    storeCompany(data) {
+    storeCommerce(data) {
       if (data.length > 0) {
         this.items = data;
       }
@@ -100,24 +104,24 @@ export default {
   },
   methods: {
     ...mapActions({
-      getCompaniesData: "company/getCompaniesData",
-      removeCompany: "company/removeCompany",
+      getCommercesData: "commerce/getCommercesData",
+      removeCommerce: "commerce/removeCommerce",
     }),
     editButton({ id }) {
-      this.$router.push("company/edit/" + id);
+      this.$router.push("commerce/edit/" + id);
     },
-    acceptRemoveCommerceType(item) {
+    acceptRemoveCommerce(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeCompany(this.idDelete);
+      this.removeCommerce(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
   },
 
   mounted() {
-    this.getCompaniesData();
+    this.getCommercesData();
   },
 };
 </script>

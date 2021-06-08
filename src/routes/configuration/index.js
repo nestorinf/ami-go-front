@@ -1,4 +1,5 @@
 export default {
+<<<<<<< HEAD
   routes: [
     {
       name: "Company",
@@ -18,6 +19,25 @@ export default {
       component: () =>
         import("../../views/modules/configuration/company/Register"),
     },
+=======
+    routes: [
+        {
+            name: 'Commerce',
+            path: "configuration/commerce",
+            component: () => import("../../views/modules/configuration/commerce")
+        },
+        {
+            name: 'Commerce Register',
+            path: "configuration/commerce/register",
+            component: () => import("../../views/modules/configuration/commerce/Register")
+        },
+        {
+            name: 'Commerce Edit',
+            path: "configuration/commerce/edit/:id",
+            props: true,
+            component: () => import("../../views/modules/configuration/commerce/Register")
+        },
+>>>>>>> 3c241725a8ca5dce1860514162433d479ffbc48b
 
     {
       name: "Commerce Type",
@@ -40,6 +60,7 @@ export default {
         import("../../views/modules/configuration/commerceType/Register"),
     },
 
+<<<<<<< HEAD
     {
       name: "Restautant Type",
       path: "configuration/restaurant-type",
@@ -60,6 +81,30 @@ export default {
         import("../../views/modules/configuration/restaurantType/Register"),
     },
   ],
+=======
+    menu: {
+        group: '/configuration',
+        title: 'Configuración',
+        icon: 'mdi-cog',
+        children: [
+            {
+                title: "Tipo de Comercio",
+                icon: "mdi-comment-outline",
+                to: "commerce-type",
+            },
+            {
+                title: "Comercio",
+                icon: "mdi-comment-outline",
+                to: "commerce",
+            },
+            // {
+            //     title: "Referencias",
+            //     icon: "mdi-comment-outline",
+            //     to: "references",
+            // }
+        ]
+    }
+>>>>>>> 3c241725a8ca5dce1860514162433d479ffbc48b
 
   menu: {
     group: "/configuration",

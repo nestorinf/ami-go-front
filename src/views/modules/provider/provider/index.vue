@@ -18,7 +18,7 @@
             title: 'Registrar',
             path: 'provider/register',
           }"
-         :headers="headers"
+          :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
@@ -45,7 +45,7 @@ export default {
   name: "Provider",
   components: {
     DataTable,
-    DialogConfirm
+    DialogConfirm,
   },
 
   data: () => ({
@@ -73,15 +73,15 @@ export default {
         value: "action",
       },
       {
-        text: "Nombre",
+        text: "Nombre del Proveedor",
         align: "start",
         sortable: false,
         value: "name",
       },
-      { text: "Agente", value: "agent" },
-      { text: "Codigo", value: "code_provider" },
-      { text: "Correo", value: "email" },
-      { text: "Telefono", value: "phone" },
+      { text: "Persona Contacto Proveedor", value: "agent" },
+      { text: "Codigo del Proveedor", value: "code_provider" },
+      { text: "Email del Proveedor", value: "email" },
+      { text: "Telefono del Proveedor", value: "phone" },
     ],
     items: [],
     idDelete: "",

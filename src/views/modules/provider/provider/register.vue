@@ -14,7 +14,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Nombre"
+              label="Nombre del Proveedor"
               required
               filled
               :rules="rules.nameRule"
@@ -25,7 +25,7 @@
             <v-text-field
               type="email"
               v-model="form.email"
-              label="Email"
+              label="Email del Proveedor"
               required
               filled
               :rules="rules.emailRule"
@@ -35,7 +35,7 @@
           <v-col cols="6" lg="6">
             <v-text-field
               v-model="form.agent"
-              label="Agente"
+              label="Persona Contacto del Proveedor"
               filled
               required
               :rules="rules.agentRule"
@@ -45,7 +45,7 @@
           <v-col cols="6" lg="6">
             <v-text-field
               v-model="form.code_provider"
-              label="Codigo Proveedor"
+              label="Codigo del Proveedor"
               filled
               required
               :rules="rules.codeProviderRule"
@@ -55,7 +55,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.phone"
-              label="Telefono"
+              label="Telefono del Proveedor"
               filled
               required
               :rules="rules.phoneRule"
@@ -114,10 +114,10 @@ export default {
       },
 
       rules: {
-        nameRule: [(v) => !!v || "el nombre es obligatorio"],
-        agentRule: [(v) => !!v || "el Agente es obligatorio"],
-        phoneRule: [(v) => !!v || "el Telefono es obligatorio"],
-        codeProviderRule: [(v) => !!v || "el Codigo es obligatorio"],
+        nameRule: [(v) => !!v || "este campo es obligatorio"],
+        agentRule: [(v) => !!v || "este campo es obligatorio"],
+        phoneRule: [(v) => !!v || "este campo es obligatorio"],
+        codeProviderRule: [(v) => !!v || "este campoo es obligatorio"],
         emailRule: [
           (v) => !!v || "el Email es obligatorio",
           (v) =>
