@@ -147,8 +147,8 @@ export default {
             text: element.name,
           });
           this.categoriesList = rows;
-          this.loadingCategories = false;
         });
+          this.loadingCategories = false;
       });
       if (this.id) {
         this.category(this.id).then((result) => {
@@ -165,7 +165,7 @@ export default {
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
-            this.$router.push("/products/categories");
+            // this.$router.push("/products/categories");
           }
         })
         .catch((err) => {
@@ -187,7 +187,7 @@ export default {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
-            this.$router.push("/products/categories");
+            // this.$router.push("/products/categories");
           }
         })
         .catch((err) => {

@@ -138,8 +138,8 @@ export default {
             text: element.name,
           });
           this.commerceList = rows;
-          this.loadingCommerce = false;
         });
+          this.loadingCommerce = false;
       });
       if (this.id) {
         this.getUserById(this.id).then((result) => {

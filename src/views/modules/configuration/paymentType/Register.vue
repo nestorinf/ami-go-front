@@ -133,14 +133,21 @@ export default {
       this.loadingCommerces = true;
       const rows = [];
       this.getCommercesData().then((result) => {
-        result.map((element) => {
-          rows.push({
-            value: element.id,
-            text: element.name,
+        if(result) {
+          result.map((element) => {
+            rows.push({
+              value: element.id,
+              text: element.name,
+            });
+            this.commerceList = rows;
+            
           });
-          this.commerceList = rows;
-          this.loadingCommerces = false;
-        });
+
+        }
+        this.loadingCommerces = false;
+      }).catch((err) => {
+        console.log(err)
+        this.loadingCommerces = false; 
       });
       if (this.id) {
         this.getPaymentTypeById(this.id).then((result) => {

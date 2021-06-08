@@ -40,11 +40,11 @@ export default {
                 icon: "mdi-comment-outline",
                 to: "categories",
             },
-            {
-                title: "Producto",
-                icon: "mdi-comment-outline",
-                to: "product",
-            },
+            // {
+            //     title: "Producto",
+            //     icon: "mdi-comment-outline",
+            //     to: "product",
+            // },
             // {
             //     title: "Referencias",
             //     icon: "mdi-comment-outline",
