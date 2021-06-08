@@ -75,8 +75,16 @@ export default {
       {
         text: "Nombre",
         align: "start",
-        sortable: false,
         value: "name",
+      },
+      {
+        text: "Descripción",
+        value: "description",
+      },
+      {
+        text: "Padre",
+        sortable: false,
+        value: "parent",
       },
 
       // { text: "Categoria Padre", value: "category_father" },

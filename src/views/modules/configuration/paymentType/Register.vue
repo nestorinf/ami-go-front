@@ -21,6 +21,7 @@
               required
               :rules="rules.commerceRule"
               background-color="transparent"
+              :error-messages="errorsBags.commerce_id"
             ></v-select>
           </v-col>
           <v-col cols="12" lg="6">
@@ -31,6 +32,7 @@
               filled
               :rules="rules.nameRule"
               background-color="transparent"
+              :error-messages="errorsBags.name"
             ></v-text-field>
           </v-col>
           <v-col cols="12" lg="6">
@@ -38,6 +40,7 @@
               v-model="form.enabled"
               required
               label="Habilitado"
+              :error-messages="errorsBags.enabled"
             ></v-checkbox>
           </v-col>
         </v-row>
@@ -89,8 +92,9 @@ export default {
         id: "",
         commerce_id: null,
         name: "",
-        enabled: "",
+        enabled: false,
       },
+      errorsBags: [],
 
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
@@ -162,6 +166,12 @@ export default {
           }
         })
         .catch((err) => {
+          if (err.response) {
+            this.errorsBags = err.response.data.errors;
+            setTimeout(() => {
+              this.errorsBags = [];
+            }, 4000);
+          }
           console.log(err);
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
@@ -178,6 +188,12 @@ export default {
           }
         })
         .catch((err) => {
+          if (err.response) {
+            this.errorsBags = err.response.data.errors;
+            setTimeout(() => {
+              this.errorsBags = [];
+            }, 4000);
+          }
           console.log(err);
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";

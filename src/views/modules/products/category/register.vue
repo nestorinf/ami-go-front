@@ -19,7 +19,30 @@
               required
               :rules="rules.nameRule"
               background-color="transparent"
+              :error-messages="errorsBags.name"
             ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="12">
+            <v-text-field
+              v-model="form.description"
+              label="Descripción"
+              filled
+              required
+              :rules="rules.descriptionRule"
+              background-color="transparent"
+              :error-messages="errorsBags.description"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="12">
+            <v-select
+              :loading="loadingCategories"
+              label="Categoría Padre"
+              :items="categoriesList"
+              v-model="form.parent_id"
+              filled
+              background-color="transparent"
+              :error-messages="errorsBags.parent_id"
+            ></v-select>
           </v-col>
         </v-row>
         <v-btn
@@ -65,10 +88,16 @@ export default {
       valid: true,
       form: {
         name: "",
+        description: "",
+        parent_id: ""
       },
+      loadingCategories: false,
+      categoriesList: [],
+      errorsBags: [],
 
       rules: {
         nameRule: [(v) => !!v || "el nombre es obligatorio"],
+        descriptionRule: [(v) => !!v || "el nombre es obligatorio"],
       },
     };
   },
@@ -86,6 +115,7 @@ export default {
       createCategory: "category/createCategory",
       category: "category/getCategoryByID",
       updateCategory: "category/updateCategory",
+      getCategoriesData: "category/getCategoriesData",
     }),
     save() {
       this.$refs.form.validate();
@@ -99,6 +129,18 @@ export default {
       }
     },
     setData() {
+      this.loadingCategories = true;
+      const rows = [];
+        this.getCategoriesData().then((result) => {
+        result.map((element) => {
+          rows.push({
+            value: element.id,
+            text: element.name,
+          });
+          this.categoriesList = rows;
+          this.loadingCategories = false;
+        });
+      });
       if (this.id) {
         this.category(this.id).then((result) => {
           this.form = Object.assign({}, result);
@@ -118,6 +160,12 @@ export default {
           }
         })
         .catch((err) => {
+          if (err.response) {
+            this.errorsBags = err.response.data.errors;
+            setTimeout(() => {
+              this.errorsBags = [];
+            }, 4000);
+          }
           console.log(err);
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
@@ -134,6 +182,12 @@ export default {
           }
         })
         .catch((err) => {
+          if (err.response) {
+            this.errorsBags = err.response.data.errors;
+            setTimeout(() => {
+              this.errorsBags = [];
+            }, 4000);
+          }
           console.log(err);
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
