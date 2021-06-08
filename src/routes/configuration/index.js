@@ -21,6 +21,7 @@ export default {
     },
 =======
     routes: [
+        // Commerce
         {
             name: 'Commerce',
             path: "configuration/commerce",
@@ -37,6 +38,7 @@ export default {
             props: true,
             component: () => import("../../views/modules/configuration/commerce/Register")
         },
+<<<<<<< HEAD
 >>>>>>> 3c241725a8ca5dce1860514162433d479ffbc48b
 
     {
@@ -44,6 +46,61 @@ export default {
       path: "configuration/commerce-type",
       component: () => import("../../views/modules/configuration/commerceType"),
     },
+=======
+        // Commerce Type
+        {
+            name: 'Commerce Type',
+            path: "configuration/commerce-type",
+            component: () => import("../../views/modules/configuration/commerceType")
+        },
+        {
+            name: 'Commerce Type Register',
+            path: "configuration/commerce-type/register",
+            component: () => import("../../views/modules/configuration/commerceType/Register")
+        },
+        {
+            name: 'Commerce Type Edit',
+            path: "configuration/commerce-type/edit/:id",
+            props: true,
+            component: () => import("../../views/modules/configuration/commerceType/Register")
+        },
+        // Payment Types
+        {
+            name: 'Payment Type',
+            path: "configuration/payment-type",
+            component: () => import("../../views/modules/configuration/paymentType")
+        },
+        {
+            name: 'Payment Type Register',
+            path: "configuration/payment-type/register",
+            component: () => import("../../views/modules/configuration/paymentType/Register")
+        },
+        {
+            name: 'Payment Type Edit',
+            path: "configuration/payment-type/edit/:id",
+            props: true,
+            component: () => import("../../views/modules/configuration/paymentType/Register")
+        },
+
+        // Roles
+        {
+            name: 'Role',
+            path: "configuration/roles",
+            component: () => import("../../views/modules/configuration/roles")
+        },
+        {
+            name: 'Role Register',
+            path: "configuration/roles/register",
+            component: () => import("../../views/modules/configuration/roles/register")
+        },
+        {
+            name: 'Role Edit',
+            path: "configuration/roles/edit/:id",
+            props: true,
+            component: () => import("../../views/modules/configuration/roles/register")
+        },
+    ],
+>>>>>>> feature/payment_and_categories_forms
 
     {
       name: "Commerce Type Register",
@@ -96,6 +153,16 @@ export default {
                 title: "Comercio",
                 icon: "mdi-comment-outline",
                 to: "commerce",
+            },
+            {
+                title: "Tipos de Pago",
+                icon: "mdi-comment-outline",
+                to: "payment-type",
+            },
+            {
+                title: "Roles",
+                icon: "mdi-comment-outline",
+                to: "roles",
             },
             // {
             //     title: "Referencias",
