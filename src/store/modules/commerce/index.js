@@ -18,16 +18,19 @@ const mutations = {
 
 
 const actions = {
-    getCommercesData({ commit }) {
+    getCommercesData({ commit, dispatch }) {
         return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
             CommerceService.all().then(({ data }) => {
                 const commerces = data.payload
 
+                dispatch('loading/loadingState', false, { root: true })
                 commit('setCommerces', commerces)
 
                 resolve(data.payload)
             }).catch(err => {
 
+                dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 // commit('setCommerces', [])
             })
