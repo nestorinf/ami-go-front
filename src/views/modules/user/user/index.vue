@@ -112,7 +112,7 @@ export default {
     removeButton() {
       this.removeUser(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
-      this.getUsersData();
+      // this.getUsersData();
     },
   },
 
