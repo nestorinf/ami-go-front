@@ -16,14 +16,15 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'categories/register',
+            path: 'roles/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveCategory"
-        ></DataTable>
+          @remove-button="acceptRemoveRole"
+        >
+        </DataTable>
       </v-col>
     </v-card>
     <DialogConfirm
@@ -42,7 +43,7 @@ import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
-  name: "Category",
+  name: "Role",
   components: {
     DataTable,
     DialogConfirm,
@@ -54,19 +55,19 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Producto",
+        text: "Configuracion",
         disabled: false,
         to: "#",
       },
       {
-        text: "Categoria",
+        text: "Rol",
         disabled: true,
       },
     ],
     messageDialog: "",
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Categoria",
+    titleForm: "Roles",
     headers: [
       {
         text: "Accion",
@@ -74,33 +75,25 @@ export default {
       },
       {
         text: "Nombre",
-        align: "start",
         value: "name",
       },
       {
-        text: "Descripción",
-        value: "description",
-      },
-      {
-        text: "Padre",
-        sortable: false,
-        value: "parent",
+        text: "Slug",
+        value: "slug",
       },
       {
         text: "Habilitado",
         value: "enabled",
       },
-
-      // { text: "Categoria Padre", value: "category_father" },
     ],
     items: [],
     idDelete: "",
   }),
   computed: {
-    ...mapGetters({ storeCategories: "category/getCategories" }),
+    ...mapGetters({ storeRoles: "role/getRoles" }),
   },
   watch: {
-    storeCategories(data) {
+    storeRoles(data) {
       if (data.length > 0) {
         this.items = data;
       }
@@ -108,23 +101,23 @@ export default {
   },
   methods: {
     ...mapActions({
-      getCategoriesData: "category/getCategoriesData",
-      removeCategory: "category/removeCategory",
+      getRolesData: "role/getRolesData",
+      removeRole: "role/removeRole",
     }),
     editButton({ id }) {
-      this.$router.push("categories/edit/" + id);
+      this.$router.push("roles/edit/" + id);
     },
-    acceptRemoveCategory(item) {
+    acceptRemoveRole(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeCategory(this.idDelete);
+      this.removeRole(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
   },
   mounted() {
-    this.getCategoriesData();
+    this.getRolesData();
   },
 };
 </script>

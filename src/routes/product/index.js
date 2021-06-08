@@ -19,6 +19,12 @@ export default {
             name: 'Category Register',
             path: "products/categories/register",
             component: () => import("../../views/modules/products/category/register")
+        },
+        {
+            name: 'Category Edit',
+            path: "products/categories/edit/:id",
+            props: true,
+            component: () => import("../../views/modules/products/category/register")
         }
     ],
 

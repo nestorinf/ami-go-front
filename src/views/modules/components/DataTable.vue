@@ -31,6 +31,9 @@
             @handler-remove="removeButton(item)"
           ></ButtonCrudTable>
         </template>
+        <template v-slot:[`item.enabled`]="{ item }">
+          {{ item.enabled ? 'Sí' : 'No'}}
+        </template>
       </v-data-table>
     </v-card>
   </div>

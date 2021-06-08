@@ -1,48 +1,39 @@
 <template>
   <v-card class="mb-7">
-    <v-card-text class="pa-5 border-bottom">
-      <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-        Categoria
-      </h3>
-      <h6 class="subtitle-2 font-weight-light">
-        En este formulario se registran todos las categorias
-      </h6>
-    </v-card-text>
-    <v-card-text>
-      <v-form ref="form" v-model="valid" lazy-validation>
+    <v-form ref="form" v-model="valid" lazy-validation>
+      <v-card-text class="pa-5 border-bottom">
+        <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
+          {{ titleForm }}
+        </h3>
+        <h6 class="subtitle-2 font-weight-light">
+          En este formulario se registran todas los tipos de pago
+        </h6>
+      </v-card-text>
+      <v-card-text>
         <v-row>
-          <v-col cols="12" lg="12">
-            <v-text-field
-              v-model="form.name"
-              label="Nombre"
+          <v-col cols="12" lg="6">
+            <v-select
+              :loading="loadingCommerces"
+              label="Comercio"
+              :items="commerceList"
+              v-model="form.commerce_id"
               filled
               required
+              :rules="rules.commerceRule"
+              background-color="transparent"
+              :error-messages="errorsBags.commerce_id"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-text-field
+              v-model="form.name"
+              label="Nombre del tipo de pago"
+              required
+              filled
               :rules="rules.nameRule"
               background-color="transparent"
               :error-messages="errorsBags.name"
             ></v-text-field>
-          </v-col>
-          <v-col cols="12" lg="12">
-            <v-text-field
-              v-model="form.description"
-              label="Descripción"
-              filled
-              required
-              :rules="rules.descriptionRule"
-              background-color="transparent"
-              :error-messages="errorsBags.description"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" lg="12">
-            <v-select
-              :loading="loadingCategories"
-              label="Categoría Padre"
-              :items="categoriesList"
-              v-model="form.parent_id"
-              filled
-              background-color="transparent"
-              :error-messages="errorsBags.parent_id"
-            ></v-select>
           </v-col>
           <v-col cols="12" lg="6">
             <v-checkbox
@@ -64,12 +55,12 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/products/categories"
+          to="/configuration/payment-type"
           dark
           >Cancelar</v-btn
         >
-      </v-form>
-    </v-card-text>
+      </v-card-text>
+    </v-form>
     <SnackBar
       :text="textSnackBar"
       ref="snackBarRef"
@@ -79,10 +70,10 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
-  name: "RegisterCategory",
+  name: "RegisterPaymentType",
   props: {
     id: String,
   },
@@ -93,20 +84,22 @@ export default {
   data() {
     return {
       textSnackBar: "",
+      titleForm: "Comercio",
       valid: true,
+      loadingCommerces: false,
+      commerceList: [],
       form: {
+        id: "",
+        commerce_id: null,
         name: "",
-        description: "",
-        parent_id: "",
-        enabled:false
+        enabled: false,
       },
-      loadingCategories: false,
-      categoriesList: [],
       errorsBags: [],
 
       rules: {
-        nameRule: [(v) => !!v || "el nombre es obligatorio"],
-        descriptionRule: [(v) => !!v || "el nombre es obligatorio"],
+        nameRule: [(v) => !!v || "este campo es obligatorio"],
+        commerceRule: [(v) => !!v || "este campo es obligatorio"],
+        enabledRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },
@@ -115,16 +108,15 @@ export default {
     this.setData();
   },
   computed: {
-    getCategories() {
-      return this.$store.state.category.categories;
-    },
+    ...mapGetters({ storePaymentTypes: "paymentType/getPaymentTypes" }),
   },
+
   methods: {
     ...mapActions({
-      createCategory: "category/createCategory",
-      category: "category/getCategoryByID",
-      updateCategory: "category/updateCategory",
-      getCategoriesData: "category/getCategoriesData",
+      createPaymentType: "paymentType/createPaymentType",
+      getPaymentTypeById: "paymentType/getPaymentTypeById",
+      updatePaymentType: "paymentType/updatePaymentType",
+      getCommercesData: "commerce/getCommercesData",
     }),
     save() {
       this.$refs.form.validate();
@@ -138,34 +130,39 @@ export default {
       }
     },
     setData() {
-      this.loadingCategories = true;
+      this.loadingCommerces = true;
       const rows = [];
-        this.getCategoriesData().then((result) => {
+      this.getCommercesData().then((result) => {
         result.map((element) => {
           rows.push({
             value: element.id,
             text: element.name,
           });
-          this.categoriesList = rows;
-          this.loadingCategories = false;
+          this.commerceList = rows;
+          this.loadingCommerces = false;
         });
       });
       if (this.id) {
-        this.category(this.id).then((result) => {
-          this.form = Object.assign({}, result);
+        this.getPaymentTypeById(this.id).then((result) => {
+          this.form = {
+            id: result.id,
+            name: result.name,
+            commerce_id: result.commerce_id,
+            enabled: result.enabled
+          };
         });
       }
     },
 
     create(payload) {
-      this.createCategory(payload)
+      this.createPaymentType(payload)
         .then((result) => {
           if (result) {
             this.form = {};
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
-            this.$router.push("/products/categories");
+            this.$router.push("/configuration/payment-type");
           }
         })
         .catch((err) => {
@@ -182,12 +179,12 @@ export default {
     },
 
     update(payload) {
-      this.updateCategory(payload)
+      this.updatePaymentType(payload)
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
-            this.$router.push("/products/categories");
+            this.$router.push("/configuration/payment-type");
           }
         })
         .catch((err) => {
