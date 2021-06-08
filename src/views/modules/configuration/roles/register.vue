@@ -1,48 +1,37 @@
 <template>
   <v-card class="mb-7">
-    <v-card-text class="pa-5 border-bottom">
-      <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-        Categoria
-      </h3>
-      <h6 class="subtitle-2 font-weight-light">
-        En este formulario se registran todos las categorias
-      </h6>
-    </v-card-text>
-    <v-card-text>
-      <v-form ref="form" v-model="valid" lazy-validation>
+    <v-form ref="form" v-model="valid" lazy-validation>
+      <v-card-text class="pa-5 border-bottom">
+        <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
+          {{ titleForm }}
+        </h3>
+        <h6 class="subtitle-2 font-weight-light">
+          En este formulario se registran todas los roles
+        </h6>
+      </v-card-text>
+      <v-card-text>
         <v-row>
-          <v-col cols="12" lg="12">
+          <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
               label="Nombre"
-              filled
               required
+              filled
               :rules="rules.nameRule"
               background-color="transparent"
               :error-messages="errorsBags.name"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" lg="12">
+          <v-col cols="12" lg="6">
             <v-text-field
-              v-model="form.description"
-              label="Descripción"
-              filled
+              v-model="form.slug"
+              label="Slug"
               required
-              :rules="rules.descriptionRule"
-              background-color="transparent"
-              :error-messages="errorsBags.description"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" lg="12">
-            <v-select
-              :loading="loadingCategories"
-              label="Categoría Padre"
-              :items="categoriesList"
-              v-model="form.parent_id"
               filled
+              :rules="rules.slugRule"
               background-color="transparent"
-              :error-messages="errorsBags.parent_id"
-            ></v-select>
+              :error-messages="errorsBags.slug"
+            ></v-text-field>
           </v-col>
           <v-col cols="12" lg="6">
             <v-checkbox
@@ -64,12 +53,12 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/products/categories"
+          to="/configuration/roles"
           dark
           >Cancelar</v-btn
         >
-      </v-form>
-    </v-card-text>
+      </v-card-text>
+    </v-form>
     <SnackBar
       :text="textSnackBar"
       ref="snackBarRef"
@@ -82,7 +71,7 @@
 import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
-  name: "RegisterCategory",
+  name: "RegisterRole",
   props: {
     id: String,
   },
@@ -93,20 +82,20 @@ export default {
   data() {
     return {
       textSnackBar: "",
+      titleForm: "Roles",
       valid: true,
       form: {
+        id: "",
         name: "",
-        description: "",
-        parent_id: "",
-        enabled:false
+        slug: "",
+        enabled: false,
       },
-      loadingCategories: false,
-      categoriesList: [],
       errorsBags: [],
 
       rules: {
-        nameRule: [(v) => !!v || "el nombre es obligatorio"],
-        descriptionRule: [(v) => !!v || "el nombre es obligatorio"],
+        nameRule: [(v) => !!v || "este campo es obligatorio"],
+        slugRule: [(v) => !!v || "este campo es obligatorio"],
+        enabledRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },
@@ -114,17 +103,11 @@ export default {
   mounted() {
     this.setData();
   },
-  computed: {
-    getCategories() {
-      return this.$store.state.category.categories;
-    },
-  },
   methods: {
     ...mapActions({
-      createCategory: "category/createCategory",
-      category: "category/getCategoryByID",
-      updateCategory: "category/updateCategory",
-      getCategoriesData: "category/getCategoriesData",
+      createRole: "role/createRole",
+      getRoleById: "role/getRoleById",
+      updateRole: "role/updateRole",
     }),
     save() {
       this.$refs.form.validate();
@@ -138,34 +121,27 @@ export default {
       }
     },
     setData() {
-      this.loadingCategories = true;
-      const rows = [];
-        this.getCategoriesData().then((result) => {
-        result.map((element) => {
-          rows.push({
-            value: element.id,
-            text: element.name,
-          });
-          this.categoriesList = rows;
-          this.loadingCategories = false;
-        });
-      });
       if (this.id) {
-        this.category(this.id).then((result) => {
-          this.form = Object.assign({}, result);
+        this.getRoleById(this.id).then((result) => {
+          this.form = {
+            id: result.id,
+            name: result.name,
+            slug: result.slug,
+            enabled: result.enabled,
+          };
         });
       }
     },
 
     create(payload) {
-      this.createCategory(payload)
+      this.createRole(payload)
         .then((result) => {
           if (result) {
             this.form = {};
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
-            this.$router.push("/products/categories");
+            this.$router.push("/configuration/roles");
           }
         })
         .catch((err) => {
@@ -182,12 +158,12 @@ export default {
     },
 
     update(payload) {
-      this.updateCategory(payload)
+      this.updateRole(payload)
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
-            this.$router.push("/products/categories");
+            this.$router.push("/configuration/roles");
           }
         })
         .catch((err) => {

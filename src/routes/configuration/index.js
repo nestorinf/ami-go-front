@@ -1,5 +1,6 @@
 export default {
     routes: [
+        // Commerce
         {
             name: 'Commerce',
             path: "configuration/commerce",
@@ -16,7 +17,7 @@ export default {
             props: true,
             component: () => import("../../views/modules/configuration/commerce/Register")
         },
-
+        // Commerce Type
         {
             name: 'Commerce Type',
             path: "configuration/commerce-type",
@@ -33,6 +34,7 @@ export default {
             props: true,
             component: () => import("../../views/modules/configuration/commerceType/Register")
         },
+        // Payment Types
         {
             name: 'Payment Type',
             path: "configuration/payment-type",
@@ -48,6 +50,24 @@ export default {
             path: "configuration/payment-type/edit/:id",
             props: true,
             component: () => import("../../views/modules/configuration/paymentType/Register")
+        },
+
+        // Roles
+        {
+            name: 'Role',
+            path: "configuration/roles",
+            component: () => import("../../views/modules/configuration/roles")
+        },
+        {
+            name: 'Role Register',
+            path: "configuration/roles/register",
+            component: () => import("../../views/modules/configuration/roles/register")
+        },
+        {
+            name: 'Role Edit',
+            path: "configuration/roles/edit/:id",
+            props: true,
+            component: () => import("../../views/modules/configuration/roles/register")
         },
     ],
 
@@ -72,6 +92,11 @@ export default {
                 title: "Tipos de Pago",
                 icon: "mdi-comment-outline",
                 to: "payment-type",
+            },
+            {
+                title: "Roles",
+                icon: "mdi-comment-outline",
+                to: "roles",
             },
             // {
             //     title: "Referencias",
