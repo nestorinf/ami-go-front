@@ -21,17 +21,17 @@ export default {
     // Commerce Type
     {
       name: 'Commerce Type',
-      path: "configuration/commerce-type",
+      path: "configuration/commerce-category",
       component: () => import("../../views/modules/configuration/commerceType")
     },
     {
       name: 'Commerce Type Register',
-      path: "configuration/commerce-type/register",
+      path: "configuration/commerce-category/register",
       component: () => import("../../views/modules/configuration/commerceType/Register")
     },
     {
       name: 'Commerce Type Edit',
-      path: "configuration/commerce-type/edit/:id",
+      path: "configuration/commerce-category/edit/:id",
       props: true,
       component: () => import("../../views/modules/configuration/commerceType/Register")
     },
@@ -98,9 +98,9 @@ export default {
     icon: 'mdi-cog',
     children: [
       {
-        title: "Tipo de Comercio",
+        title: "Categoria de Comercio",
         icon: "mdi-comment-outline",
-        to: "commerce-type",
+        to: "commerce-category",
       },
       {
         title: "Tipo de Restaurante",

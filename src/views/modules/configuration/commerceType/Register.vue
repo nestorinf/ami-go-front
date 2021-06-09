@@ -2,10 +2,10 @@
   <v-card class="mb-7">
     <v-card-text class="pa-5 border-bottom">
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-        Tipo de Comercio
+        Categoria de Comercio
       </h3>
       <h6 class="subtitle-2 font-weight-light">
-        En este formulario se registran todos los Tipos de Comercio
+        En este formulario se registran todos las Categorias de Comercio
       </h6>
     </v-card-text>
     <v-card-text>
@@ -14,7 +14,7 @@
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.name"
-              label="Nombre"
+              label="Nombre de la categoria"
               filled
               required
               :rules="rules.nameRule"
@@ -43,7 +43,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/configuration/commerce-type"
+          to="/configuration/commerce-category"
           dark
           >Cancelar</v-btn
         >
@@ -80,8 +80,8 @@ export default {
       },
 
       rules: {
-        nameRule: [(v) => !!v || "el nombre es obligatorio"],
-        descriptionRule: [(v) => !!v || "la descripcion es obligatorio"],
+        nameRule: [(v) => !!v || "es campo es obligatorio"],
+        descriptionRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },
