@@ -2,6 +2,7 @@ import configuration from './configuration'
 import provider from './provider'
 import product from './product'
 import user from './user'
+import restaurant from './restaurant'
 
 import home from './home'
 
@@ -18,4 +19,5 @@ export default {
     provider,
     product,
     user,
+    restaurant,
 }
