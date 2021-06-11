@@ -26,5 +26,4 @@ export default {
     product,
     payment,
     user,
-    restaurant,
 }
