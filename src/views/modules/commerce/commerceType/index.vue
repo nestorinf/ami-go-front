@@ -53,7 +53,7 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Configuracion",
+        text: "Comercio",
         disabled: false,
         to: "#",
       },

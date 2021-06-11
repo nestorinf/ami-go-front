@@ -3,65 +3,56 @@
     <v-form ref="form" v-model="valid" lazy-validation>
       <v-card-text class="pa-5 border-bottom">
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-          {{ titleForm }}
+          Usuario
         </h3>
         <h6 class="subtitle-2 font-weight-light">
-          En este formulario se registran todas los comercios
+          En este formulario se registran todos los usuarios
         </h6>
       </v-card-text>
       <v-card-text>
         <v-row>
           <v-col cols="12" lg="6">
             <v-select
-              :loading="loadingCommerceType"
-              label="Tipo de Comercio"
-              :items="commerceTypeList"
-              v-model="form.commerce_type_id"
+              :loading="loadingCommerce"
+              label="Comercio a que pertenece el usuario"
+              :items="commerceList"
+              v-model="form.commerce_id"
               filled
               required
-              :rules="rules.commerceTypeRule"
               background-color="transparent"
+              :error-messages="errorsBags.commerce_id"
             ></v-select>
           </v-col>
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Nombre del comercio"
+              label="Nombre del Usuario"
               required
               filled
-              :rules="rules.nameRule"
               background-color="transparent"
+              :error-messages="errorsBags.name"
             ></v-text-field>
           </v-col>
           <v-col cols="6" lg="6">
             <v-text-field
               type="email"
               v-model="form.email"
-              label="Email Comercio"
+              label="Email del Usuario"
               required
               filled
-              :rules="rules.emailRule"
               background-color="transparent"
+              :error-messages="errorsBags.email"
             ></v-text-field>
           </v-col>
           <v-col cols="6" lg="6">
             <v-text-field
-              v-model="form.agent"
-              label="Persona Contacto"
+              type="password"
+              v-model="form.password"
+              label="Contraseña del Usuario (dejar en blanco para conservar)"
               filled
-              required
-              :rules="rules.agentRule"
               background-color="transparent"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" lg="6">
-            <v-text-field
-              v-model="form.phone"
-              label="Telefono Persona Contacto"
-              filled
-              required
-              :rules="rules.phoneRule"
-              background-color="transparent"
+              autocomplete="new-password"
+              :error-messages="errorsBags.password"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -73,11 +64,7 @@
           class="text-capitalize mr-2"
           >Guardar</v-btn
         >
-        <v-btn
-          color="black"
-          class="text-capitalize"
-          to="/configuration/commerce"
-          dark
+        <v-btn color="black" class="text-capitalize" to="/security/user" dark
           >Cancelar</v-btn
         >
       </v-card-text>
@@ -91,10 +78,10 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
-  name: "RegisterCommerce",
+  name: "RegisterUser",
   props: {
     id: String,
   },
@@ -105,31 +92,16 @@ export default {
   data() {
     return {
       textSnackBar: "",
-      titleForm: "Comercio",
       valid: true,
-      loadingCommerceType: false,
-      commerceTypeList: [],
+      loadingCommerce: false,
+      commerceList: [],
+      errorsBags: [],
       form: {
         id: "",
-        commerce_type_id: null,
+        commerce_id: "",
         name: "",
-        agent: "",
         email: "",
-        phone: "",
-      },
-
-      rules: {
-        nameRule: [(v) => !!v || "este campo es obligatorio"],
-        commerceTypeRule: [(v) => !!v || "este campo es obligatorio"],
-        agentRule: [(v) => !!v || "este campo es obligatorio"],
-        phoneRule: [(v) => !!v || "este campo es obligatorio"],
-        emailRule: [
-          (v) => !!v || "el este campo es obligatorio",
-          (v) =>
-            !v ||
-            /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-            "el email es invalido",
-        ],
+        password: "",
       },
     };
   },
@@ -137,16 +109,13 @@ export default {
   mounted() {
     this.setData();
   },
-  computed: {
-    ...mapGetters({ storeCommerceTypes: "commerceType/getCommerceTypes" }),
-  },
 
   methods: {
     ...mapActions({
-      createCommerce: "commerce/createCommerce",
-      getCommerceById: "commerce/getCommerceById",
-      updateCommerce: "commerce/updateCommerce",
-      getCommerceTypeData: "commerceType/getCommerceTypeData",
+      createUser: "user/createUser",
+      getUserById: "user/getUserById",
+      updateUser: "user/updateUser",
+      getCommercesData: "commerce/getCommercesData",
     }),
     save() {
       this.$refs.form.validate();
@@ -160,34 +129,27 @@ export default {
       }
     },
     setData() {
-      this.loadingCommerceType = true;
+      this.loadingCommerce = true;
       const rows = [];
-      this.getCommerceTypeData().then((result) => {
+      this.getCommercesData().then((result) => {
         result.map((element) => {
           rows.push({
             value: element.id,
             text: element.name,
           });
-          this.commerceTypeList = rows;
-          this.loadingCommerceType = false;
+          this.commerceList = rows;
         });
+        this.loadingCommerce = false;
       });
       if (this.id) {
-        this.getCommerceById(this.id).then((result) => {
-          this.form = {
-            id: result.id,
-            name: result.name,
-            agent: result.agent,
-            email: result.email,
-            phone: result.phone,
-            commerce_type_id: result.commerce_type_id,
-          };
+        this.getUserById(this.id).then((result) => {
+          this.form = Object.assign({}, result);
         });
       }
     },
 
     create(payload) {
-      this.createCommerce(payload)
+      this.createUser(payload)
         .then((result) => {
           if (result) {
             this.form = {};
@@ -197,14 +159,19 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          if (err.response) {
+            this.errorsBags = err.response.data.errors;
+            setTimeout(() => {
+              this.errorsBags = [];
+            }, 4000);
+          }
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });
     },
 
     update(payload) {
-      this.updateCommerce(payload)
+      this.updateUser(payload)
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
@@ -212,7 +179,12 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          if (err.response) {
+            this.errorsBags = err.response.data.errors;
+            setTimeout(() => {
+              this.errorsBags = [];
+            }, 4000);
+          }
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });

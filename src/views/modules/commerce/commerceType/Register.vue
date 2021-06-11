@@ -43,7 +43,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/configuration/commerce-category"
+          to="/commerce/commerce-category"
           dark
           >Cancelar</v-btn
         >

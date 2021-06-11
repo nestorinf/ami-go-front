@@ -6,33 +6,31 @@
           {{ titleForm }}
         </h3>
         <h6 class="subtitle-2 font-weight-light">
-          En este formulario se registran todas los tipos de pago
+          En este formulario se registran todas los roles
         </h6>
       </v-card-text>
       <v-card-text>
         <v-row>
           <v-col cols="12" lg="6">
-            <v-select
-              :loading="loadingCommerces"
-              label="Comercio"
-              :items="commerceList"
-              v-model="form.commerce_id"
-              filled
-              required
-              :rules="rules.commerceRule"
-              background-color="transparent"
-              :error-messages="errorsBags.commerce_id"
-            ></v-select>
-          </v-col>
-          <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Nombre del tipo de pago"
+              label="Nombre"
               required
               filled
               :rules="rules.nameRule"
               background-color="transparent"
               :error-messages="errorsBags.name"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-text-field
+              v-model="form.slug"
+              label="Slug"
+              required
+              filled
+              :rules="rules.slugRule"
+              background-color="transparent"
+              :error-messages="errorsBags.slug"
             ></v-text-field>
           </v-col>
           <v-col cols="12" lg="6">
@@ -52,11 +50,7 @@
           class="text-capitalize mr-2"
           >Guardar</v-btn
         >
-        <v-btn
-          color="black"
-          class="text-capitalize"
-          to="/configuration/payment-type"
-          dark
+        <v-btn color="black" class="text-capitalize" to="/security/roles" dark
           >Cancelar</v-btn
         >
       </v-card-text>
@@ -70,10 +64,10 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
-  name: "RegisterPaymentType",
+  name: "RegisterRole",
   props: {
     id: String,
   },
@@ -84,21 +78,19 @@ export default {
   data() {
     return {
       textSnackBar: "",
-      titleForm: "Comercio",
+      titleForm: "Roles",
       valid: true,
-      loadingCommerces: false,
-      commerceList: [],
       form: {
         id: "",
-        commerce_id: null,
         name: "",
+        slug: "",
         enabled: false,
       },
       errorsBags: [],
 
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
-        commerceRule: [(v) => !!v || "este campo es obligatorio"],
+        slugRule: [(v) => !!v || "este campo es obligatorio"],
         enabledRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
@@ -107,16 +99,11 @@ export default {
   mounted() {
     this.setData();
   },
-  computed: {
-    ...mapGetters({ storePaymentTypes: "paymentType/getPaymentTypes" }),
-  },
-
   methods: {
     ...mapActions({
-      createPaymentType: "paymentType/createPaymentType",
-      getPaymentTypeById: "paymentType/getPaymentTypeById",
-      updatePaymentType: "paymentType/updatePaymentType",
-      getCommercesData: "commerce/getCommercesData",
+      createRole: "role/createRole",
+      getRoleById: "role/getRoleById",
+      updateRole: "role/updateRole",
     }),
     save() {
       this.$refs.form.validate();
@@ -130,46 +117,27 @@ export default {
       }
     },
     setData() {
-      this.loadingCommerces = true;
-      const rows = [];
-      this.getCommercesData().then((result) => {
-        if(result) {
-          result.map((element) => {
-            rows.push({
-              value: element.id,
-              text: element.name,
-            });
-            this.commerceList = rows;
-            
-          });
-
-        }
-        this.loadingCommerces = false;
-      }).catch((err) => {
-        console.log(err)
-        this.loadingCommerces = false; 
-      });
       if (this.id) {
-        this.getPaymentTypeById(this.id).then((result) => {
+        this.getRoleById(this.id).then((result) => {
           this.form = {
             id: result.id,
             name: result.name,
-            commerce_id: result.commerce_id,
-            enabled: result.enabled
+            slug: result.slug,
+            enabled: result.enabled,
           };
         });
       }
     },
 
     create(payload) {
-      this.createPaymentType(payload)
+      this.createRole(payload)
         .then((result) => {
           if (result) {
             this.form = {};
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
-            this.$router.push("/configuration/payment-type");
+            this.$router.push("/security/roles");
           }
         })
         .catch((err) => {
@@ -186,12 +154,12 @@ export default {
     },
 
     update(payload) {
-      this.updatePaymentType(payload)
+      this.updateRole(payload)
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
-            this.$router.push("/configuration/payment-type");
+            this.$router.push("/security/roles");
           }
         })
         .catch((err) => {

@@ -16,15 +16,14 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'payment-type/register',
+            path: 'restaurant-type/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemovePaymentType"
-        >
-        </DataTable>
+          @remove-button="acceptRemoveRestaurantType"
+        ></DataTable>
       </v-col>
     </v-card>
     <DialogConfirm
@@ -41,9 +40,8 @@ import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
-
 export default {
-  name: "PaymentType",
+  name: "Company",
   components: {
     DataTable,
     DialogConfirm,
@@ -55,48 +53,44 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Configuracion",
+        text: "Restaurantes",
         disabled: false,
         to: "#",
       },
       {
-        text: "Tipo de Pago",
+        text: "Tipo de Restaurante",
         disabled: true,
       },
     ],
     messageDialog: "",
+
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Tipo de Pago",
+    titleForm: "Tipo de Restaurante",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
       {
-        text: "Comercio",
-        value: "commerce",
-      },
-      {
         text: "Nombre",
         align: "start",
+        sortable: false,
         value: "name",
       },
-      {
-        text: "Habilitado",
-        value: "enabled"
-      },
-
-      // { text: "Categoria Padre", value: "category_father" },
+      { text: "Descripcion", value: "description" },
     ],
     items: [],
     idDelete: "",
   }),
+
   computed: {
-    ...mapGetters({ storePaymentTypes: "paymentType/getPaymentTypes" }),
+    ...mapGetters({
+      storeRestaurantTypes: "restaurantType/getRestaurantTypes",
+    }),
   },
   watch: {
-    storePaymentTypes(data) {
+    storeRestaurantTypes(data) {
       if (data.length > 0) {
         this.items = data;
       }
@@ -104,23 +98,24 @@ export default {
   },
   methods: {
     ...mapActions({
-      getPaymentTypesData: "paymentType/getPaymentTypesData",
-      removePaymentType: "paymentType/removePaymentType",
+      getRestaurantTypeData: "restaurantType/getRestaurantTypeData",
+      removeRestaurantType: "restaurantType/removeRestaurantType",
     }),
     editButton({ id }) {
-      this.$router.push("payment-type/edit/" + id);
+      this.$router.push("restaurant-type/edit/" + id);
     },
-    acceptRemovePaymentType(item) {
+    acceptRemoveRestaurantType(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removePaymentType(this.idDelete);
+      this.removeRestaurantType(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
   },
+
   mounted() {
-    this.getPaymentTypesData();
+    this.getRestaurantTypeData();
   },
 };
 </script>
