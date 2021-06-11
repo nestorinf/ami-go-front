@@ -47,6 +47,10 @@ const router = new Router({
       path: "/login",
       component: () => import("@/views/authentication/BoxedLogin"),
     },
+    {
+      path: "*",
+      component: () => import("@/layouts/blank-layout/Blanklayout"),
+    },
   ]
 
 });
