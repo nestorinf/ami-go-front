@@ -16,7 +16,7 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'commerce-type/register',
+            path: 'commerce-category/register',
           }"
           :headers="headers"
           :items="items"
@@ -53,12 +53,12 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Configuracion",
+        text: "Comercio",
         disabled: false,
         to: "#",
       },
       {
-        text: "Tipo de Comercio",
+        text: "Categoria de Comercio",
         disabled: true,
       },
     ],
@@ -66,14 +66,14 @@ export default {
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Tipo de Comercio",
+    titleForm: "Categoria de Comercio",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
       {
-        text: "Nombre",
+        text: "Nombre de la categoria",
         align: "start",
         sortable: false,
         value: "name",
@@ -100,7 +100,7 @@ export default {
       removeCommerceType: "commerceType/removeCommerceType",
     }),
     editButton({ id }) {
-      this.$router.push("commerce-type/edit/" + id);
+      this.$router.push("commerce-category/edit/" + id);
     },
     acceptRemoveCommerceType(item) {
       this.idDelete = item.id;

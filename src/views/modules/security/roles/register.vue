@@ -1,35 +1,45 @@
 <template>
   <v-card class="mb-7">
-    <v-card-text class="pa-5 border-bottom">
-      <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-        Tipo de Comercio
-      </h3>
-      <h6 class="subtitle-2 font-weight-light">
-        En este formulario se registran todos los Tipos de Comercio
-      </h6>
-    </v-card-text>
-    <v-card-text>
-      <v-form ref="form" v-model="valid" lazy-validation>
+    <v-form ref="form" v-model="valid" lazy-validation>
+      <v-card-text class="pa-5 border-bottom">
+        <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
+          {{ titleForm }}
+        </h3>
+        <h6 class="subtitle-2 font-weight-light">
+          En este formulario se registran todas los roles
+        </h6>
+      </v-card-text>
+      <v-card-text>
         <v-row>
-          <v-col cols="12" lg="12">
+          <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
               label="Nombre"
-              filled
               required
+              filled
               :rules="rules.nameRule"
               background-color="transparent"
+              :error-messages="errorsBags.name"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" lg="12">
+          <v-col cols="12" lg="6">
             <v-text-field
-              v-model="form.description"
-              label="Descripcion"
-              filled
+              v-model="form.slug"
+              label="Slug"
               required
-              :rules="rules.descriptionRule"
+              filled
+              :rules="rules.slugRule"
               background-color="transparent"
+              :error-messages="errorsBags.slug"
             ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-checkbox
+              v-model="form.enabled"
+              required
+              label="Habilitado"
+              :error-messages="errorsBags.enabled"
+            ></v-checkbox>
           </v-col>
         </v-row>
         <v-btn
@@ -40,15 +50,11 @@
           class="text-capitalize mr-2"
           >Guardar</v-btn
         >
-        <v-btn
-          color="black"
-          class="text-capitalize"
-          to="/configuration/commerce-type"
-          dark
+        <v-btn color="black" class="text-capitalize" to="/security/roles" dark
           >Cancelar</v-btn
         >
-      </v-form>
-    </v-card-text>
+      </v-card-text>
+    </v-form>
     <SnackBar
       :text="textSnackBar"
       ref="snackBarRef"
@@ -61,7 +67,7 @@
 import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
-  name: "RegisterCommerceType",
+  name: "RegisterRole",
   props: {
     id: String,
   },
@@ -72,16 +78,20 @@ export default {
   data() {
     return {
       textSnackBar: "",
+      titleForm: "Roles",
       valid: true,
       form: {
         id: "",
         name: "",
-        description: "",
+        slug: "",
+        enabled: false,
       },
+      errorsBags: [],
 
       rules: {
-        nameRule: [(v) => !!v || "el nombre es obligatorio"],
-        descriptionRule: [(v) => !!v || "la descripcion es obligatorio"],
+        nameRule: [(v) => !!v || "este campo es obligatorio"],
+        slugRule: [(v) => !!v || "este campo es obligatorio"],
+        enabledRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },
@@ -89,16 +99,11 @@ export default {
   mounted() {
     this.setData();
   },
-  computed: {
-    getCommerceTypes() {
-      return this.$store.state.commerceType.commerceTypes;
-    },
-  },
   methods: {
     ...mapActions({
-      createCommerceType: "commerceType/createCommerceType",
-      commerceType: "commerceType/getCommerceTypeById",
-      updateCommerceType: "commerceType/updateCommerceType",
+      createRole: "role/createRole",
+      getRoleById: "role/getRoleById",
+      updateRole: "role/updateRole",
     }),
     save() {
       this.$refs.form.validate();
@@ -113,23 +118,35 @@ export default {
     },
     setData() {
       if (this.id) {
-        this.commerceType(this.id).then((result) => {
-          this.form = Object.assign({}, result);
+        this.getRoleById(this.id).then((result) => {
+          this.form = {
+            id: result.id,
+            name: result.name,
+            slug: result.slug,
+            enabled: result.enabled,
+          };
         });
       }
     },
 
     create(payload) {
-      this.createCommerceType(payload)
+      this.createRole(payload)
         .then((result) => {
           if (result) {
             this.form = {};
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
+            this.$router.push("/security/roles");
           }
         })
         .catch((err) => {
+          if (err.response) {
+            this.errorsBags = err.response.data.errors;
+            setTimeout(() => {
+              this.errorsBags = [];
+            }, 4000);
+          }
           console.log(err);
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
@@ -137,14 +154,21 @@ export default {
     },
 
     update(payload) {
-      this.updateCommerceType(payload)
+      this.updateRole(payload)
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
+            this.$router.push("/security/roles");
           }
         })
         .catch((err) => {
+          if (err.response) {
+            this.errorsBags = err.response.data.errors;
+            setTimeout(() => {
+              this.errorsBags = [];
+            }, 4000);
+          }
           console.log(err);
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";

@@ -43,7 +43,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/configuration/restaurant-type"
+          to="/restaurant/restaurant-type"
           dark
           >Cancelar</v-btn
         >

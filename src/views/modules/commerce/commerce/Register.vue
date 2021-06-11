@@ -6,42 +6,63 @@
           {{ titleForm }}
         </h3>
         <h6 class="subtitle-2 font-weight-light">
-          En este formulario se registran todas los tipos de pago
+          En este formulario se registran todas los comercios
         </h6>
       </v-card-text>
       <v-card-text>
         <v-row>
           <v-col cols="12" lg="6">
             <v-select
-              :loading="loadingCommerces"
-              label="Comercio"
-              :items="commerceList"
-              v-model="form.commerce_id"
+              :loading="loadingCommerceType"
+              label="Tipo de Comercio"
+              :items="commerceTypeList"
+              v-model="form.commerce_type_id"
               filled
               required
-              :rules="rules.commerceRule"
+              :rules="rules.commerceTypeRule"
               background-color="transparent"
-              :error-messages="errorsBags.commerce_id"
             ></v-select>
           </v-col>
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Nombre del tipo de pago"
+              label="Nombre del comercio"
               required
               filled
               :rules="rules.nameRule"
               background-color="transparent"
-              :error-messages="errorsBags.name"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="6" lg="6">
+            <v-text-field
+              type="email"
+              v-model="form.email"
+              label="Email Comercio"
+              required
+              filled
+              :rules="rules.emailRule"
+              background-color="transparent"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="6" lg="6">
+            <v-text-field
+              v-model="form.agent"
+              label="Persona Contacto"
+              filled
+              required
+              :rules="rules.agentRule"
+              background-color="transparent"
             ></v-text-field>
           </v-col>
           <v-col cols="12" lg="6">
-            <v-checkbox
-              v-model="form.enabled"
+            <v-text-field
+              v-model="form.phone"
+              label="Telefono Persona Contacto"
+              filled
               required
-              label="Habilitado"
-              :error-messages="errorsBags.enabled"
-            ></v-checkbox>
+              :rules="rules.phoneRule"
+              background-color="transparent"
+            ></v-text-field>
           </v-col>
         </v-row>
         <v-btn
@@ -55,7 +76,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/configuration/payment-type"
+          to="/commerce/commerce"
           dark
           >Cancelar</v-btn
         >
@@ -73,7 +94,7 @@
 import { mapActions, mapGetters } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
-  name: "RegisterPaymentType",
+  name: "RegisterCommerce",
   props: {
     id: String,
   },
@@ -86,20 +107,29 @@ export default {
       textSnackBar: "",
       titleForm: "Comercio",
       valid: true,
-      loadingCommerces: false,
-      commerceList: [],
+      loadingCommerceType: false,
+      commerceTypeList: [],
       form: {
         id: "",
-        commerce_id: null,
+        commerce_type_id: null,
         name: "",
-        enabled: false,
+        agent: "",
+        email: "",
+        phone: "",
       },
-      errorsBags: [],
 
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
-        commerceRule: [(v) => !!v || "este campo es obligatorio"],
-        enabledRule: [(v) => !!v || "este campo es obligatorio"],
+        commerceTypeRule: [(v) => !!v || "este campo es obligatorio"],
+        agentRule: [(v) => !!v || "este campo es obligatorio"],
+        phoneRule: [(v) => !!v || "este campo es obligatorio"],
+        emailRule: [
+          (v) => !!v || "el este campo es obligatorio",
+          (v) =>
+            !v ||
+            /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+            "el email es invalido",
+        ],
       },
     };
   },
@@ -108,15 +138,15 @@ export default {
     this.setData();
   },
   computed: {
-    ...mapGetters({ storePaymentTypes: "paymentType/getPaymentTypes" }),
+    ...mapGetters({ storeCommerceTypes: "commerceType/getCommerceTypes" }),
   },
 
   methods: {
     ...mapActions({
-      createPaymentType: "paymentType/createPaymentType",
-      getPaymentTypeById: "paymentType/getPaymentTypeById",
-      updatePaymentType: "paymentType/updatePaymentType",
-      getCommercesData: "commerce/getCommercesData",
+      createCommerce: "commerce/createCommerce",
+      getCommerceById: "commerce/getCommerceById",
+      updateCommerce: "commerce/updateCommerce",
+      getCommerceTypeData: "commerceType/getCommerceTypeData",
     }),
     save() {
       this.$refs.form.validate();
@@ -130,55 +160,43 @@ export default {
       }
     },
     setData() {
-      this.loadingCommerces = true;
+      this.loadingCommerceType = true;
       const rows = [];
-      this.getCommercesData().then((result) => {
-        if(result) {
-          result.map((element) => {
-            rows.push({
-              value: element.id,
-              text: element.name,
-            });
-            this.commerceList = rows;
-            
+      this.getCommerceTypeData().then((result) => {
+        result.map((element) => {
+          rows.push({
+            value: element.id,
+            text: element.name,
           });
-
-        }
-        this.loadingCommerces = false;
-      }).catch((err) => {
-        console.log(err)
-        this.loadingCommerces = false; 
+          this.commerceTypeList = rows;
+          this.loadingCommerceType = false;
+        });
       });
       if (this.id) {
-        this.getPaymentTypeById(this.id).then((result) => {
+        this.getCommerceById(this.id).then((result) => {
           this.form = {
             id: result.id,
             name: result.name,
-            commerce_id: result.commerce_id,
-            enabled: result.enabled
+            agent: result.agent,
+            email: result.email,
+            phone: result.phone,
+            commerce_type_id: result.commerce_type_id,
           };
         });
       }
     },
 
     create(payload) {
-      this.createPaymentType(payload)
+      this.createCommerce(payload)
         .then((result) => {
           if (result) {
             this.form = {};
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
-            this.$router.push("/configuration/payment-type");
           }
         })
         .catch((err) => {
-          if (err.response) {
-            this.errorsBags = err.response.data.errors;
-            setTimeout(() => {
-              this.errorsBags = [];
-            }, 4000);
-          }
           console.log(err);
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
@@ -186,21 +204,14 @@ export default {
     },
 
     update(payload) {
-      this.updatePaymentType(payload)
+      this.updateCommerce(payload)
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
-            this.$router.push("/configuration/payment-type");
           }
         })
         .catch((err) => {
-          if (err.response) {
-            this.errorsBags = err.response.data.errors;
-            setTimeout(() => {
-              this.errorsBags = [];
-            }, 4000);
-          }
           console.log(err);
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
