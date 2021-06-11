@@ -1,74 +1,81 @@
 export default {
-
   routes: [
     // Commerce
     {
-      name: 'Commerce',
+      name: "Commerce",
       path: "configuration/commerce",
-      component: () => import("../../views/modules/configuration/commerce")
+      component: () => import("../../views/modules/configuration/commerce"),
     },
     {
-      name: 'Commerce Register',
+      name: "Commerce Register",
       path: "configuration/commerce/register",
-      component: () => import("../../views/modules/configuration/commerce/Register")
+      component: () =>
+        import("../../views/modules/configuration/commerce/Register"),
     },
     {
-      name: 'Commerce Edit',
+      name: "Commerce Edit",
       path: "configuration/commerce/edit/:id",
       props: true,
-      component: () => import("../../views/modules/configuration/commerce/Register")
+      component: () =>
+        import("../../views/modules/configuration/commerce/Register"),
     },
     // Commerce Type
     {
-      name: 'Commerce Type',
+      name: "Commerce Type",
       path: "configuration/commerce-type",
-      component: () => import("../../views/modules/configuration/commerceType")
+      component: () => import("../../views/modules/configuration/commerceType"),
     },
     {
-      name: 'Commerce Type Register',
+      name: "Commerce Type Register",
       path: "configuration/commerce-type/register",
-      component: () => import("../../views/modules/configuration/commerceType/Register")
+      component: () =>
+        import("../../views/modules/configuration/commerceType/Register"),
     },
     {
-      name: 'Commerce Type Edit',
+      name: "Commerce Type Edit",
       path: "configuration/commerce-type/edit/:id",
       props: true,
-      component: () => import("../../views/modules/configuration/commerceType/Register")
+      component: () =>
+        import("../../views/modules/configuration/commerceType/Register"),
     },
     // Payment Types
     {
-      name: 'Payment Type',
+      name: "Payment Type",
       path: "configuration/payment-type",
-      component: () => import("../../views/modules/configuration/paymentType")
+      component: () => import("../../views/modules/configuration/paymentType"),
     },
     {
-      name: 'Payment Type Register',
+      name: "Payment Type Register",
       path: "configuration/payment-type/register",
-      component: () => import("../../views/modules/configuration/paymentType/Register")
+      component: () =>
+        import("../../views/modules/configuration/paymentType/Register"),
     },
     {
-      name: 'Payment Type Edit',
+      name: "Payment Type Edit",
       path: "configuration/payment-type/edit/:id",
       props: true,
-      component: () => import("../../views/modules/configuration/paymentType/Register")
+      component: () =>
+        import("../../views/modules/configuration/paymentType/Register"),
     },
 
     // Roles
     {
-      name: 'Role',
+      name: "Role",
       path: "configuration/roles",
-      component: () => import("../../views/modules/configuration/roles")
+      component: () => import("../../views/modules/configuration/roles"),
     },
     {
-      name: 'Role Register',
+      name: "Role Register",
       path: "configuration/roles/register",
-      component: () => import("../../views/modules/configuration/roles/register")
+      component: () =>
+        import("../../views/modules/configuration/roles/register"),
     },
     {
-      name: 'Role Edit',
+      name: "Role Edit",
       path: "configuration/roles/edit/:id",
       props: true,
-      component: () => import("../../views/modules/configuration/roles/register")
+      component: () =>
+        import("../../views/modules/configuration/roles/register"),
     },
 
     // restaunrat types
@@ -91,12 +98,61 @@ export default {
       component: () =>
         import("../../views/modules/configuration/restaurantType/Register"),
     },
+    // reference
+    {
+      name: "Reference",
+      path: "configuration/reference",
+      component: () => import("../../views/modules/configuration/reference"),
+    },
+    {
+      name: "Reference Register",
+      path: "configuration/reference/register",
+      component: () =>
+        import("../../views/modules/configuration/reference/Register"),
+    },
+    {
+      name: "Reference Edit",
+      path: "configuration/reference/edit/:id",
+      props: true,
+      component: () =>
+        import("../../views/modules/configuration/reference/Register"),
+    },
+    // reference List
+    {
+      name: "Reference List",
+      path: "configuration/reference-list",
+      component: () =>
+        import("../../views/modules/configuration/referenceList"),
+    },
+    {
+      name: "Reference List Register",
+      path: "configuration/reference-list/register",
+      component: () =>
+        import("../../views/modules/configuration/referenceList/Register"),
+    },
+    {
+      name: "Reference List Edit",
+      path: "configuration/reference-list/edit/:id",
+      props: true,
+      component: () =>
+        import("../../views/modules/configuration/referenceList/Register"),
+    },
   ],
   menu: {
-    group: '/configuration',
-    title: 'Configuración',
-    icon: 'mdi-cog',
+    group: "/configuration",
+    title: "Configuración",
+    icon: "mdi-cog",
     children: [
+      {
+        title: "Referencia",
+        icon: "mdi-comment-outline",
+        to: "reference",
+      },
+      {
+        title: "Lista Referencia",
+        icon: "mdi-comment-outline",
+        to: "reference-list",
+      },
       {
         title: "Tipo de Comercio",
         icon: "mdi-comment-outline",
@@ -127,6 +183,6 @@ export default {
       //     icon: "mdi-comment-outline",
       //     to: "references",
       // }
-    ]
-  }
+    ],
+  },
 };
