@@ -1,35 +1,60 @@
 export default {
     routes: [
+        // routes for Roles
+        {
+            name: 'Role',
+            path: "security/roles",
+            component: () => import("../../views/modules/security/roles")
+        },
+        {
+            name: 'Role Register',
+            path: "security/roles/register",
+            component: () => import("../../views/modules/security/roles/register")
+        },
+        {
+            name: 'Role Edit',
+            path: "security/roles/edit/:id",
+            props: true,
+            component: () => import("../../views/modules/security/roles/register")
+        },
+
+
+        // routes for user
         {
             name: 'User',
-            path: "user/user",
-            component: () => import("../../views/modules/user/user")
+            path: "security/user",
+            component: () => import("../../views/modules/security/user")
         },
         {
             name: 'User Register',
-            path: "user/user/register",
-            component: () => import("../../views/modules/user/user/register")
+            path: "security/user/register",
+            component: () => import("../../views/modules/security/user/register")
         },
         {
             name: 'User Edit',
-            path: "user/user/edit/:id",
+            path: "security/user/edit/:id",
             props: true,
-            component: () => import("../../views/modules/user/user/register")
+            component: () => import("../../views/modules/security/user/register")
         }
     ],
 
 
 
     menu: {
-        group: '/user',
-        title: 'Usuario',
-        icon: 'mdi-account',
+        group: '/security',
+        title: 'Seguridad',
+        icon: 'mdi-lock',
         children: [
+            {
+                title: "Roles",
+                icon: "mdi-account",
+                to: "roles",
+            },
             {
                 title: "Usuario",
                 icon: "mdi-account",
                 to: "user",
-            }
+            },
         ]
     }
 

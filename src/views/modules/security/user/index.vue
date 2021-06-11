@@ -16,13 +16,13 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'restaurant-type/register',
+            path: 'user/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveRestaurantType"
+          @remove-button="acceptRemoveCommerceType"
         ></DataTable>
       </v-col>
     </v-card>
@@ -40,8 +40,9 @@ import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
+
 export default {
-  name: "Company",
+  name: "User",
   components: {
     DataTable,
     DialogConfirm,
@@ -53,67 +54,70 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Configuracion",
+        text: "Usuario",
         disabled: false,
         to: "#",
       },
       {
-        text: "Tipo de Restaurante",
+        text: "Usuario",
         disabled: true,
       },
     ],
     messageDialog: "",
-
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Tipo de Restaurante",
+    titleForm: "Usuario",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
       {
-        text: "Nombre",
+        text: "Nombre del Usuario",
         align: "start",
         sortable: false,
         value: "name",
       },
-      { text: "Descripcion", value: "description" },
+      { text: "Comercio", value: "commerce_name" },
+      { text: "Nombre del Usuario", value: "name" },
+      { text: "Email del Usuario", value: "email" },
     ],
     items: [],
     idDelete: "",
   }),
 
   computed: {
-    ...mapGetters({ storeRestaurantTypes: "restaurantType/getRestaurantTypes" }),
+    ...mapGetters({ storeUser: "user/getUsers" }),
   },
   watch: {
-    storeRestaurantTypes(data) {
+    storeUser(data) {
       if (data.length > 0) {
         this.items = data;
       }
     },
   },
+
   methods: {
     ...mapActions({
-      getRestaurantTypeData: "restaurantType/getRestaurantTypeData",
-      removeRestaurantType: "restaurantType/removeRestaurantType",
+      getUsersData: "user/getUsersData",
+      removeUser: "user/removeUser",
     }),
     editButton({ id }) {
-      this.$router.push("restaurant-type/edit/" + id);
+      this.$router.push("user/edit/" + id);
     },
-    acceptRemoveRestaurantType(item) {
+    acceptRemoveCommerceType(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeRestaurantType(this.idDelete);
+      this.removeUser(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
+      // this.getUsersData();
     },
   },
 
   mounted() {
-    this.getRestaurantTypeData();
+    this.getUsersData();
   },
 };
 </script>

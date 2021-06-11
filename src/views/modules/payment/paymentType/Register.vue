@@ -3,22 +3,23 @@
     <v-form ref="form" v-model="valid" lazy-validation>
       <v-card-text class="pa-5 border-bottom">
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-          Usuario
+          {{ titleForm }}
         </h3>
         <h6 class="subtitle-2 font-weight-light">
-          En este formulario se registran todos los usuarios
+          En este formulario se registran todas los tipos de pago
         </h6>
       </v-card-text>
       <v-card-text>
         <v-row>
           <v-col cols="12" lg="6">
             <v-select
-              :loading="loadingCommerce"
-              label="Comercio a que pertenece el usuario"
+              :loading="loadingCommerces"
+              label="Comercio"
               :items="commerceList"
               v-model="form.commerce_id"
               filled
               required
+              :rules="rules.commerceRule"
               background-color="transparent"
               :error-messages="errorsBags.commerce_id"
             ></v-select>
@@ -26,34 +27,21 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Nombre del Usuario"
+              label="Nombre del tipo de pago"
               required
               filled
+              :rules="rules.nameRule"
               background-color="transparent"
               :error-messages="errorsBags.name"
             ></v-text-field>
           </v-col>
-          <v-col cols="6" lg="6">
-            <v-text-field
-              type="email"
-              v-model="form.email"
-              label="Email del Usuario"
+          <v-col cols="12" lg="6">
+            <v-checkbox
+              v-model="form.enabled"
               required
-              filled
-              background-color="transparent"
-              :error-messages="errorsBags.email"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="6" lg="6">
-            <v-text-field
-              type="password"
-              v-model="form.password"
-              label="Contraseña del Usuario (dejar en blanco para conservar)"
-              filled
-              background-color="transparent"
-              autocomplete="new-password"
-              :error-messages="errorsBags.password"
-            ></v-text-field>
+              label="Habilitado"
+              :error-messages="errorsBags.enabled"
+            ></v-checkbox>
           </v-col>
         </v-row>
         <v-btn
@@ -64,7 +52,11 @@
           class="text-capitalize mr-2"
           >Guardar</v-btn
         >
-        <v-btn color="black" class="text-capitalize" to="/user/user" dark
+        <v-btn
+          color="black"
+          class="text-capitalize"
+          to="/payment/payment-type"
+          dark
           >Cancelar</v-btn
         >
       </v-card-text>
@@ -78,10 +70,10 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
-  name: "RegisterUser",
+  name: "RegisterPaymentType",
   props: {
     id: String,
   },
@@ -92,16 +84,22 @@ export default {
   data() {
     return {
       textSnackBar: "",
+      titleForm: "Comercio",
       valid: true,
-      loadingCommerce: false,
+      loadingCommerces: false,
       commerceList: [],
-      errorsBags: [],
       form: {
         id: "",
-        commerce_id: "",
+        commerce_id: null,
         name: "",
-        email: "",
-        password: "",
+        enabled: false,
+      },
+      errorsBags: [],
+
+      rules: {
+        nameRule: [(v) => !!v || "este campo es obligatorio"],
+        commerceRule: [(v) => !!v || "este campo es obligatorio"],
+        enabledRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },
@@ -109,12 +107,15 @@ export default {
   mounted() {
     this.setData();
   },
+  computed: {
+    ...mapGetters({ storePaymentTypes: "paymentType/getPaymentTypes" }),
+  },
 
   methods: {
     ...mapActions({
-      createUser: "user/createUser",
-      getUserById: "user/getUserById",
-      updateUser: "user/updateUser",
+      createPaymentType: "paymentType/createPaymentType",
+      getPaymentTypeById: "paymentType/getPaymentTypeById",
+      updatePaymentType: "paymentType/updatePaymentType",
       getCommercesData: "commerce/getCommercesData",
     }),
     save() {
@@ -129,33 +130,46 @@ export default {
       }
     },
     setData() {
-      this.loadingCommerce = true;
+      this.loadingCommerces = true;
       const rows = [];
-      this.getCommercesData().then((result) => {
-        result.map((element) => {
-          rows.push({
-            value: element.id,
-            text: element.name,
-          });
-          this.commerceList = rows;
+      this.getCommercesData()
+        .then((result) => {
+          if (result) {
+            result.map((element) => {
+              rows.push({
+                value: element.id,
+                text: element.name,
+              });
+              this.commerceList = rows;
+            });
+          }
+          this.loadingCommerces = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingCommerces = false;
         });
-          this.loadingCommerce = false;
-      });
       if (this.id) {
-        this.getUserById(this.id).then((result) => {
-          this.form = Object.assign({}, result);
+        this.getPaymentTypeById(this.id).then((result) => {
+          this.form = {
+            id: result.id,
+            name: result.name,
+            commerce_id: result.commerce_id,
+            enabled: result.enabled,
+          };
         });
       }
     },
 
     create(payload) {
-      this.createUser(payload)
+      this.createPaymentType(payload)
         .then((result) => {
           if (result) {
             this.form = {};
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
+            this.$router.push("/payment/payment-type");
           }
         })
         .catch((err) => {
@@ -165,17 +179,19 @@ export default {
               this.errorsBags = [];
             }, 4000);
           }
+          console.log(err);
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });
     },
 
     update(payload) {
-      this.updateUser(payload)
+      this.updatePaymentType(payload)
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
+            this.$router.push("/payment/payment-typee");
           }
         })
         .catch((err) => {
@@ -185,6 +201,7 @@ export default {
               this.errorsBags = [];
             }, 4000);
           }
+          console.log(err);
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });

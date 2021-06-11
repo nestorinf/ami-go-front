@@ -1,4 +1,5 @@
 export default {
+<<<<<<< HEAD
   routes: [
     // Commerce
     {
@@ -138,6 +139,10 @@ export default {
         import("../../views/modules/configuration/referenceList/Register"),
     },
   ],
+=======
+
+  routes: [],
+>>>>>>> develop
   menu: {
     group: "/configuration",
     title: "Configuración",
@@ -145,6 +150,7 @@ export default {
     children: [
       {
         title: "Referencia",
+<<<<<<< HEAD
         icon: "mdi-comment-outline",
         to: "reference",
       },
@@ -155,12 +161,15 @@ export default {
       },
       {
         title: "Tipo de Comercio",
+=======
+>>>>>>> develop
         icon: "mdi-comment-outline",
-        to: "commerce-type",
+        to: "refecence",
       },
       {
-        title: "Tipo de Restaurante",
+        title: "Lista Referencia",
         icon: "mdi-comment-outline",
+<<<<<<< HEAD
         to: "restaurant-type",
       },
       {
@@ -185,4 +194,11 @@ export default {
       // }
     ],
   },
+=======
+        to: "refecence-list",
+      }
+
+    ]
+  }
+>>>>>>> develop
 };

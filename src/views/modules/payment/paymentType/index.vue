@@ -16,14 +16,15 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'user/register',
+            path: 'payment-type/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveCommerceType"
-        ></DataTable>
+          @remove-button="acceptRemovePaymentType"
+        >
+        </DataTable>
       </v-col>
     </v-card>
     <DialogConfirm
@@ -42,7 +43,7 @@ import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
-  name: "User",
+  name: "PaymentType",
   components: {
     DataTable,
     DialogConfirm,
@@ -54,70 +55,72 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Usuario",
+        text: "Configuracion",
         disabled: false,
         to: "#",
       },
       {
-        text: "Usuario",
+        text: "Tipo de Pago",
         disabled: true,
       },
     ],
     messageDialog: "",
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Usuario",
+    titleForm: "Tipo de Pago",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
       {
-        text: "Nombre del Usuario",
+        text: "Comercio",
+        value: "commerce",
+      },
+      {
+        text: "Nombre",
         align: "start",
-        sortable: false,
         value: "name",
       },
-      { text: "Comercio", value: "commerce_name" },
-      { text: "Nombre del Usuario", value: "name" },
-      { text: "Email del Usuario", value: "email" }
+      {
+        text: "Habilitado",
+        value: "enabled",
+      },
+
+      // { text: "Categoria Padre", value: "category_father" },
     ],
     items: [],
     idDelete: "",
   }),
-
   computed: {
-    ...mapGetters({ storeUser: "user/getUsers" }),
+    ...mapGetters({ storePaymentTypes: "paymentType/getPaymentTypes" }),
   },
   watch: {
-    storeUser(data) {
+    storePaymentTypes(data) {
       if (data.length > 0) {
         this.items = data;
       }
     },
   },
-
   methods: {
     ...mapActions({
-      getUsersData: "user/getUsersData",
-      removeUser: "user/removeUser",
+      getPaymentTypesData: "paymentType/getPaymentTypesData",
+      removePaymentType: "paymentType/removePaymentType",
     }),
     editButton({ id }) {
-      this.$router.push("user/edit/" + id);
+      this.$router.push("payment-type/edit/" + id);
     },
-    acceptRemoveCommerceType(item) {
+    acceptRemovePaymentType(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeUser(this.idDelete);
+      this.removePaymentType(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
-      // this.getUsersData();
     },
   },
-
   mounted() {
-    this.getUsersData();
+    this.getPaymentTypesData();
   },
 };
 </script>
