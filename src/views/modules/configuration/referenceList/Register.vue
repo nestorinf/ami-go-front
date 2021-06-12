@@ -19,6 +19,7 @@
               v-model="form.reference_id"
               filled
               required
+              :rules="rules.reference_idRule"
               background-color="transparent"
               :error-messages="errorsBags.reference_id"
             ></v-select>
@@ -29,6 +30,7 @@
               label="Valor"
               filled
               required
+              :rules="rules.valueRule"
               background-color="transparent"
               :error-messages="errorsBags.value"
             ></v-text-field>
@@ -44,7 +46,7 @@
             ></v-text-field>
           </v-col>
           
-          <v-col cols="12" lg="12">
+          <!-- <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.json_value"
               label="Json"
@@ -53,6 +55,19 @@
               background-color="transparent"
               :error-messages="errorsBags.json_value"
             ></v-text-field>
+          </v-col> -->
+
+        <v-col cols="12" lg="12">
+          <v-textarea
+            v-model="form.json_value"
+            label="Valor Json"
+            auto-grow
+            filled
+            required
+            background-color="transparent"
+            :error-messages="errorsBags.json_value"          
+            rows="4"
+          ></v-textarea>
           </v-col>
         </v-row>
         <v-btn
@@ -105,6 +120,10 @@ export default {
         value: "",
         alternative: "",
         json_value: "",
+      },
+      rules: {
+        reference_idRule: [(v) => !!v || "este campo es obligatorio"],
+        valueRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },

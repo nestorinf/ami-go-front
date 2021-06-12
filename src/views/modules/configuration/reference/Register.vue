@@ -17,6 +17,7 @@
               label="Nombre"
               filled
               required
+              :rules="rules.nameRule"
               background-color="transparent"
               :error-messages="errorsBags.name"
             ></v-text-field>
@@ -27,9 +28,18 @@
               label="Descripcion"
               filled
               required
+              :rules="rules.descriptionRule"
               background-color="transparent"
               :error-messages="errorsBags.description"
             ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-checkbox
+              v-model="form.is_lock"
+              required
+              label="Bloqueado"
+              :error-messages="errorsBags.is_lock"
+            ></v-checkbox>
           </v-col>
         </v-row>
         <v-btn
@@ -78,6 +88,11 @@ export default {
         id: "",
         name: "",
         description: "",
+        is_lock: false,
+      },
+      rules: {
+        nameRule: [(v) => !!v || "este campo es obligatorio"],
+        descriptionRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },
