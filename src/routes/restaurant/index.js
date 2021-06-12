@@ -2,19 +2,19 @@ export default {
     routes: [
         // restaunrat types
         {
-            name: "Restautant Type",
+            name: "Restaurant Type",
             path: "restaurant/restaurant-type",
             component: () =>
                 import("../../views/modules/restaurant/restaurantType"),
         },
         {
-            name: "Restautant Type Register",
+            name: "Restaurant Type Register",
             path: "restaurant/restaurant-type/register",
             component: () =>
                 import("../../views/modules/restaurant/restaurantType/Register"),
         },
         {
-            name: "Restautant Type Edit",
+            name: "Restaurant Type Edit",
             path: "restaurant/restaurant-type/edit/:id",
             props: true,
             component: () =>
