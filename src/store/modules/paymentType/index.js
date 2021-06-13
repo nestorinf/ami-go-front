@@ -18,81 +18,87 @@ const mutations = {
 
 
 const actions = {
-    getPaymentTypesData({ commit }) {
+    getPaymentTypesData({ commit, dispatch }) {
         return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
             PaymentTypeService.all().then(({ data }) => {
                 const paymentTypes = data.payload
 
                 commit('setPaymentTypes', paymentTypes)
+                dispatch('loading/loadingState', false, { root: true })
 
                 resolve(data.payload)
             }).catch(err => {
-
+                dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 // commit('setCommerces', [])
             })
         })
     },
 
-    getPaymentTypeById({ commit }, id) {
+    getPaymentTypeById({ commit, dispatch }, id) {
         return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
             PaymentTypeService.getById(id).then(({ data }) => {
                 const paymentType = data.payload
 
                 commit('setPaymentType', paymentType)
-
+                dispatch('loading/loadingState', false, { root: true })
                 resolve(data.payload)
             }).catch(err => {
-
+                dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 // commit('setCommerceType', {})
             })
         })
     },
 
-    createPaymentType({ commit }, body) {
+    createPaymentType({ commit, dispatch }, body) {
         return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
             PaymentTypeService.create(body).then(({ data }) => {
                 const paymentType = Object.assign({}, data.payload)
 
                 commit('setPaymentType', paymentType)
-
+                dispatch('loading/loadingState', false, { root: true })
                 resolve(data.payload)
             }).catch(err => {
-
+                dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 // commit('setCommerceTypes', {})
             })
         })
     },
-    updatePaymentType({ commit }, body) {
+    updatePaymentType({ commit, dispatch }, body) {
         return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
             PaymentTypeService.update(body).then(({ data }) => {
                 const paymentType = Object.assign({}, data.payload)
 
                 commit('setPaymentType', paymentType)
-
+                dispatch('loading/loadingState', false, { root: true })
                 resolve(data.payload)
             }).catch(err => {
-
+                dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 // commit('setCompany', {})
             })
         })
     },
 
-    removePaymentType({ commit, state }, id) {
+    removePaymentType({ commit, dispatch, state }, id) {
         return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
             PaymentTypeService.remove(id).then(({ data }) => {
                 const index = state.paymentTypes.findIndex(x => x.id === id)
                 const paymentType = [...state.paymentTypes]
                 paymentType.splice(index, 1)
 
                 commit('setPaymentTypes', paymentType)
-
+                dispatch('loading/loadingState', false, { root: true })
                 resolve(data.payload)
             }).catch(err => {
-
+                dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 // commit('setCommerceTypess', {})
             })

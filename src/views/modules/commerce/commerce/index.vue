@@ -97,6 +97,7 @@ export default {
   },
   watch: {
     storeCommerce(data) {
+      this.items = [];
       if (data.length > 0) {
         this.items = data;
       }
