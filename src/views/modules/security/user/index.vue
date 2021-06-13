@@ -91,6 +91,7 @@ export default {
   },
   watch: {
     storeUser(data) {
+      this.items = [];
       if (data.length > 0) {
         this.items = data;
       }

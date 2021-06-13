@@ -28,13 +28,15 @@ const actions = {
                 dispatch('loading/loadingState', false, { root: true })
 
                 localStorage.setItem('token', data.payload.access_token)
+
                 localStorage.setItem('user', JSON.stringify(data.payload.user))
+                localStorage.setItem('role_user', JSON.stringify(data.payload.role_user))
                 commit('setAuth', Object.assign({}, data.payload.user))
                 router.push({ path: "/" });
 
                 resolve(data.payload.user)
             }).catch(err => {
-
+                dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 commit('setLoading', false)
             })
@@ -54,6 +56,7 @@ const actions = {
                     dispatch('loading/loadingState', false, { root: true })
                     resolve(response)
                 }).catch((err) => {
+                    dispatch('loading/loadingState', false, { root: true })
                     commit('setLoading', false)
                     reject(err)
                 })

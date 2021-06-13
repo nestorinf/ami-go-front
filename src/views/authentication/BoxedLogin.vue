@@ -1,5 +1,10 @@
 <template>
   <v-container id="login" class="fill-height justify-center" tag="section">
+    <SnackBar
+      :text="textSnackBar"
+      ref="snackBarRef"
+      :snackbar="true"
+    ></SnackBar>
     <v-row justify="center">
       <v-col lg="11" sm="8" xl="7">
         <v-card class="elevation-4">
@@ -14,13 +19,7 @@
                     <h2 class="display-1 white--text font-weight-medium">
                       Tu AmiGo en tus Compras!
                     </h2>
-                    <h6
-                      class="subtitle-1 mt-4 white--text op-5 font-weight-regular"
-                    >
-                      Wrappixel helps developers to build organized and
-                      well-coded admin dashboards full of beautiful and feature
-                      rich modules.
-                    </h6>
+
                     <!-- <v-btn
                       class="mt-4 text-capitalize"
                       x-large
@@ -118,12 +117,15 @@
 
 <script>
 import { mapActions } from "vuex";
-
+import SnackBar from "@/views/modules/components/SnackBar";
 export default {
   name: "BoxedLogin",
-
+  components: {
+    SnackBar,
+  },
   data: () => ({
     valid: true,
+    textSnackBar: "",
     password: "",
     show1: false,
     passwordRules: [
@@ -157,7 +159,11 @@ export default {
           .then((response) => {
             return response;
           })
-          .catch((err) => console.log(err));
+          .catch(() => {
+            this.$refs.snackBarRef.changeStatusSnackbar(true);
+            this.textSnackBar =
+              "Disculpe, por favor verfique su usuario o clave";
+          });
       }
     },
   },

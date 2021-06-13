@@ -84,12 +84,12 @@ export default {
       },
       {
         text: "Valor Alternativo",
-        value: "alternative"
+        value: "alternative",
       },
       {
         text: "Valor Json",
-        value: "json_value"
-      },      
+        value: "json_value",
+      },
 
       // { text: "Categoria Padre", value: "category_father" },
     ],
@@ -101,6 +101,7 @@ export default {
   },
   watch: {
     storeReferenceLists(data) {
+      this.items = [];
       if (data.length > 0) {
         this.items = data;
       }

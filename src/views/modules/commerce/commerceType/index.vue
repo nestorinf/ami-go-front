@@ -89,6 +89,7 @@ export default {
   },
   watch: {
     storeCommerceTypes(data) {
+      this.items = [];
       if (data.length > 0) {
         this.items = data;
       }
