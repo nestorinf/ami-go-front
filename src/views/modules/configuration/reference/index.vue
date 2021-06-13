@@ -91,6 +91,7 @@ export default {
   watch: {
     storeReferences(data) {
       if (data.length > 0) {
+        this.items=[];
          data.map((element) =>{
          this.items.push( 
            {
