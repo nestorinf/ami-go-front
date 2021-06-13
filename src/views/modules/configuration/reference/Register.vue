@@ -2,10 +2,10 @@
   <v-card class="mb-7">
     <v-card-text class="pa-5 border-bottom">
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-        Tipo de Restaurante
+        Referencia
       </h3>
       <h6 class="subtitle-2 font-weight-light">
-        En este formulario se registran todos los Tipos de Restaurante
+        En este formulario se registran todos las Referencias
       </h6>
     </v-card-text>
     <v-card-text>
@@ -33,6 +33,14 @@
               :error-messages="errorsBags.description"
             ></v-text-field>
           </v-col>
+          <v-col cols="12" lg="6">
+            <v-checkbox
+              v-model="form.is_lock"
+              required
+              label="Bloqueado"
+              :error-messages="errorsBags.is_lock"
+            ></v-checkbox>
+          </v-col>
         </v-row>
         <v-btn
           color="success"
@@ -45,7 +53,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/restaurant/restaurant-type"
+          to="/configuration/reference"
           dark
           >Cancelar</v-btn
         >
@@ -63,7 +71,7 @@
 import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
-  name: "RegisterRestaurantType",
+  name: "RegisterReference",
   props: {
     id: String,
   },
@@ -80,6 +88,7 @@ export default {
         id: "",
         name: "",
         description: "",
+        is_lock: false,
       },
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
@@ -92,15 +101,15 @@ export default {
     this.setData();
   },
   computed: {
-    getRestaurantTypes() {
-      return this.$store.state.restaurantType.restaurantTypes;
+    getReferences() {
+      return this.$store.state.reference.references;
     },
   },
   methods: {
     ...mapActions({
-      createRestaurantType: "restaurantType/createRestaurantType",
-      restaurantType: "restaurantType/getRestaurantTypeById",
-      updateRestaurantType: "restaurantType/updateRestaurantType",
+      createReference: "reference/createReference",
+      reference: "reference/getReferenceById",
+      updateReference: "reference/updateReference",
     }),
     save() {
       this.$refs.form.validate();
@@ -115,14 +124,14 @@ export default {
     },
     setData() {
       if (this.id) {
-        this.restaurantType(this.id).then((result) => {
+        this.reference(this.id).then((result) => {
           this.form = Object.assign({}, result);
         });
       }
     },
 
     create(payload) {
-      this.createRestaurantType(payload)
+      this.createReference(payload)
         .then((result) => {
           if (result) {
             this.form = {};
@@ -144,7 +153,7 @@ export default {
     },
 
     update(payload) {
-      this.updateRestaurantType(payload)
+      this.updateReference(payload)
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
