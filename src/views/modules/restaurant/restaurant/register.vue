@@ -13,6 +13,18 @@
         <v-row>
           <v-col cols="12" lg="6">
             <v-select
+              :loading="loadingRestaurantType"
+              label="Tipo de restaurante"
+              :items="restaurantTypeList"
+              v-model="form.restaurant_type_id"
+              filled
+              required
+              background-color="transparent"
+              :error-messages="errorsBags.restaurant_type_id"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-select
               :loading="loadingCommerce"
               label="Comercio a que pertenece el restaurante"
               :items="commerceList"
@@ -139,15 +151,18 @@ export default {
       textSnackBar: "",
       valid: true,
       loadingCommerce: false,
+      loadingRestaurantType: false,
       loadingDepartment: false,
       loadingMunicipality: false,
       commerceList: [],
+      restaurantTypeList: [],
       departmentList: [],
       municipalityList: [],
       errorsBags: [],
       form: {
         id: "",
         commerce_id: "",
+        restaurant_type_id: "",
         department_id: "",
         municipality_id: "",
         description: "",
@@ -169,6 +184,7 @@ export default {
       getRestaurantById: "restaurant/getRestaurantById",
       updateRestaurant: "restaurant/updateRestaurant",
       getCommercesData: "commerce/getCommercesData",
+      getRestaurantTypeData: "restaurantType/getRestaurantTypeData",
       getDepartmentsData: "commerce/getDepartmentsData",
       getMunicipalitiesData: "commerce/getMunicipalitiesData",
     }),
@@ -185,6 +201,7 @@ export default {
     },
     setData() {
       this.loadingCommerce = true;
+      this.loadingRestaurantType = true;
       this.loadingDepartment = true;
       this.loadingMunicipality = true;
       const rows = [];
@@ -197,6 +214,16 @@ export default {
           this.commerceList = rows;
         });
         this.loadingCommerce = false;
+      });
+      this.getRestaurantTypeData().then((result) => {
+        result.map((element) => {
+          rows.push({
+            value: element.id,
+            text: element.name,
+          });
+          this.restaurantTypesList = rows;
+        });
+        this.loadingRestaurantType = false;
       });
       this.getDepartmentsData().then((result) => {
         result.map((element) => {
