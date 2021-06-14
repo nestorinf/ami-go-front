@@ -1,6 +1,12 @@
 export default {
 
-  routes: [],
+  routes: [
+    {
+      name: 'Upload Images',
+      path: "configuration/upload-images",
+      component: () => import("../../views/modules/configuration/upload-images")
+  },
+  ],
   menu: {
     group: '/configuration',
     title: 'Configuración',
@@ -15,6 +21,11 @@ export default {
         title: "Lista Referencia",
         icon: "mdi-comment-outline",
         to: "refecence-list",
+      },
+      {
+        title: "Subir Imagenes",
+        icon: "mdi-comment-outline",
+        to: "upload-images",
       }
 
     ]

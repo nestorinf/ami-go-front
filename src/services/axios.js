@@ -5,7 +5,8 @@ const HTTP = axios.create({
     headers: {
         'Cache-Control': 'no-cache',
         'Access-Control-Allow-Headers': '*',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
+        "Content-Type": "multipart/form-data",
     }
 })
 
