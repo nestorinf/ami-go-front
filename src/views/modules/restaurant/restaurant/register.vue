@@ -70,9 +70,9 @@
           <v-col cols="12" lg="6">
             <v-file-input
               label="Cover"
-              v-model="form.Cover"
+              v-model="form.cover"
               background-color="transparent"
-              :error-messages="errorsBags.Cover"
+              :error-messages="errorsBags.cover"
             ></v-file-input>
           </v-col>
           <v-col cols="12" lg="6">
@@ -185,8 +185,8 @@ export default {
       updateRestaurant: "restaurant/updateRestaurant",
       getCommercesData: "commerce/getCommercesData",
       getRestaurantTypeData: "restaurantType/getRestaurantTypeData",
-      getDepartmentsData: "commerce/getDepartmentsData",
-      getMunicipalitiesData: "commerce/getMunicipalitiesData",
+      getDepartmentsData: "department/getDepartmentsData",
+      getMunicipalitiesData: "municipality/getMunicipalitiesData",
     }),
     save() {
       this.$refs.form.validate();
@@ -204,44 +204,47 @@ export default {
       this.loadingRestaurantType = true;
       this.loadingDepartment = true;
       this.loadingMunicipality = true;
-      const rows = [];
+      const commerces = [];
+      const departments = [];
+      const municipalities = [];
+      const restaurantTypes = [];
       this.getCommercesData().then((result) => {
         result.map((element) => {
-          rows.push({
+          commerces.push({
             value: element.id,
             text: element.name,
           });
-          this.commerceList = rows;
+          this.commerceList = commerces;
         });
         this.loadingCommerce = false;
       });
       this.getRestaurantTypeData().then((result) => {
         result.map((element) => {
-          rows.push({
+          restaurantTypes.push({
             value: element.id,
             text: element.name,
           });
-          this.restaurantTypesList = rows;
+          this.restaurantTypeList = restaurantTypes;
         });
         this.loadingRestaurantType = false;
       });
       this.getDepartmentsData().then((result) => {
         result.map((element) => {
-          rows.push({
+          departments.push({
             value: element.id,
             text: element.name,
           });
-          this.departmentList = rows;
+          this.departmentList = departments;
         });
         this.loadingDepartment = false;
       });
       this.getMunicipalitiesData().then((result) => {
         result.map((element) => {
-          rows.push({
+          municipalities.push({
             value: element.id,
             text: element.name,
           });
-          this.municipalityList = rows;
+          this.municipalityList = municipalities;
         });
         this.loadingMunicipality = false;
       });
