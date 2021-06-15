@@ -75,8 +75,8 @@ export default {
       { text: "Comercio", value: "commerce_name" },
       { text: "Departamento", value: "department_name" },
       { text: "Municipio", value: "municipality_name" },
-      { text: "Logo", value: "logo" },
-      { text: "Cover", value: "cover" },
+      // { text: "Logo", value: "logo" },
+      // { text: "Cover", value: "cover" },
       { text: "Descripción", value: "description" },
       { text: "Teléfono", value: "phone" }
     ],
