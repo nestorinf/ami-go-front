@@ -16,14 +16,15 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'user/register',
+            path: 'reference-list/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveCommerceType"
-        ></DataTable>
+          @remove-button="acceptRemoveReferenceList"
+        >
+        </DataTable>
       </v-col>
     </v-card>
     <DialogConfirm
@@ -42,7 +43,7 @@ import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
-  name: "User",
+  name: "ReferenceList",
   components: {
     DataTable,
     DialogConfirm,
@@ -54,71 +55,77 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Usuario",
+        text: "Configuracion",
         disabled: false,
         to: "#",
       },
       {
-        text: "Usuario",
+        text: "Lista Referencia",
         disabled: true,
       },
     ],
     messageDialog: "",
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Usuario",
+    titleForm: "Lista Referencia",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
       {
-        text: "Nombre del Usuario",
-        align: "start",
-        sortable: false,
-        value: "name",
+        text: "Referencia",
+        value: "reference",
       },
-      { text: "Comercio", value: "commerce_name" },
-      { text: "Nombre del Usuario", value: "name" },
-      { text: "Email del Usuario", value: "email" },
+      {
+        text: "Valor",
+        align: "start",
+        value: "value",
+      },
+      {
+        text: "Valor Alternativo",
+        value: "alternative",
+      },
+      {
+        text: "Valor Json",
+        value: "json_value",
+      },
+
+      // { text: "Categoria Padre", value: "category_father" },
     ],
     items: [],
     idDelete: "",
   }),
-
   computed: {
-    ...mapGetters({ storeUser: "user/getUsers" }),
+    ...mapGetters({ storeReferenceLists: "referenceList/getReferenceLists" }),
   },
   watch: {
-    storeUser(data) {
+    storeReferenceLists(data) {
       this.items = [];
       if (data.length > 0) {
         this.items = data;
       }
     },
   },
-
   methods: {
     ...mapActions({
-      getUsersData: "user/getUsersData",
-      removeUser: "user/removeUser",
+      getReferenceListData: "referenceList/getReferenceListData",
+      removeReferenceList: "referenceList/removeReferenceList",
     }),
     editButton({ id }) {
-      this.$router.push("user/edit/" + id);
+      this.$router.push("reference-list/edit/" + id);
     },
-    acceptRemoveCommerceType(item) {
+    acceptRemoveReferenceList(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeUser(this.idDelete);
+      this.removeReferenceList(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
-      // this.getUsersData();
     },
   },
-
   mounted() {
-    this.getUsersData();
+    this.getReferenceListData();
   },
 };
 </script>

@@ -16,13 +16,13 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'user/register',
+            path: 'reference/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveCommerceType"
+          @remove-button="acceptRemoveReference"
         ></DataTable>
       </v-col>
     </v-card>
@@ -40,9 +40,8 @@ import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
-
 export default {
-  name: "User",
+  name: "Company",
   components: {
     DataTable,
     DialogConfirm,
@@ -54,71 +53,83 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Usuario",
+        text: "Configuracion",
         disabled: false,
         to: "#",
       },
       {
-        text: "Usuario",
+        text: "Referencia",
         disabled: true,
       },
     ],
     messageDialog: "",
+
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Usuario",
+    titleForm: "Referencia",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
       {
-        text: "Nombre del Usuario",
+        text: "Nombre",
         align: "start",
         sortable: false,
         value: "name",
       },
-      { text: "Comercio", value: "commerce_name" },
-      { text: "Nombre del Usuario", value: "name" },
-      { text: "Email del Usuario", value: "email" },
+      { text: "Descripcion", value: "description" },
+      { text: "Bloqueado", value: "is_lock" },
     ],
     items: [],
     idDelete: "",
   }),
 
   computed: {
-    ...mapGetters({ storeUser: "user/getUsers" }),
+    ...mapGetters({ storeReferences: "reference/getReferences" }),
   },
   watch: {
-    storeUser(data) {
-      this.items = [];
+    storeReferences(data) {
       if (data.length > 0) {
-        this.items = data;
-      }
-    },
+        this.items=[];
+         data.map((element) =>{
+         this.items.push( 
+           {
+            id:element.id,
+            name:element.name,
+            description:element.description,
+            is_lock:element.is_lock ? 'Sí' : 'No'
+            },
+        //  element.name;
+         )
+         
+        // this.items = data;
+        // this.items[0].description = data.description;
+        // this.items[0].is_lock = data.is_lock ? 'Sí' : 'No';
+      })
+    }
   },
-
+  },
   methods: {
     ...mapActions({
-      getUsersData: "user/getUsersData",
-      removeUser: "user/removeUser",
+      getReferenceData: "reference/getReferenceData",
+      removeReference: "reference/removeReference",
     }),
     editButton({ id }) {
-      this.$router.push("user/edit/" + id);
+      this.$router.push("reference/edit/" + id);
     },
-    acceptRemoveCommerceType(item) {
+    acceptRemoveReference(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeUser(this.idDelete);
+      this.removeReference(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
-      // this.getUsersData();
     },
   },
 
   mounted() {
-    this.getUsersData();
+    this.getReferenceData();
   },
 };
 </script>
