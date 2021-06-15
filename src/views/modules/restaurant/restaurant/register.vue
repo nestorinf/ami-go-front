@@ -59,7 +59,7 @@
               :error-messages="errorsBags.municipality_id"
             ></v-select>
           </v-col>
-          <v-col cols="12" lg="6">
+          <!-- <v-col cols="12" lg="6">
             <v-file-input
               label="Logo"
               v-model="form.logo"
@@ -74,7 +74,7 @@
               background-color="transparent"
               :error-messages="errorsBags.cover"
             ></v-file-input>
-          </v-col>
+          </v-col> -->
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.description"
