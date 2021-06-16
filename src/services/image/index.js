@@ -7,8 +7,6 @@ class ImageService {
     }
 
     create(data) {
-        console.log('data')
-        console.log(data)
         return HTTP.post(`${this.path}`, data)
     }
 

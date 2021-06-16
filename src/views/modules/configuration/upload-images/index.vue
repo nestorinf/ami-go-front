@@ -13,16 +13,8 @@
       </v-card-text>
 
       <v-col cols="12" lg="12" sm="12">
-        <!-- <UploadImages :max="1" @change="onFilePicked" v-model="files" /> -->
-        <label for="images">select</label>
-        <input
-        id="images"
-          ref="uploadDialog"
-          type="file"
-          name="identification"
-          @change="addFile"
-        />
-        <button @click="uploadImg">upload</button>
+        <UploadImages :max="1" @change="onFileSelected" /> <br />
+        <v-btn color="success" @click="onUpload">Upload Image</v-btn>
       </v-col>
     </v-card>
   </v-container>
@@ -32,26 +24,11 @@
 import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 import { mapGetters, mapActions } from "vuex";
-
-// import UploadImages from "vue-upload-drop-images";
-
-// import vueFilePond from "vue-filepond";
-// import "filepond/dist/filepond.min.css";
-// import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
-// import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
-// import FilePondPluginImagePreview from "filepond-plugin-image-preview";
-
-// const FilePond = vueFilePond(
-//   FilePondPluginFileValidateType,
-//   FilePondPluginImagePreview
-// );
+import UploadImages from "vue-upload-drop-images";
 
 export default {
   name: "UploadImage",
-  components: {
-    // FilePond
-    // UploadImages
-  },
+  components: { UploadImages },
   data: () => ({
     page: {
       title: "Subir Imagenes"
@@ -72,7 +49,7 @@ export default {
     ButtonCrud: ButtonCrudTable,
     titleForm: "Subir Imagenes",
     idDelete: "",
-    image: null
+    selectedFile: null
   }),
 
   computed: {
@@ -102,22 +79,13 @@ export default {
       this.removeImage(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
-    uploadImg() {
-      console.log("uploading");
-      this.createImage({image: this.image});
+    onFileSelected(event) {
+      this.selectedFile = event;
     },
-    onFilePicked(files) {
-      console.log(files);
-      let file = files.target.files[0];
-      console.log(file);
-      this.image = files;
-    },
-    addFile(e) {
-      console.log(1)
-      if (e.target.tagName && e.target.tagName === "INPUT") {
-        console.log(2)
-        this.image = e.target.files[0];
-      }
+    onUpload() {
+      const fd = new FormData();
+      fd.append("image", this.selectedFile);
+      this.createImage(fd);
     }
   },
 
