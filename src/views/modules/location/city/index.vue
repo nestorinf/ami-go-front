@@ -16,14 +16,15 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'country/register',
+            path: 'city/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveCountry"
-        ></DataTable>
+          @remove-button="acceptRemoveCity"
+        >
+        </DataTable>
       </v-col>
     </v-card>
     <DialogConfirm
@@ -40,8 +41,9 @@ import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
+
 export default {
-  name: "Company",
+  name: "City",
   components: {
     DataTable,
     DialogConfirm,
@@ -53,68 +55,72 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Ubicación",
+        text: "Localización",
         disabled: false,
         to: "#",
       },
       {
-        text: "País",
+        text: "Ciudad",
         disabled: true,
       },
     ],
     messageDialog: "",
-
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "País",
+    titleForm: "Ciudad",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
       {
+        text: "Provincia",
+        value: "province",
+      },
+      {
         text: "Nombre",
         align: "start",
-        sortable: false,
         value: "name",
       },
-      { text: "Codigo", value: "code" },
+      {
+        text: "Código Ciudad",
+        value: "zip_code",
+      },
+
     ],
     items: [],
     idDelete: "",
   }),
-
   computed: {
-    ...mapGetters({ storeCountries: "country/getCountries" }),
+    ...mapGetters({ storeCities: "city/getCities" }),
   },
   watch: {
-    storeCountries(data) {
-        this.items=[];
-      if (data.length > 0) {             
-         this.items = data;        
-    }
-  },
+    storeCities(data) {
+      this.items = [];
+      if (data.length > 0) {
+        this.items = data;
+      }
+    },
   },
   methods: {
     ...mapActions({
-      getCountryData: "country/getCountryData",
-      removeCountry: "country/removeCountry",
+      getCityData: "city/getCityData",
+      removeCity: "city/removeCity",
     }),
     editButton({ id }) {
-      this.$router.push("country/edit/" + id);
+      this.$router.push("city/edit/" + id);
     },
-    acceptRemoveCountry(item) {
+    acceptRemoveCity(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeCountry(this.idDelete);
+      this.removeCity(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
   },
-
   mounted() {
-    this.getCountryData();
+    this.getCityData();
   },
 };
 </script>
