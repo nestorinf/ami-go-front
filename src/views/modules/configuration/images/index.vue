@@ -13,22 +13,36 @@
       </v-card-text>
 
       <v-col cols="12" lg="12" sm="12">
-        <UploadImages :max="1" @change="onFileSelected" /> <br />
-        <v-btn color="success" @click="onUpload">Upload Image</v-btn>
+        <DataTable
+          :dataButtonRegister="{
+            title: 'Registrar',
+            path: 'images/register'
+          }"
+          :headers="headers"
+          :items="items"
+          :loading="true"
+          @remove-button="acceptRemoveImage"
+        ></DataTable>
       </v-col>
     </v-card>
+    <DialogConfirm
+      ref="DialogConfirm"
+      @handler-dialog-confirm="removeButton"
+      :message="messageDialog"
+    ></DialogConfirm>
   </v-container>
 </template>
 
 <script>
 import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
+import DataTable from "../../components/DataTable";
+import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
-import UploadImages from "vue-upload-drop-images";
 
 export default {
   name: "UploadImage",
-  components: { UploadImages },
+  components: { DataTable, DialogConfirm },
   data: () => ({
     page: {
       title: "Subir Imagenes"
@@ -44,12 +58,30 @@ export default {
         disabled: true
       }
     ],
+    titleForm: "Images",
+    headers: [
+      {
+        text: "Accion",
+        value: "action"
+      },
+      {
+        text: "Nombre",
+        align: "start",
+        value: "name"
+      },
+      {
+        text: "Path",
+        align: "start",
+        value: "path"
+      }
+    ],
+    items: [],
     messageDialog: "",
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Subir Imagenes",
     idDelete: "",
-    selectedFile: null
+    selectedFile: null,
+    displayed: true
   }),
 
   computed: {
@@ -66,7 +98,6 @@ export default {
     ...mapActions({
       getImagesData: "image/getImagesData",
       removeImage: "image/removeImage",
-      createImage: "image/createImage"
     }),
     editButton({ id }) {
       this.$router.push("image/edit/" + id);
@@ -78,14 +109,6 @@ export default {
     removeButton() {
       this.removeImage(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
-    },
-    onFileSelected(event) {
-      this.selectedFile = event;
-    },
-    onUpload() {
-      const fd = new FormData();
-      fd.append("image", this.selectedFile);
-      this.createImage(fd);
     }
   },
 
