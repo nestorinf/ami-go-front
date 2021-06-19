@@ -12,7 +12,7 @@
       <v-form ref="form" v-model="valid" lazy-validation>
         <v-row>
           <v-col cols="12" lg="12">
-            <UploadImages v-if="displayed" :max="1" @change="onFileSelected" />
+            <UploadImages v-if="displayed" :max="50" @change="onFileSelected" />
           </v-col>
         </v-row>
         <br />
@@ -58,7 +58,7 @@ export default {
   data() {
     return {
       displayed: true,
-      selectedFile: null,
+      selectedFile: [],
       textSnackBar: "",
       valid: true,
       form: {
@@ -89,13 +89,17 @@ export default {
       updateImage: "image/updateImage"
     }),
     save() {
-      const payload = new FormData();
-      payload.append("image", this.selectedFile);
+      if (this.selectedFile.length) {
+        const payload = new FormData();
+        this.selectedFile.forEach((e) => {
+          payload.append("images[]", e);
+        });
 
-      if (this.id) {
-        this.update(payload);
-      } else {
-        this.create(payload);
+        if (this.id) {
+          this.update(payload);
+        } else {
+          this.create(payload);
+        }
       }
     },
     setData() {
@@ -144,7 +148,7 @@ export default {
         });
     },
     onFileSelected(event) {
-      this.selectedFile = event[0];
+      this.selectedFile = event;
     }
   }
 };
