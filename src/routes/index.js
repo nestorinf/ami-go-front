@@ -2,6 +2,7 @@ import configuration from './configuration'
 import provider from './provider'
 import product from './product'
 import user from './user'
+
 import commerce from './commerce'
 import restaurant from './restaurant'
 import payment from './payment'

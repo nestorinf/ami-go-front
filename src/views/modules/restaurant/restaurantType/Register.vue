@@ -17,6 +17,7 @@
               label="Nombre"
               filled
               required
+              :rules="rules.nameRule"
               background-color="transparent"
               :error-messages="errorsBags.name"
             ></v-text-field>
@@ -27,6 +28,7 @@
               label="Descripcion"
               filled
               required
+              :rules="rules.descriptionRule"
               background-color="transparent"
               :error-messages="errorsBags.description"
             ></v-text-field>
@@ -78,6 +80,10 @@ export default {
         id: "",
         name: "",
         description: "",
+      },
+      rules: {
+        nameRule: [(v) => !!v || "este campo es obligatorio"],
+        descriptionRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },

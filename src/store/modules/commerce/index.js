@@ -24,8 +24,8 @@ const actions = {
             CommerceService.all().then(({ data }) => {
                 const commerces = data.payload
 
-                dispatch('loading/loadingState', false, { root: true })
                 commit('setCommerces', commerces)
+                dispatch('loading/loadingState', false, { root: true })
 
                 resolve(data.payload)
             }).catch(err => {
@@ -37,65 +37,69 @@ const actions = {
         })
     },
 
-    getCommerceById({ commit }, id) {
+    getCommerceById({ commit, dispatch }, id) {
         return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
             CommerceService.getById(id).then(({ data }) => {
                 const company = data.payload
 
                 commit('setCommerce', company)
-
+                dispatch('loading/loadingState', false, { root: true })
                 resolve(data.payload)
             }).catch(err => {
-
+                dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 // commit('setCommerceType', {})
             })
         })
     },
 
-    createCommerce({ commit }, body) {
+    createCommerce({ commit, dispatch }, body) {
         return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
             CommerceService.create(body).then(({ data }) => {
                 const commerce = Object.assign({}, data.payload)
 
                 commit('setCommerce', commerce)
-
+                dispatch('loading/loadingState', false, { root: true })
                 resolve(data.payload)
             }).catch(err => {
-
+                dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 // commit('setCommerceTypes', {})
             })
         })
     },
-    updateCommerce({ commit }, body) {
+    updateCommerce({ commit, dispatch }, body) {
         return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
             CommerceService.update(body).then(({ data }) => {
                 const commerce = Object.assign({}, data.payload)
 
                 commit('setCommerce', commerce)
-
+                dispatch('loading/loadingState', false, { root: true })
                 resolve(data.payload)
             }).catch(err => {
-
+                dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 // commit('setCompany', {})
             })
         })
     },
 
-    removeCommerce({ commit, state }, id) {
+    removeCommerce({ commit, dispatch, state }, id) {
         return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
             CommerceService.remove(id).then(({ data }) => {
                 const index = state.commerces.findIndex(x => x.id === id)
-                const commerce = [...state.commerces]
+                const commerce = Object.assign([], state.commerces)
                 commerce.splice(index, 1)
 
-                commit('setCommerce', commerce)
-
+                commit('setCommerces', commerce)
+                dispatch('loading/loadingState', false, { root: true })
                 resolve(data.payload)
             }).catch(err => {
-
+                dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 // commit('setCommerceTypess', {})
             })

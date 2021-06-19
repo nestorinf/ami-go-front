@@ -91,6 +91,7 @@ export default {
   },
   watch: {
     storeRestaurantTypes(data) {
+      this.items = [];
       if (data.length > 0) {
         this.items = data;
       }
