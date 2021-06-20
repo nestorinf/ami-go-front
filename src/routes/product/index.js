@@ -1,15 +1,26 @@
 export default {
     routes: [
+
+        // routes for product
         {
             name: 'Product',
             path: "products/product",
             component: () => import("../../views/modules/products/product")
         },
         {
-            name: 'Company Register',
+            name: 'Product Register',
             path: "products/product/register",
             component: () => import("../../views/modules/products/product/register")
         },
+        {
+            name: 'Product Edit',
+            path: "products/product/edit/:id",
+            props: true,
+            component: () => import("../../views/modules/products/product/register")
+        },
+
+
+        // routes for categories
         {
             name: 'Category',
             path: "products/categories",
@@ -40,16 +51,12 @@ export default {
                 icon: "mdi-comment-outline",
                 to: "categories",
             },
-            // {
-            //     title: "Producto",
-            //     icon: "mdi-comment-outline",
-            //     to: "product",
-            // },
-            // {
-            //     title: "Referencias",
-            //     icon: "mdi-comment-outline",
-            //     to: "references",
-            // }
+            {
+                title: "Producto",
+                icon: "mdi-comment-outline",
+                to: "product",
+            }
+
         ]
     }
 

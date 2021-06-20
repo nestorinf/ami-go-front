@@ -289,8 +289,9 @@ export default {
         .then((response) => {
           if (response) {
             this.$router.push("/login").catch(() => {});
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("user");
+            sessionStorage.removeItem("role_user");
           }
           // console.log("hioka", response);
         })
