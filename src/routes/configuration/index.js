@@ -1,5 +1,16 @@
 export default {
   routes: [
+    {
+      name: "Upload Images",
+      path: "configuration/images",
+      component: () => import("../../views/modules/configuration/images")
+    },
+    {
+      name: "Register Images",
+      path: "configuration/images/register",
+      component: () =>
+        import("../../views/modules/configuration/images/Register")
+    },
     // routes for reference
     {
       name: "Reference",
@@ -68,18 +79,23 @@ export default {
       {
         title: "Referencia",
         icon: "mdi-comment-outline",
-        to: "reference",
+        to: "reference"
       },
       {
         title: "Lista Referencia",
         icon: "mdi-comment-outline",
-        to: "reference-list",
+        to: "reference-list"
       },
       {
         title: "Pregunta Frecuente",
         icon: "mdi-comment-outline",
         to: "frequent-question",
       },
-    ],
-  },
+      {
+        title: "Subir Imagenes",
+        icon: "mdi-comment-outline",
+        to: "images"
+      }
+    ]
+  }
 };
