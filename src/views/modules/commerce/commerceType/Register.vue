@@ -31,7 +31,11 @@
               background-color="transparent"
             ></v-text-field>
           </v-col>
+          <v-col cols="12" lg="12">
+            <UploadImages v-if="displayed" :max="50" @change="onFileSelected" />
+          </v-col>
         </v-row>
+        <br /><br />
         <v-btn
           color="success"
           @click="save"
@@ -60,13 +64,16 @@
 <script>
 import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
+import UploadImages from "vue-upload-drop-images";
+
 export default {
   name: "RegisterCommerceType",
   props: {
-    id: String,
+    id: String
   },
   components: {
     SnackBar,
+    UploadImages
   },
 
   data() {
@@ -76,13 +83,14 @@ export default {
       form: {
         id: "",
         name: "",
-        description: "",
+        description: ""
       },
 
       rules: {
         nameRule: [(v) => !!v || "es campo es obligatorio"],
-        descriptionRule: [(v) => !!v || "este campo es obligatorio"],
+        descriptionRule: [(v) => !!v || "este campo es obligatorio"]
       },
+      displayed: true
     };
   },
 
@@ -92,18 +100,28 @@ export default {
   computed: {
     getCommerceTypes() {
       return this.$store.state.commerceType.commerceTypes;
-    },
+    }
   },
   methods: {
     ...mapActions({
       createCommerceType: "commerceType/createCommerceType",
       commerceType: "commerceType/getCommerceTypeById",
-      updateCommerceType: "commerceType/updateCommerceType",
+      updateCommerceType: "commerceType/updateCommerceType"
     }),
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
-        const payload = this.form;
+        const payload = new FormData();
+        for (var key in this.form) {
+          if (key != "id") {
+            payload.append(key, this.form[key]);
+          }
+        }
+
+        this.selectedFile.forEach((e) => {
+          payload.append("images[]", e);
+        });
+
         if (this.id) {
           this.update(payload);
         } else {
@@ -123,10 +141,14 @@ export default {
       this.createCommerceType(payload)
         .then((result) => {
           if (result) {
+            this.displayed = false;
             this.form = {};
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
+            this.$nextTick(() => {
+              this.displayed = true;
+            });
           }
         })
         .catch((err) => {
@@ -140,8 +162,12 @@ export default {
       this.updateCommerceType(payload)
         .then((result) => {
           if (result) {
+            this.displayed = false;
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
+            this.$nextTick(() => {
+              this.displayed = true;
+            });
           }
         })
         .catch((err) => {
@@ -150,6 +176,9 @@ export default {
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });
     },
-  },
+    onFileSelected(event) {
+      this.selectedFile = event;
+    }
+  }
 };
 </script>
