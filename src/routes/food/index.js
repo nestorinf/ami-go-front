@@ -1,6 +1,6 @@
 export default {
     routes: [
-        // routes for Foods
+        // routes for Food categories
         {
             name: 'Food Category',
             path: "food/food-category",
@@ -20,22 +20,22 @@ export default {
 
 
         // routes for food
-        // {
-        //     name: 'Food',
-        //     path: "food/food",
-        //     component: () => import("../../views/modules/food/food")
-        // },
-        // {
-        //     name: 'Food Register',
-        //     path: "food/food/register",
-        //     component: () => import("../../views/modules/food/food/register")
-        // },
-        // {
-        //     name: 'Food Edit',
-        //     path: "food/food/edit/:id",
-        //     props: true,
-        //     component: () => import("../../views/modules/food/food/register")
-        // }
+        {
+            name: 'Food',
+            path: "food/food",
+            component: () => import("../../views/modules/food/food")
+        },
+        {
+            name: 'Food Register',
+            path: "food/food/register",
+            component: () => import("../../views/modules/food/food/Register")
+        },
+        {
+            name: 'Food Edit',
+            path: "food/food/edit/:id",
+            props: true,
+            component: () => import("../../views/modules/food/food/Register")
+        }
     ],
 
 
@@ -50,11 +50,11 @@ export default {
                 icon: "mdi-variant",
                 to: "food-category",
             },
-            // {
-            //     title: "Comidas",
-            //     icon: "mdi-burger",
-            //     to: "food",
-            // },
+            {
+                title: "Comidas",
+                icon: "mdi-burger",
+                to: "food",
+            },
         ]
     }
 
