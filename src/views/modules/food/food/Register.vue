@@ -25,7 +25,7 @@
           </v-col>
           <v-col cols="12" lg="6">
             <v-select
-              :loading="loadingFoodCategory"
+              :loading="loadingFood"
               label="Categoría"
               :items="foodCategoryList"
               v-model="form.food_category_id"
@@ -66,6 +66,109 @@
               :error-messages="errorsBags.description"
             ></v-text-field>
           </v-col>
+          <v-col cols="12" lg="6">
+            <v-textarea
+              v-model="form.ingredients"
+              label="Valor Ingredientes"
+              auto-grow
+              filled
+              :rules="rules.ingredientsRule"
+              background-color="transparent"
+              :error-messages="errorsBags.ingredients"
+              rows="4"
+            ></v-textarea>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-select
+              label="Unidad de medida"
+              :items="uomList"
+              v-model="form.uom"
+              filled
+              required
+              background-color="transparent"
+              :error-messages="errorsBags.uom"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-text-field
+              type="number"
+              v-model="form.price"
+              label="Precio"
+              filled
+              :rules="rules.priceRule"
+              background-color="transparent"
+              :error-messages="errorsBags.price"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-text-field
+              type="number"
+              v-model="form.tax"
+              label="Taxes"
+              filled
+              :rules="rules.taxRule"
+              background-color="transparent"
+              :error-messages="errorsBags.tax"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-text-field
+              type="number"
+              v-model="form.weight"
+              label="Peso"
+              filled
+              :rules="rules.weightRule"
+              background-color="transparent"
+              :error-messages="errorsBags.weight"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-text-field
+              type="number"
+              v-model="form.quantity"
+              label="Cantidad"
+              filled
+              :rules="rules.quantityRule"
+              background-color="transparent"
+              :error-messages="errorsBags.quantity"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="6" lg="6">
+            <v-checkbox
+            v-model="form.is_group"
+            required
+            label="¿Es Grupo?"
+              :rules="rules.is_groupRule"
+            :error-messages="errorsBags.is_group"
+          ></v-checkbox>
+          </v-col>
+          <v-col cols="6" lg="6">
+            <v-checkbox
+            v-model="form.is_extra"
+            required
+            label="¿Es Extra?"
+              :rules="rules.is_extraRule"
+            :error-messages="errorsBags.is_extra"
+          ></v-checkbox>
+          </v-col>
+          <v-col cols="6" lg="6">
+            <v-checkbox
+            v-model="form.with_features"
+            required
+            label="¿Es Extra?"
+              :rules="rules.with_featuresRule"
+            :error-messages="errorsBags.with_features"
+          ></v-checkbox>
+          </v-col>
+          <v-col cols="6" lg="6">
+            <v-checkbox
+            v-model="form.is_stock"
+            required
+            label="¿Es Extra?"
+              :rules="rules.is_stockRule"
+            :error-messages="errorsBags.is_stock"
+          ></v-checkbox>
+          </v-col>
         </v-row>
         <v-btn
           color="success"
@@ -78,7 +181,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/food/food-caegory"
+          to="/food/food"
           dark
           >Cancelar</v-btn
         >
@@ -96,7 +199,7 @@
 import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
-  name: "RegisterFoodCategory",
+  name: "RegisterFood",
   props: {
     id: String,
   },
@@ -125,15 +228,15 @@ export default {
     this.setData();
   },
   computed: {
-    getFoodCategorys() {
+    getFoods() {
       return this.$store.state.foodCategory.foodCategorys;
     },
   },
   methods: {
     ...mapActions({
-      createFoodCategory: "foodCategory/createFoodCategory",
-      foodCategory: "foodCategory/getFoodCategoryById",
-      updateFoodCategory: "foodCategory/updateFoodCategory",
+      createFood: "foodCategory/createFood",
+      foodCategory: "foodCategory/getFoodById",
+      updateFood: "foodCategory/updateFood",
     }),
     save() {
       this.$refs.form.validate();
@@ -155,7 +258,7 @@ export default {
     },
 
     create(payload) {
-      this.createFoodCategory(payload)
+      this.createFood(payload)
         .then((result) => {
           if (result) {
             this.form = {};
@@ -177,7 +280,7 @@ export default {
     },
 
     update(payload) {
-      this.updateFoodCategory(payload)
+      this.updateFood(payload)
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
