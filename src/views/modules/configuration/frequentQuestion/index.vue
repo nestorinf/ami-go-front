@@ -16,21 +16,21 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'product/register',
+            path: 'frequent-question/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemove"
+          @remove-button="acceptRemoveFrequentQuestion"
         ></DataTable>
       </v-col>
-      <DialogConfirm
-        ref="DialogConfirm"
-        @handler-dialog-confirm="removeButton"
-        :message="messageDialog"
-      ></DialogConfirm>
     </v-card>
+    <DialogConfirm
+      ref="DialogConfirm"
+      @handler-dialog-confirm="removeButton"
+      :message="messageDialog"
+    ></DialogConfirm>
   </v-container>
 </template>
 
@@ -41,7 +41,7 @@ import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
 export default {
-  name: "Product",
+  name: "Company",
   components: {
     DataTable,
     DialogConfirm,
@@ -53,88 +53,70 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Producto",
+        text: "Configuracion",
         disabled: false,
         to: "#",
       },
       {
-        text: "Producto",
+        text: "Pregunta Frecuenta",
         disabled: true,
       },
     ],
+    messageDialog: "",
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Producto",
-    messageDialog: "",
+    titleForm: "Pregunta Frecuente",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
       {
-        text: "Nombre",
-        align: "start",
+        text: "Pregunta",
+        // align: "start",
         sortable: false,
         value: "name",
       },
-      { text: "SKU", value: "sku" },
-      { text: "Descripcion", value: "description" },
-      { text: "Condiciones", value: "conditions" },
-      { text: "Categoria", value: "category" },
-      { text: "Proveedor", value: "provider" },
-      { text: "Habilitado", value: "enabled" },
+      { text: "Respuesta", value: "description" },
     ],
     items: [],
+    idDelete: "",
   }),
+
   computed: {
-    ...mapGetters({ storeProducts: "product/getProducts" }),
+    ...mapGetters({ storeFrequentQuestions: "frequentQuestion/getFrequentQuestions" }),
   },
   watch: {
-    storeProducts(data) {
-      const rows = [];
-      this.items = rows;
-      if (data.length > 0) {
-        data.map((element) => {
-          rows.push({
-            id: element.id,
-            commerce: element.commerce.name,
-            name: element.name,
-            sku: element.sku,
-            enabled: element.enabled,
-            description: element.description || "",
-            conditions: element.conditions,
-            category: element.category.name ? element.category.name : "",
-            provider: element.provider ? element.category.name : "",
-          });
-        });
-        this.items = rows;
+    storeFrequentQuestions(data) {
+      this.items=[];
+      if (data.length > 0) {        
+          if (data.length > 0) {
+        this.items = data;
       }
-      console.log(data);
-    },
+    }
   },
-
+  },
   methods: {
     ...mapActions({
-      getProductData: "product/getProductData",
-      removeProduct: "product/removeProduct",
+      getFrequentQuestionData: "frequentQuestion/getFrequentQuestionData",
+      removeFrequentQuestion: "frequentQuestion/removeFrequentQuestion",
     }),
-
     editButton({ id }) {
-      this.$router.push("product/edit/" + id);
+      this.$router.push("frequent-question/edit/" + id);
     },
-    acceptRemove(item) {
+    acceptRemoveFrequentQuestion(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeProduct(this.idDelete);
+      this.removeFrequentQuestion(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
   },
 
   mounted() {
-    this.getProductData();
+    this.getFrequentQuestionData();
   },
 };
 </script>

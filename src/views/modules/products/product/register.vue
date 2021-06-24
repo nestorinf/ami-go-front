@@ -9,75 +9,391 @@
       </h6>
     </v-card-text>
     <v-card-text>
-      <v-row>
-        <v-col cols="12" lg="6">
-          <v-text-field
-            v-model="name"
-            label="Nombre"
-            filled
-            background-color="transparent"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="6" lg="6">
-          <v-text-field
-            v-model="sku"
-            label="SKU"
-            filled
-            background-color="transparent"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="6" lg="6">
-          <v-text-field
-            v-model="description"
-            label="Descripcion"
-            filled
-            background-color="transparent"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" lg="6">
-          <v-text-field
-            v-model="conditions"
-            label="Condiciones"
-            filled
-            background-color="transparent"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" lg="6">
-          <v-select
-            :items="categories"
-            filled
-            label="Categoria"
-            background-color="transparent"
-          ></v-select>
-        </v-col>
-        <v-col cols="12" lg="6">
-          <v-select
-            :items="providers"
-            filled
-            label="Proveedor"
-            background-color="transparent"
-          ></v-select>
-        </v-col>
-      </v-row>
-      <v-btn color="success" class="text-capitalize mr-2">Guardar</v-btn>
-      <v-btn color="black" class="text-capitalize" to="/products/product" dark
-        >Cancelar</v-btn
-      >
+      <v-form ref="form" v-model="valid" lazy-validation>
+        <v-row>
+          <v-col cols="12" lg="6">
+            <v-select
+              :items="commerces"
+              :loading="loadingCommerces"
+              filled
+              required
+              v-model="form.commerce_id"
+              label="Comercio"
+              :rules="rules.commerceRule"
+              background-color="transparent"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-select
+              :loading="loadingCategories"
+              :items="categories"
+              required
+              :rules="rules.categoryRule"
+              v-model="form.category_id"
+              filled
+              label="Categoria Producto"
+              background-color="transparent"
+            ></v-select>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" lg="6">
+            <v-text-field
+              v-model="form.name"
+              label="Nombre"
+              filled
+              required
+              :rules="rules.nameRule"
+              background-color="transparent"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-text-field
+              v-model="form.description"
+              label="Descripcion"
+              filled
+              background-color="transparent"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" lg="12">
+            <v-textarea
+              v-model="form.conditions"
+              label="Condiciones"
+              auto-grow
+              filled
+              required
+              background-color="transparent"
+              rows="2"
+            ></v-textarea>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" lg="6">
+            <v-text-field
+              v-model="form.price"
+              label="Precio"
+              filled
+              required
+              :rules="rules.priceRule"
+              background-color="transparent"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-text-field
+              number
+              v-model="form.weight"
+              label="Peso"
+              filled
+              background-color="transparent"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" lg="6">
+            <v-select
+              :items="uom"
+              v-model="form.uom_id"
+              filled
+              required
+              :rules="rules.uomRule"
+              :loading="loadingUom"
+              label="Unidad de Medida"
+              background-color="transparent"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-select
+              :loading="loadingProviders"
+              :items="providers"
+              v-model="form.provider_id"
+              filled
+              label="Proveedor"
+              background-color="transparent"
+            ></v-select>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col cols="12" lg="3">
+            <v-checkbox
+              v-model="form.enabled"
+              required
+              label="Habilitado"
+            ></v-checkbox>
+          </v-col>
+          <v-col cols="12" lg="3">
+            <v-checkbox
+              v-model="form.on_stock"
+              required
+              label="En Stock"
+            ></v-checkbox>
+          </v-col>
+          <v-col cols="12" lg="3">
+            <v-checkbox
+              v-model="form.owns_batch"
+              required
+              label="Tiene Lote"
+            ></v-checkbox>
+          </v-col>
+        </v-row>
+
+        <v-btn
+          color="success"
+          @click="save"
+          :disabled="!valid"
+          submit
+          class="text-capitalize mr-2"
+          >Guardar</v-btn
+        >
+        <v-btn color="black" class="text-capitalize" to="/products/product" dark
+          >Cancelar</v-btn
+        >
+      </v-form>
     </v-card-text>
+
+    <SnackBar
+      :text="textSnackBar"
+      ref="snackBarRef"
+      :snackbar="true"
+    ></SnackBar>
   </v-card>
 </template>
 
 <script>
+import { mapActions } from "vuex";
+import SnackBar from "@/views/modules/components/SnackBar";
 export default {
   name: "RegisterProduct",
-
+  props: {
+    id: String,
+  },
+  components: {
+    SnackBar,
+  },
   data: () => ({
-    name: "",
-    sku: "",
-    description: "",
-    conditions: "",
-    categories: ["Equipo de Sonido", "Ropa Casual"],
-    providers: ["Electronic Sony", "Apple"],
+    valid: true,
+    commerces: [],
+    categories: [],
+    providers: [],
+    textSnackBar: "",
+    uom: [],
+    loadingCommerces: false,
+    loadingCategories: false,
+    loadingProviders: false,
+    loadingUom: false,
+
+    form: {
+      name: "",
+      sku: "",
+      enabled: 1 || 0,
+      on_stock: 1 || 0,
+      owns_batch: 0,
+      description: "",
+      conditions: "",
+      commerce_id: "",
+      price: "",
+      weight: "",
+      uom_id: "",
+      category_id: "",
+      provider_id: "",
+    },
+
+    rules: {
+      commerceRule: [(v) => !!v || "este campo es obligatorio"],
+      categoryRule: [(v) => !!v || "este campo es obligatorio"],
+      nameRule: [(v) => !!v || "este campo es obligatorio"],
+      priceRule: [(v) => !!v || "este campo es obligatorio"],
+      uomRule: [(v) => !!v || "este campo es obligatorio"],
+    },
   }),
+
+  mounted() {
+    this.setData();
+  },
+  methods: {
+    ...mapActions({
+      createProduct: "product/createProduct",
+      updateProduct: "product/updateProduct",
+      commerceData: "commerce/getCommercesData",
+      categoryData: "category/getCategoriesData",
+      providerData: "provider/getProvidersData",
+      productById: "product/getProductById",
+      uomData: "referenceList/getReferenceListByReferenceIdData",
+    }),
+
+    save() {
+      this.$refs.form.validate();
+      if (this.$refs.form.validate()) {
+        const payload = this.form;
+        if (this.id) {
+          this.update(payload);
+        } else {
+          this.create(payload);
+        }
+      }
+    },
+
+    create(payload) {
+      this.createProduct(payload)
+        .then((result) => {
+          if (result) {
+            this.form = {};
+            this.$refs.form.reset();
+            this.$refs.snackBarRef.changeStatusSnackbar(true);
+            this.textSnackBar = "Guardado existosamente!";
+          }
+        })
+        .catch((err) => {
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = err.response.data.errors;
+        });
+    },
+
+    update(payload) {
+      this.updateProduct(payload)
+        .then((result) => {
+          if (result) {
+            this.$refs.snackBarRef.changeStatusSnackbar(true);
+            this.textSnackBar = "Actualizado existosamente!";
+            // this.$router.push("/products/categories");
+          }
+        })
+        .catch((err) => {
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = err.response.data.errors;
+        });
+    },
+
+    setData() {
+      // load categories
+      this.loadCategories();
+
+      // load commerces
+      this.loadCommerces();
+
+      // load providers
+      this.loadProviders();
+
+      // load unit of measures (uom)
+      this.loadUom();
+
+      // get data by id
+
+      if (this.id) {
+        this.productById(this.id).then((result) => {
+          const parseData = {
+            id: result.id,
+            name: result.name,
+            description: result.description,
+            conditions: result.conditions,
+            price: result.price,
+            weight: result.weight,
+            uom_id: result.uom.id,
+            category_id: result.category.id,
+            provider_id: result.provider.id,
+            commerce_id: result.commerce.id,
+            enabled: result.enabled,
+            on_stock: result.on_stock,
+            owns_batch: result.owns_batch,
+          };
+
+          this.form = Object.assign({}, parseData);
+        });
+      }
+    },
+
+    loadCommerces() {
+      const rows = [];
+      this.loadingCommerces = true;
+      this.commerceData()
+        .then((result) => {
+          if (result) {
+            result.map((element) => {
+              if (element.commerce_type !== "Restaurantes") {
+                rows.push({
+                  value: element.id,
+                  text: element.name,
+                });
+              }
+              this.commerces = rows;
+            });
+          }
+          this.loadingCommerces = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingCommerces = false;
+        });
+    },
+
+    loadCategories() {
+      const rows = [];
+      this.loadingCategories = true;
+      this.categoryData()
+        .then((result) => {
+          if (result) {
+            result.map((element) => {
+              rows.push({
+                value: element.id,
+                text: element.name,
+              });
+              this.categories = rows;
+            });
+          }
+          this.loadingCategories = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingCategories = false;
+        });
+    },
+
+    loadProviders() {
+      const rows = [];
+      this.loadingProviders = true;
+      this.providerData()
+        .then((result) => {
+          if (result) {
+            result.map((element) => {
+              rows.push({
+                value: element.id,
+                text: element.name,
+              });
+              this.providers = rows;
+            });
+          }
+          this.loadingProviders = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingProviders = false;
+        });
+    },
+
+    loadUom() {
+      const rows = [];
+      this.loadingUom = true;
+      const referenceId = 1;
+      this.uomData(referenceId)
+        .then((result) => {
+          if (result) {
+            result.map((element) => {
+              rows.push({
+                value: element.id,
+                text: element.value,
+              });
+              this.uom = rows;
+            });
+          }
+          this.loadingUom = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingUom = false;
+        });
+    },
+  },
 };
 </script>

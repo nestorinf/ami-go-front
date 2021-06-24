@@ -1,7 +1,7 @@
 import HTTP from "../axios";
 
-class ReferenceListService {
-  path = "reference-lists";
+class FrequentQuestionService {
+  path = "frequent-questions";
   all() {
     return HTTP.get(`${this.path}`);
   }
@@ -14,10 +14,6 @@ class ReferenceListService {
     return HTTP.get(`${this.path}/` + id);
   }
 
-  getReferenceListByReferenceId(id) {
-    return HTTP.get(`${this.path}/references/` + id);
-  }
-
   update(data) {
     return HTTP.put(`${this.path}/` + data.id, data);
   }
@@ -26,4 +22,4 @@ class ReferenceListService {
     return HTTP.delete(`${this.path}/` + id);
   }
 }
-export default new ReferenceListService();
+export default new FrequentQuestionService();
