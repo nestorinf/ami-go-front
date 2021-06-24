@@ -3,6 +3,28 @@ import FoodService from "@/services/food";
 const state = {
   foods: [],
   food: {},
+  uoms: [
+    {
+      text: "Kilogramo",
+      value: "kg",
+    },
+    {
+      text: "Gramo",
+      value: "gr",
+    },
+    {
+      text: "Litro",
+      value: "lt",
+    },
+    {
+      text: "Mililitro",
+      value: "ml",
+    },
+    {
+      text: "Libra",
+      value: "lb",
+    },
+  ],
 };
 
 const mutations = {
@@ -122,6 +144,9 @@ const getters = {
   getFood: (state) => {
     return state.food;
   },
+  getUoms: (state) => {
+    return state.uoms;
+  }
 };
 
 export default {

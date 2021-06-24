@@ -25,7 +25,7 @@
           </v-col>
           <v-col cols="12" lg="6">
             <v-select
-              :loading="loadingFood"
+              :loading="loadingFoodCategory"
               label="Categoría"
               :items="foodCategoryList"
               v-model="form.food_category_id"
@@ -58,25 +58,12 @@
           </v-col>
           <v-col cols="12" lg="6">
             <v-text-field
-              v-model="form.description"
-              label="Descripción"
-              filled
-              :rules="rules.descriptionRule"
-              background-color="transparent"
-              :error-messages="errorsBags.description"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" lg="6">
-            <v-textarea
               v-model="form.ingredients"
-              label="Valor Ingredientes"
-              auto-grow
+              label="Ingredientes"
               filled
-              :rules="rules.ingredientsRule"
               background-color="transparent"
               :error-messages="errorsBags.ingredients"
-              rows="4"
-            ></v-textarea>
+            ></v-text-field>
           </v-col>
           <v-col cols="12" lg="6">
             <v-select
@@ -95,6 +82,7 @@
               v-model="form.price"
               label="Precio"
               filled
+              required
               :rules="rules.priceRule"
               background-color="transparent"
               :error-messages="errorsBags.price"
@@ -128,6 +116,7 @@
               v-model="form.quantity"
               label="Cantidad"
               filled
+              required
               :rules="rules.quantityRule"
               background-color="transparent"
               :error-messages="errorsBags.quantity"
@@ -135,39 +124,39 @@
           </v-col>
           <v-col cols="6" lg="6">
             <v-checkbox
-            v-model="form.is_group"
-            required
-            label="¿Es Grupo?"
+              v-model="form.is_group"
+              required
+              label="¿Es Grupo?"
               :rules="rules.is_groupRule"
-            :error-messages="errorsBags.is_group"
-          ></v-checkbox>
+              :error-messages="errorsBags.is_group"
+            ></v-checkbox>
           </v-col>
           <v-col cols="6" lg="6">
             <v-checkbox
-            v-model="form.is_extra"
-            required
-            label="¿Es Extra?"
+              v-model="form.is_extra"
+              required
+              label="¿Es Extra?"
               :rules="rules.is_extraRule"
-            :error-messages="errorsBags.is_extra"
-          ></v-checkbox>
+              :error-messages="errorsBags.is_extra"
+            ></v-checkbox>
           </v-col>
           <v-col cols="6" lg="6">
             <v-checkbox
-            v-model="form.with_features"
-            required
-            label="¿Es Extra?"
+              v-model="form.with_features"
+              required
+              label="¿Con Características?"
               :rules="rules.with_featuresRule"
-            :error-messages="errorsBags.with_features"
-          ></v-checkbox>
+              :error-messages="errorsBags.with_features"
+            ></v-checkbox>
           </v-col>
           <v-col cols="6" lg="6">
             <v-checkbox
-            v-model="form.is_stock"
-            required
-            label="¿Es Extra?"
+              v-model="form.is_stock"
+              required
+              label="¿En Stock?"
               :rules="rules.is_stockRule"
-            :error-messages="errorsBags.is_stock"
-          ></v-checkbox>
+              :error-messages="errorsBags.is_stock"
+            ></v-checkbox>
           </v-col>
         </v-row>
         <v-btn
@@ -178,11 +167,7 @@
           class="text-capitalize mr-2"
           >Guardar</v-btn
         >
-        <v-btn
-          color="black"
-          class="text-capitalize"
-          to="/food/food"
-          dark
+        <v-btn color="black" class="text-capitalize" to="/food/food" dark
           >Cancelar</v-btn
         >
       </v-form>
@@ -196,7 +181,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
   name: "RegisterFood",
@@ -211,15 +196,34 @@ export default {
     return {
       textSnackBar: "",
       valid: true,
+      loadingRestaurant: false,
+      loadingFoodCategory: false,
+      restaurantList: [],
+      foodCategoryList: [],
       errorsBags: [],
+      uomList: [],
       form: {
         id: "",
-        name: "",
         description: "",
+        food_category_id: "",
+        ingredients: "",
+        name: "",
+        price: "",
+        restaurant_id: "",
+        tax: "",
+        uom: "",
+        weight: "",
+        quantity: "",
+        is_group: "",
+        is_extra: "",
+        with_features: "",
+        is_stock: "",
       },
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
         descriptionRule: [(v) => !!v || "este campo es obligatorio"],
+        priceRule: [(v) => !!v || "este campo es obligatorio"],
+        quantityRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },
@@ -228,15 +232,20 @@ export default {
     this.setData();
   },
   computed: {
+    ...mapGetters({
+      getUoms: "food/getUoms",
+    }),
     getFoods() {
-      return this.$store.state.foodCategory.foodCategorys;
+      return this.$store.state.food.foods;
     },
   },
   methods: {
     ...mapActions({
-      createFood: "foodCategory/createFood",
-      foodCategory: "foodCategory/getFoodById",
-      updateFood: "foodCategory/updateFood",
+      createFood: "food/createFood",
+      food: "food/getFoodById",
+      updateFood: "food/updateFood",
+      getRestaurantsData: "restaurant/getRestaurantsData",
+      getFoodCategoryData: "foodCategory/getFoodCategoryData",
     }),
     save() {
       this.$refs.form.validate();
@@ -250,8 +259,33 @@ export default {
       }
     },
     setData() {
+      this.loadingRestaurant = true;
+      this.loadingFoodCategory = true;
+      const restaurants = [];
+      const foodCategories = [];
+      this.getRestaurantsData().then((result) => {
+        result.map((element) => {
+          restaurants.push({
+            value: element.id,
+            text: element.commerce_name,
+          });
+          this.restaurantList = restaurants;
+        });
+        this.loadingRestaurant = false;
+      });
+      this.getFoodCategoryData().then((result) => {
+        result.map((element) => {
+          foodCategories.push({
+            value: element.id,
+            text: element.name,
+          });
+          this.foodCategoryList = foodCategories;
+        });
+        this.loadingFoodCategory = false;
+      });
+      this.uomList = this.getUoms;
       if (this.id) {
-        this.foodCategory(this.id).then((result) => {
+        this.food(this.id).then((result) => {
           this.form = Object.assign({}, result);
         });
       }
