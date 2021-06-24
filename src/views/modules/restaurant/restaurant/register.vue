@@ -84,7 +84,7 @@
               :error-messages="errorsBags.description"
             ></v-text-field>
           </v-col>
-          <v-col cols="6" lg="6">
+          <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.phone"
               label="Teléfono principal del Restaurante"
@@ -93,7 +93,7 @@
               :error-messages="errorsBags.phone"
             ></v-text-field>
           </v-col>
-          <v-col cols="6" lg="6">
+          <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.phone_2"
               label="Teléfono alterno del restaurante"
@@ -102,12 +102,32 @@
               :error-messages="errorsBags.phone_2"
             ></v-text-field>
           </v-col>
-          <v-checkbox
-            v-model="form.enabled"
-            required
-            label="Habilitado"
-            :error-messages="errorsBags.enabled"
-          ></v-checkbox>
+          <v-col cols="12" lg="12"></v-col>
+          <v-col cols="12" lg="6" class="mb-2">
+            <UploadImages
+              v-if="displayed"
+              :max="1"
+              @change="onFileSelected"
+              uploadMsg="Click para subir o arrastra una imagen de Logo"
+            />
+            <br />
+          </v-col>
+          <v-col cols="12" lg="6" class="mb-2">
+            <UploadImages
+              v-if="displayed"
+              :max="1"
+              @change="onFileSelected1"
+              uploadMsg="Click para subir o arrastra una imagen de Cover"
+            />
+          </v-col>
+          <v-col cols="12" lg="12" class="mb-4">
+            <v-checkbox
+              v-model="form.enabled"
+              required
+              label="Habilitado"
+              :error-messages="errorsBags.enabled"
+            ></v-checkbox>
+          </v-col>
         </v-row>
         <v-btn
           color="success"
@@ -137,17 +157,21 @@
 <script>
 import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
+import UploadImages from "vue-upload-drop-images";
+
 export default {
   name: "RegisterRestaurant",
   props: {
-    id: String,
+    id: String
   },
   components: {
     SnackBar,
+    UploadImages
   },
 
   data() {
     return {
+      displayed: true,
       textSnackBar: "",
       valid: true,
       loadingCommerce: false,
@@ -159,6 +183,8 @@ export default {
       departmentList: [],
       municipalityList: [],
       errorsBags: [],
+      logoFiles: [],
+      coverFiles: [],
       form: {
         id: "",
         commerce_id: "",
@@ -169,8 +195,8 @@ export default {
         logo: null,
         cover: null,
         phone_2: "",
-        enabled: true,
-      },
+        enabled: true
+      }
     };
   },
 
@@ -186,12 +212,28 @@ export default {
       getCommercesData: "commerce/getCommercesData",
       getRestaurantTypeData: "restaurantType/getRestaurantTypeData",
       getDepartmentsData: "department/getDepartmentsData",
-      getMunicipalitiesData: "municipality/getMunicipalitiesData",
+      getMunicipalitiesData: "municipality/getMunicipalitiesData"
     }),
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
-        const payload = this.form;
+        const payload = new FormData();
+        for (var key in this.form) {
+          if (key) {
+            let enabled = this.form[key] ? 1 : 0;
+            payload.append(key, enabled);
+          } else {
+            payload.append(key, this.form[key]);
+          }
+        }
+
+        this.logoFiles.forEach((e) => {
+          payload.append("logo[]", e);
+        });
+        this.coverFiles.forEach((e) => {
+          payload.append("cover[]", e);
+        });
+
         if (this.id) {
           this.update(payload);
         } else {
@@ -212,7 +254,7 @@ export default {
         result.map((element) => {
           commerces.push({
             value: element.id,
-            text: element.name,
+            text: element.name
           });
           this.commerceList = commerces;
         });
@@ -222,7 +264,7 @@ export default {
         result.map((element) => {
           restaurantTypes.push({
             value: element.id,
-            text: element.name,
+            text: element.name
           });
           this.restaurantTypeList = restaurantTypes;
         });
@@ -232,7 +274,7 @@ export default {
         result.map((element) => {
           departments.push({
             value: element.id,
-            text: element.name,
+            text: element.name
           });
           this.departmentList = departments;
         });
@@ -242,7 +284,7 @@ export default {
         result.map((element) => {
           municipalities.push({
             value: element.id,
-            text: element.name,
+            text: element.name
           });
           this.municipalityList = municipalities;
         });
@@ -263,6 +305,10 @@ export default {
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
+            this.displayed = false;
+            this.$nextTick(() => {
+              this.displayed = true;
+            });
           }
         })
         .catch((err) => {
@@ -283,6 +329,10 @@ export default {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
+            this.displayed = false;
+            this.$nextTick(() => {
+              this.displayed = true;
+            });
           }
         })
         .catch((err) => {
@@ -296,6 +346,12 @@ export default {
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });
     },
-  },
+    onFileSelected(event) {
+      this.logoFiles = event;
+    },
+    onFileSelected1(event) {
+      this.coverFiles = event;
+    }
+  }
 };
 </script>

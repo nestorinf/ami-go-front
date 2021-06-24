@@ -90,7 +90,8 @@ export default {
         nameRule: [(v) => !!v || "es campo es obligatorio"],
         descriptionRule: [(v) => !!v || "este campo es obligatorio"]
       },
-      displayed: true
+      displayed: true,
+      selectedFile: [],
     };
   },
 
@@ -113,9 +114,7 @@ export default {
       if (this.$refs.form.validate()) {
         const payload = new FormData();
         for (var key in this.form) {
-          if (key != "id") {
             payload.append(key, this.form[key]);
-          }
         }
 
         this.selectedFile.forEach((e) => {
