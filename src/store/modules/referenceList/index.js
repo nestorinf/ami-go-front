@@ -2,12 +2,16 @@ import ReferenceListService from "@/services/referenceList";
 
 const state = {
   referenceLists: [],
+  referenceListByReferences: [],
   referenceList: {},
 };
 
 const mutations = {
   setReferenceLists(state, referenceLists) {
     state.referenceLists = referenceLists;
+  },
+  setReferenceListByReferences(state, referenceListByReferences) {
+    state.referenceListByReferences = referenceListByReferences;
   },
   setReferenceList(state, referenceLists) {
     state.referenceLists = referenceLists;
@@ -24,7 +28,7 @@ const actions = {
       ReferenceListService.all()
         .then(({ data }) => {
           const referenceList = data.payload;
-          console.log(referenceList);
+
           commit("setReferenceLists", referenceList);
           dispatch("loading/loadingState", false, { root: true });
           resolve(data.payload);
@@ -33,6 +37,24 @@ const actions = {
           reject(err);
           dispatch("loading/loadingState", false, { root: true });
           commit("setReferenceLists", []);
+        });
+    });
+  },
+  getReferenceListByReferenceIdData({ commit, dispatch }, id) {
+    return new Promise((resolve, reject) => {
+      dispatch("loading/loadingState", true, { root: true });
+      ReferenceListService.getReferenceListByReferenceId(id)
+        .then(({ data }) => {
+          const referenceList = data.payload;
+
+          commit("setReferenceListByReferences", referenceList);
+          dispatch("loading/loadingState", false, { root: true });
+          resolve(data.payload);
+        })
+        .catch((err) => {
+          reject(err);
+          dispatch("loading/loadingState", false, { root: true });
+          commit("setReferenceListByReferences", []);
         });
     });
   },
@@ -118,6 +140,9 @@ const actions = {
 const getters = {
   getReferenceLists: (state) => {
     return state.referenceLists;
+  },
+  getReferenceListByReferences: (state) => {
+    return state.referenceListByReferences;
   },
   getReferenceList: (state) => {
     return state.referenceList;

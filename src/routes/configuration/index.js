@@ -1,5 +1,16 @@
 export default {
   routes: [
+    {
+      name: "Upload Images",
+      path: "configuration/images",
+      component: () => import("../../views/modules/configuration/images")
+    },
+    {
+      name: "Register Images",
+      path: "configuration/images/register",
+      component: () =>
+        import("../../views/modules/configuration/images/Register")
+    },
     // routes for reference
     {
       name: "Reference",
@@ -21,23 +32,43 @@ export default {
     },
     // routes for reference list
     {
-      name: "Lista Reference",
+      name: "List Reference",
       path: "configuration/reference-list",
       component: () =>
         import("../../views/modules/configuration/referenceList"),
     },
     {
-      name: "Lista Reference Register",
+      name: "List Reference Register",
       path: "configuration/reference-list/register",
       component: () =>
         import("../../views/modules/configuration/referenceList/Register"),
     },
     {
-      name: "Lista Reference Edit",
+      name: "List Reference Edit",
       path: "configuration/reference-list/edit/:id",
       props: true,
       component: () =>
         import("../../views/modules/configuration/referenceList/Register"),
+    },
+    // routes for frequent question
+    {
+      name: "Frequent Question",
+      path: "configuration/frequent-question",
+      component: () =>
+        import("../../views/modules/configuration/frequentQuestion"),
+    },
+    {
+      name: "Frequent Question Register",
+      path: "configuration/frequent-question/register",
+      component: () =>
+        import("../../views/modules/configuration/frequentQuestion/Register"),
+    },
+    {
+      name: "Frequent Question Edit",
+      path: "configuration/frequent-question/edit/:id",
+      props: true,
+      component: () =>
+        import("../../views/modules/configuration/frequentQuestion/Register"),
     },
   ],
   menu: {
@@ -48,13 +79,23 @@ export default {
       {
         title: "Referencia",
         icon: "mdi-comment-outline",
-        to: "reference",
+        to: "reference"
       },
       {
         title: "Lista Referencia",
         icon: "mdi-comment-outline",
-        to: "reference-list",
+        to: "reference-list"
       },
-    ],
-  },
+      {
+        title: "Pregunta Frecuente",
+        icon: "mdi-comment-outline",
+        to: "frequent-question",
+      },
+      {
+        title: "Subir Imagenes",
+        icon: "mdi-comment-outline",
+        to: "images"
+      }
+    ]
+  }
 };

@@ -61,8 +61,8 @@ import NProgress from "nprogress";
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.authenticated)) {
-    const roleUser = JSON.parse(localStorage.getItem('role_user'))
-    if (!localStorage.getItem('token') || !roleUser.length) {
+    const roleUser = JSON.parse(sessionStorage.getItem('role_user'))
+    if (!sessionStorage.getItem('token') || !roleUser.length) {
       next('/login')
     } else {
       next()
