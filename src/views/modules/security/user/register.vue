@@ -13,6 +13,18 @@
         <v-row>
           <v-col cols="12" lg="6">
             <v-select
+              :loading="loadingRole"
+              label="Rol del usuario"
+              :items="roleList"
+              v-model="form.role_id"
+              filled
+              required
+              background-color="transparent"
+              :error-messages="errorsBags.role_id"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-select
               :loading="loadingCommerce"
               label="Comercio a que pertenece el usuario"
               :items="commerceList"
@@ -94,11 +106,14 @@ export default {
       textSnackBar: "",
       valid: true,
       loadingCommerce: false,
+      loadingRole: false,
       commerceList: [],
+      roleList: [],
       errorsBags: [],
       form: {
         id: "",
         commerce_id: "",
+        role_id: "",
         name: "",
         email: "",
         password: "",
@@ -116,6 +131,7 @@ export default {
       getUserById: "user/getUserById",
       updateUser: "user/updateUser",
       getCommercesData: "commerce/getCommercesData",
+      getRolesData: "role/getRolesData",
     }),
     save() {
       this.$refs.form.validate();
@@ -140,6 +156,18 @@ export default {
           this.commerceList = rows;
         });
         this.loadingCommerce = false;
+      });
+      this.loadingRole = true;
+      const roles = [];
+      this.getRolesData().then((result) => {
+        result.map((element) => {
+          roles.push({
+            value: element.id,
+            text: element.name,
+          });
+          this.roleList = roles;
+        });
+        this.loadingRole = false;
       });
       if (this.id) {
         this.getUserById(this.id).then((result) => {

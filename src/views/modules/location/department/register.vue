@@ -11,6 +11,18 @@
       </v-card-text>
       <v-card-text>
         <v-row>
+          <v-col cols="12" lg="12">
+            <v-select
+              :loading="loadingCountry"
+              label="País"
+              :items="countryList"
+              v-model="form.country_id"
+              filled
+              required
+              background-color="transparent"
+              :error-messages="errorsBags.country_id"
+            ></v-select>
+          </v-col>
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
@@ -71,11 +83,14 @@ export default {
     return {
       textSnackBar: "",
       valid: true,
+      loadingCountry: false,
+      countryList: [],
       errorsBags: [],
       form: {
         id: "",
         name: "",
         code: "",
+        country_id: "",
       },
     };
   },
@@ -89,6 +104,7 @@ export default {
       createDepartment: "department/createDepartment",
       getDepartmentById: "department/getDepartmentById",
       updateDepartment: "department/updateDepartment",
+      getCountryData: "country/getCountryData",
     }),
     save() {
       this.$refs.form.validate();
@@ -102,6 +118,18 @@ export default {
       }
     },
     setData() {
+      this.loadingCountry = true;
+      const countries = [];
+      this.getCountryData().then((result) => {
+        result.map((element) => {
+          countries.push({
+            value: element.id,
+            text: element.name,
+          });
+          this.countryList = countries;
+        });
+        this.loadingCountry = false;
+      });
       if (this.id) {
         this.getDepartmentById(this.id).then((result) => {
           this.form = Object.assign({}, result);

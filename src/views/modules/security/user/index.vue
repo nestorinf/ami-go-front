@@ -72,6 +72,7 @@ export default {
         text: "Accion",
         value: "action",
       },
+      { text: "Role", value: "role_name" },
       {
         text: "Nombre del Usuario",
         align: "start",

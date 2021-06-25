@@ -74,6 +74,7 @@ export default {
       },
       { text: "Nombre", value: "name" },
       { text: "Código", value: "code" },
+      { text: "País", value: "country_name" },
     ],
     items: [],
     idDelete: "",
