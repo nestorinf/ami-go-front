@@ -1,44 +1,36 @@
 <template>
   <v-card class="mb-7">
-    <v-form ref="form" v-model="valid" lazy-validation>
-      <v-card-text class="pa-5 border-bottom">
-        <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-          Departamento
-        </h3>
-        <h6 class="subtitle-2 font-weight-light">
-          En este formulario se registran todos los departamentos
-        </h6>
-      </v-card-text>
-      <v-card-text>
+    <v-card-text class="pa-5 border-bottom">
+      <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
+        Tipo de Comida
+      </h3>
+      <h6 class="subtitle-2 font-weight-light">
+        En este formulario se registran todos los Tipos de Comida
+      </h6>
+    </v-card-text>
+    <v-card-text>
+      <v-form ref="form" v-model="valid" lazy-validation>
         <v-row>
           <v-col cols="12" lg="12">
-            <v-select
-              :loading="loadingCountry"
-              label="País"
-              :items="countryList"
-              v-model="form.country_id"
-              filled
-              required
-              background-color="transparent"
-              :error-messages="errorsBags.country_id"
-            ></v-select>
-          </v-col>
-          <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Nombre del departamento"
+              label="Nombre"
               filled
+              required
+              :rules="rules.nameRule"
               background-color="transparent"
               :error-messages="errorsBags.name"
             ></v-text-field>
           </v-col>
-          <v-col cols="6" lg="6">
+          <v-col cols="12" lg="12">
             <v-text-field
-              v-model="form.code"
-              label="Código del departamento"
+              v-model="form.description"
+              label="Descripción"
               filled
+              required
+              :rules="rules.descriptionRule"
               background-color="transparent"
-              :error-messages="errorsBags.code"
+              :error-messages="errorsBags.description"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -53,12 +45,12 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/department/department"
+          to="/food/food-caegory"
           dark
           >Cancelar</v-btn
         >
-      </v-card-text>
-    </v-form>
+      </v-form>
+    </v-card-text>
     <SnackBar
       :text="textSnackBar"
       ref="snackBarRef"
@@ -71,7 +63,7 @@
 import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
-  name: "RegisterDepartment",
+  name: "RegisterFoodCategory",
   props: {
     id: String,
   },
@@ -83,14 +75,15 @@ export default {
     return {
       textSnackBar: "",
       valid: true,
-      loadingCountry: false,
-      countryList: [],
       errorsBags: [],
       form: {
         id: "",
         name: "",
-        code: "",
-        country_id: "",
+        description: "",
+      },
+      rules: {
+        nameRule: [(v) => !!v || "este campo es obligatorio"],
+        descriptionRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },
@@ -98,13 +91,16 @@ export default {
   mounted() {
     this.setData();
   },
-
+  computed: {
+    getFoodCategorys() {
+      return this.$store.state.foodCategory.foodCategorys;
+    },
+  },
   methods: {
     ...mapActions({
-      createDepartment: "department/createDepartment",
-      getDepartmentById: "department/getDepartmentById",
-      updateDepartment: "department/updateDepartment",
-      getCountryData: "country/getCountryData",
+      createFoodCategory: "foodCategory/createFoodCategory",
+      foodCategory: "foodCategory/getFoodCategoryById",
+      updateFoodCategory: "foodCategory/updateFoodCategory",
     }),
     save() {
       this.$refs.form.validate();
@@ -118,27 +114,15 @@ export default {
       }
     },
     setData() {
-      this.loadingCountry = true;
-      const countries = [];
-      this.getCountryData().then((result) => {
-        result.map((element) => {
-          countries.push({
-            value: element.id,
-            text: element.name,
-          });
-          this.countryList = countries;
-        });
-        this.loadingCountry = false;
-      });
       if (this.id) {
-        this.getDepartmentById(this.id).then((result) => {
+        this.foodCategory(this.id).then((result) => {
           this.form = Object.assign({}, result);
         });
       }
     },
 
     create(payload) {
-      this.createDepartment(payload)
+      this.createFoodCategory(payload)
         .then((result) => {
           if (result) {
             this.form = {};
@@ -160,7 +144,7 @@ export default {
     },
 
     update(payload) {
-      this.updateDepartment(payload)
+      this.updateFoodCategory(payload)
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);

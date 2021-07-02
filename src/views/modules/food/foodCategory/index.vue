@@ -16,13 +16,13 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'department/register',
+            path: 'food-category/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveCommerceType"
+          @remove-button="acceptRemoveFoodCategory"
         ></DataTable>
       </v-col>
     </v-card>
@@ -40,9 +40,8 @@ import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
-
 export default {
-  name: "Department",
+  name: "Company",
   components: {
     DataTable,
     DialogConfirm,
@@ -54,64 +53,70 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Ubicación",
+        text: "Comidas",
         disabled: false,
         to: "#",
       },
       {
-        text: "Departamentos",
+        text: "Tipos de Comida",
         disabled: true,
       },
     ],
     messageDialog: "",
+
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Departamento",
+    titleForm: "Tipo de Comida",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
-      { text: "Nombre", value: "name" },
-      { text: "Código", value: "code" },
-      { text: "País", value: "country_name" },
+      {
+        text: "Nombre",
+        align: "start",
+        sortable: false,
+        value: "name",
+      },
+      { text: "Descripción", value: "description" },
     ],
     items: [],
     idDelete: "",
   }),
 
   computed: {
-    ...mapGetters({ storeDepartment: "department/getDepartments" }),
+    ...mapGetters({
+      storeFoodCategorys: "foodCategory/getFoodCategorys",
+    }),
   },
   watch: {
-    storeDepartment(data) {
+    storeFoodCategorys(data) {
+      this.items = [];
       if (data.length > 0) {
         this.items = data;
       }
     },
   },
-
   methods: {
     ...mapActions({
-      getDepartmentsData: "department/getDepartmentsData",
-      removeDepartment: "department/removeDepartment",
+      getFoodCategoryData: "foodCategory/getFoodCategoryData",
+      removeFoodCategory: "foodCategory/removeFoodCategory",
     }),
     editButton({ id }) {
-      this.$router.push("department/edit/" + id);
+      this.$router.push("food-category/edit/" + id);
     },
-    acceptRemoveCommerceType(item) {
+    acceptRemoveFoodCategory(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeDepartment(this.idDelete);
+      this.removeFoodCategory(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
-      // this.getDepartmentsData();
     },
   },
 
   mounted() {
-    this.getDepartmentsData();
+    this.getFoodCategoryData();
   },
 };
 </script>

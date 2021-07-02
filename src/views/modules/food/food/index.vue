@@ -16,13 +16,13 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'department/register',
+            path: 'food/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveCommerceType"
+          @remove-button="acceptRemoveFood"
         ></DataTable>
       </v-col>
     </v-card>
@@ -40,9 +40,8 @@ import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
-
 export default {
-  name: "Department",
+  name: "Company",
   components: {
     DataTable,
     DialogConfirm,
@@ -54,64 +53,79 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Ubicación",
+        text: "Comidas",
         disabled: false,
         to: "#",
       },
       {
-        text: "Departamentos",
+        text: "Comidas",
         disabled: true,
       },
     ],
     messageDialog: "",
+
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Departamento",
+    titleForm: "Comida",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
+      { text: "Restaurante", value: "restaurant_name" },
+      { text: "Categoría", value: "category_name" },
       { text: "Nombre", value: "name" },
-      { text: "Código", value: "code" },
-      { text: "País", value: "country_name" },
+      { text: "Descripción", value: "description" },
+      // { text: "Imagen", value: "image_id" },
+      { text: "Ingredientes", value: "ingredients" },
+      { text: "UDM", value: "uom_name" },
+      { text: "Precio", value: "price" },
+      { text: "Descuento", value: "discount" },
+      { text: "Taxes", value: "tax" },
+      { text: "Peso", value: "weight" },
+      { text: "Cantidad", value: "quantity" },
+      { text: "¿Es Grupo?", value: "is_group_formatted" },
+      { text: "¿Es Extra?", value: "is_extra_formatted" },
+      { text: "¿Con Características?", value: "with_features_formatted" },
+      { text: "¿En Stock?", value: "is_stock_formatted" },
     ],
     items: [],
     idDelete: "",
   }),
 
   computed: {
-    ...mapGetters({ storeDepartment: "department/getDepartments" }),
+    ...mapGetters({
+      storeFoods: "food/getFoods",
+    }),
   },
   watch: {
-    storeDepartment(data) {
+    storeFoods(data) {
+      this.items = [];
       if (data.length > 0) {
         this.items = data;
       }
     },
   },
-
   methods: {
     ...mapActions({
-      getDepartmentsData: "department/getDepartmentsData",
-      removeDepartment: "department/removeDepartment",
+      getFoodData: "food/getFoodData",
+      removeFood: "food/removeFood",
     }),
     editButton({ id }) {
-      this.$router.push("department/edit/" + id);
+      this.$router.push("food/edit/" + id);
     },
-    acceptRemoveCommerceType(item) {
+    acceptRemoveFood(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeDepartment(this.idDelete);
+      this.removeFood(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
-      // this.getDepartmentsData();
     },
   },
 
   mounted() {
-    this.getDepartmentsData();
+    this.getFoodData();
   },
 };
 </script>
