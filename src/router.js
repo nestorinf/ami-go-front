@@ -47,14 +47,22 @@ const router = new Router({
       path: "/login",
       component: () => import("@/views/authentication/BoxedLogin"),
     },
+    {
+      path: "*",
+      component: () => import("@/layouts/blank-layout/Blanklayout"),
+    },
   ]
 
 });
 
 import NProgress from "nprogress";
+
+
+
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.authenticated)) {
-    if (!localStorage.getItem('token') || !localStorage.getItem('token')) {
+    const roleUser = JSON.parse(sessionStorage.getItem('role_user'))
+    if (!sessionStorage.getItem('token') || !roleUser.length) {
       next('/login')
     } else {
       next()
@@ -63,6 +71,18 @@ router.beforeEach((to, from, next) => {
     next()
   }
 });
+
+// const validRoleUser = (roles) => {
+//   const valid = roles.map((element) => {
+//     if (element.length > 0) {
+//       return true
+//     } else {
+//       return false
+//     }
+//   })
+//   return valid
+// }
+
 router.beforeResolve((to, from, next) => {
   // If this isn't an initial page load.
   if (to.name) {

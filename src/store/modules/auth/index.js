@@ -20,21 +20,23 @@ const mutations = {
 const actions = {
     login({ commit, dispatch }, body) {
         return new Promise((resolve, reject) => {
-            localStorage.clear()
+            sessionStorage.clear()
 
             dispatch('loading/loadingState', true, { root: true })
 
             AuthService.login(body).then(({ data }) => {
                 dispatch('loading/loadingState', false, { root: true })
 
-                localStorage.setItem('token', data.payload.access_token)
-                localStorage.setItem('user', JSON.stringify(data.payload.user))
+                sessionStorage.setItem('token', data.payload.access_token)
+
+                sessionStorage.setItem('user', JSON.stringify(data.payload.user))
+                sessionStorage.setItem('role_user', JSON.stringify(data.payload.role_user))
                 commit('setAuth', Object.assign({}, data.payload.user))
                 router.push({ path: "/" });
 
                 resolve(data.payload.user)
             }).catch(err => {
-
+                dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 commit('setLoading', false)
             })
@@ -54,6 +56,7 @@ const actions = {
                     dispatch('loading/loadingState', false, { root: true })
                     resolve(response)
                 }).catch((err) => {
+                    dispatch('loading/loadingState', false, { root: true })
                     commit('setLoading', false)
                     reject(err)
                 })

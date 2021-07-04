@@ -31,7 +31,7 @@ const actions = {
                 dispatch('loading/loadingState', false, { root: true })
                 resolve(data.payload)
             }).catch(err => {
-
+                dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 commit('setCommerceTypes', [])
             })
@@ -49,7 +49,7 @@ const actions = {
                 dispatch('loading/loadingState', false, { root: true })
                 resolve(data.payload)
             }).catch(err => {
-
+                dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 commit('setCommerceType', {})
             })
@@ -66,7 +66,7 @@ const actions = {
 
                 resolve(data.payload)
             }).catch(err => {
-
+                dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 commit('setCommerceTypes', {})
             })
@@ -82,7 +82,7 @@ const actions = {
 
                 resolve(data.payload)
             }).catch(err => {
-
+                dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 commit('setCommerceTypes', {})
             })
@@ -102,7 +102,7 @@ const actions = {
 
                 resolve(data.payload)
             }).catch(err => {
-
+                dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 // commit('setCommerceTypess', {})
             })

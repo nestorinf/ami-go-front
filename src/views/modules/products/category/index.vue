@@ -101,6 +101,7 @@ export default {
   },
   watch: {
     storeCategories(data) {
+      this.items = [];
       if (data.length > 0) {
         this.items = data;
       }

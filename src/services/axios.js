@@ -5,13 +5,13 @@ const HTTP = axios.create({
     headers: {
         'Cache-Control': 'no-cache',
         'Access-Control-Allow-Headers': '*',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
     }
 })
 
 HTTP.interceptors.request.use(
     config => {
-        let myToken = localStorage.token
+        let myToken = sessionStorage.token
         if (myToken != null) {
             config.headers.Authorization = `Bearer ${myToken}`;
         }

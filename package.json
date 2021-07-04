@@ -43,6 +43,7 @@
     "vue-server-renderer": "^2.6.12",
     "vue-skycons": "^4.0.5",
     "vue-the-mask": "^0.11.1",
+    "vue-upload-drop-images": "^1.0.6",
     "vue-world-map": "^0.1.1",
     "vuebar": "0.0.20",
     "vuedraggable": "^2.24.3",

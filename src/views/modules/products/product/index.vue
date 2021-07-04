@@ -21,8 +21,15 @@
           :headers="headers"
           :items="items"
           :loading="true"
+          @edit-button="editButton"
+          @remove-button="acceptRemove"
         ></DataTable>
       </v-col>
+      <DialogConfirm
+        ref="DialogConfirm"
+        @handler-dialog-confirm="removeButton"
+        :message="messageDialog"
+      ></DialogConfirm>
     </v-card>
   </v-container>
 </template>
@@ -31,11 +38,13 @@
 import DataTable from "../../components/DataTable";
 import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
-
+import DialogConfirm from "../../components/DialogConfirm";
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "Product",
   components: {
     DataTable,
+    DialogConfirm,
   },
 
   data: () => ({
@@ -57,6 +66,7 @@ export default {
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
     titleForm: "Producto",
+    messageDialog: "",
     headers: [
       {
         text: "Accion",
@@ -73,18 +83,58 @@ export default {
       { text: "Condiciones", value: "conditions" },
       { text: "Categoria", value: "category" },
       { text: "Proveedor", value: "provider" },
+      { text: "Habilitado", value: "enabled" },
     ],
-    items: [
-      {
-        id: 1,
-        name: "Sonido home Theater HD",
-        sku: "SNT-00001",
-        description: "Sonido embolvente",
-        conditions: "Este equipo su garantia es de 6 meses",
-        category: "Equipo de sonido",
-        provider: "Electronic Sony",
-      },
-    ],
+    items: [],
   }),
+  computed: {
+    ...mapGetters({ storeProducts: "product/getProducts" }),
+  },
+  watch: {
+    storeProducts(data) {
+      const rows = [];
+      this.items = rows;
+      if (data.length > 0) {
+        data.map((element) => {
+          rows.push({
+            id: element.id,
+            commerce: element.commerce.name,
+            name: element.name,
+            sku: element.sku,
+            enabled: element.enabled,
+            description: element.description || "",
+            conditions: element.conditions,
+            category: element.category.name ? element.category.name : "",
+            provider: element.provider ? element.category.name : "",
+          });
+        });
+        this.items = rows;
+      }
+      console.log(data);
+    },
+  },
+
+  methods: {
+    ...mapActions({
+      getProductData: "product/getProductData",
+      removeProduct: "product/removeProduct",
+    }),
+
+    editButton({ id }) {
+      this.$router.push("product/edit/" + id);
+    },
+    acceptRemove(item) {
+      this.idDelete = item.id;
+      this.$refs.DialogConfirm.changeStateDialog(true);
+    },
+    removeButton() {
+      this.removeProduct(this.idDelete);
+      this.$refs.DialogConfirm.changeStateDialog(false);
+    },
+  },
+
+  mounted() {
+    this.getProductData();
+  },
 };
 </script>

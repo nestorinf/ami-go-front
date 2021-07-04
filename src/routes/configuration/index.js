@@ -1,132 +1,101 @@
 export default {
-
   routes: [
-    // Commerce
     {
-      name: 'Commerce',
-      path: "configuration/commerce",
-      component: () => import("../../views/modules/configuration/commerce")
+      name: "Upload Images",
+      path: "configuration/images",
+      component: () => import("../../views/modules/configuration/images")
     },
     {
-      name: 'Commerce Register',
-      path: "configuration/commerce/register",
-      component: () => import("../../views/modules/configuration/commerce/Register")
-    },
-    {
-      name: 'Commerce Edit',
-      path: "configuration/commerce/edit/:id",
-      props: true,
-      component: () => import("../../views/modules/configuration/commerce/Register")
-    },
-    // Commerce Type
-    {
-      name: 'Commerce Type',
-      path: "configuration/commerce-type",
-      component: () => import("../../views/modules/configuration/commerceType")
-    },
-    {
-      name: 'Commerce Type Register',
-      path: "configuration/commerce-type/register",
-      component: () => import("../../views/modules/configuration/commerceType/Register")
-    },
-    {
-      name: 'Commerce Type Edit',
-      path: "configuration/commerce-type/edit/:id",
-      props: true,
-      component: () => import("../../views/modules/configuration/commerceType/Register")
-    },
-    // Payment Types
-    {
-      name: 'Payment Type',
-      path: "configuration/payment-type",
-      component: () => import("../../views/modules/configuration/paymentType")
-    },
-    {
-      name: 'Payment Type Register',
-      path: "configuration/payment-type/register",
-      component: () => import("../../views/modules/configuration/paymentType/Register")
-    },
-    {
-      name: 'Payment Type Edit',
-      path: "configuration/payment-type/edit/:id",
-      props: true,
-      component: () => import("../../views/modules/configuration/paymentType/Register")
-    },
-
-    // Roles
-    {
-      name: 'Role',
-      path: "configuration/roles",
-      component: () => import("../../views/modules/configuration/roles")
-    },
-    {
-      name: 'Role Register',
-      path: "configuration/roles/register",
-      component: () => import("../../views/modules/configuration/roles/register")
-    },
-    {
-      name: 'Role Edit',
-      path: "configuration/roles/edit/:id",
-      props: true,
-      component: () => import("../../views/modules/configuration/roles/register")
-    },
-
-    // restaunrat types
-    {
-      name: "Restautant Type",
-      path: "configuration/restaurant-type",
+      name: "Register Images",
+      path: "configuration/images/register",
       component: () =>
-        import("../../views/modules/configuration/restaurantType"),
+        import("../../views/modules/configuration/images/Register")
+    },
+    // routes for reference
+    {
+      name: "Reference",
+      path: "configuration/reference",
+      component: () => import("../../views/modules/configuration/reference"),
     },
     {
-      name: "Restautant Type Register",
-      path: "configuration/restaurant-type/register",
+      name: "Reference Register",
+      path: "configuration/reference/register",
       component: () =>
-        import("../../views/modules/configuration/restaurantType/Register"),
+        import("../../views/modules/configuration/reference/Register"),
     },
     {
-      name: "Restautant Type Edit",
-      path: "configuration/restaurant-type/edit/:id",
+      name: "Reference Edit",
+      path: "configuration/reference/edit/:id",
       props: true,
       component: () =>
-        import("../../views/modules/configuration/restaurantType/Register"),
+        import("../../views/modules/configuration/reference/Register"),
+    },
+    // routes for reference list
+    {
+      name: "List Reference",
+      path: "configuration/reference-list",
+      component: () =>
+        import("../../views/modules/configuration/referenceList"),
+    },
+    {
+      name: "List Reference Register",
+      path: "configuration/reference-list/register",
+      component: () =>
+        import("../../views/modules/configuration/referenceList/Register"),
+    },
+    {
+      name: "List Reference Edit",
+      path: "configuration/reference-list/edit/:id",
+      props: true,
+      component: () =>
+        import("../../views/modules/configuration/referenceList/Register"),
+    },
+    // routes for frequent question
+    {
+      name: "Frequent Question",
+      path: "configuration/frequent-question",
+      component: () =>
+        import("../../views/modules/configuration/frequentQuestion"),
+    },
+    {
+      name: "Frequent Question Register",
+      path: "configuration/frequent-question/register",
+      component: () =>
+        import("../../views/modules/configuration/frequentQuestion/Register"),
+    },
+    {
+      name: "Frequent Question Edit",
+      path: "configuration/frequent-question/edit/:id",
+      props: true,
+      component: () =>
+        import("../../views/modules/configuration/frequentQuestion/Register"),
     },
   ],
   menu: {
-    group: '/configuration',
-    title: 'Configuración',
-    icon: 'mdi-cog',
+    group: "/configuration",
+    title: "Configuración",
+    icon: "mdi-cog",
     children: [
       {
-        title: "Tipo de Comercio",
+        title: "Referencia",
         icon: "mdi-comment-outline",
-        to: "commerce-type",
+        to: "reference"
       },
       {
-        title: "Tipo de Restaurante",
+        title: "Lista Referencia",
         icon: "mdi-comment-outline",
-        to: "restaurant-type",
+        to: "reference-list"
       },
       {
-        title: "Comercio",
+        title: "Pregunta Frecuente",
         icon: "mdi-comment-outline",
-        to: "commerce",
+        to: "frequent-question",
       },
       {
-        title: "Tipos de Pago",
+        title: "Subir Imagenes",
         icon: "mdi-comment-outline",
-        to: "payment-type",
-      },
-      {
-        title: "Roles",
-        icon: "mdi-comment-outline",
-        to: "roles",
-      },
-      // {
-      //     title: "Referencias",
-      //     icon: "mdi-comment-outline",
-      //     to: "references",
-      // }
+        to: "images"
+      }
     ]
   }
 };
