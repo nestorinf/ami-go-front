@@ -52,6 +52,14 @@
               background-color="transparent"
             ></v-text-field>
           </v-col>
+          <v-col cols="12" lg="6">
+            <v-checkbox
+              v-model="form.enabled"
+              required
+              label="Habilitado"
+              :error-messages="errorsBags.enabled"
+            ></v-checkbox>
+          </v-col>        
         </v-row>
 
         <v-btn
@@ -102,6 +110,7 @@ export default {
         last_name: "",
         phone: "",
         email: "",
+        enabled: true,
         latitude:null,
         longitude: null
       },

@@ -6,7 +6,7 @@ const state = {
 };
 
 const mutations = {
-    setDrivers(state, driverCars) {
+    setDriverCars(state, driverCars) {
         state.driverCars = driverCars;
     },
     setDriverCar(state, driverCar) {

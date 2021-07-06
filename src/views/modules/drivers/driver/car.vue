@@ -12,14 +12,19 @@
       <v-form ref="form" v-model="valid" lazy-validation>
         <v-row>
           <v-col cols="12" lg="6">
-            <v-text-field
-              v-model="form.type"
+            
+            <v-select
+              :loading="loadinglistTypeVh"
               label="Tipo Vehículo"
+              :items="TypeVhList"
+              v-model="form.type"
               filled
               required
               :rules="rules.typeRule"
               background-color="transparent"
-            ></v-text-field>
+              :error-messages="errorsBags.type"
+            ></v-select> 
+
           </v-col>
           <v-col cols="12" lg="6">
             <v-text-field
@@ -54,24 +59,35 @@
         </v-row>
         <v-row>
           <v-col cols="12" lg="6">
-            <v-text-field
-              v-model="form.colour"
+            <v-select
+              :loading="loadingColour"
               label="Color"
+              :items="colourList"
+              v-model="form.colour"
               filled
               required
-              :rules="rules.colourRule"
               background-color="transparent"
-            ></v-text-field>
+              :rules="rules.colourRule"
+              :error-messages="errorsBags.colour"
+            ></v-select> 
           </v-col>
           <v-col cols="12" lg="6">
-            <v-text-field
-              number
-              v-model="form.year"
-              label="Año"
-              filled
-              :rules="rules.yearRule"
-              background-color="transparent"
-            ></v-text-field>
+            <v-menu v-model="menu" offset-y :close-on-content-click="false">
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    number
+                    v-model="form.year"
+                    label="Año"
+                    filled
+                    :rules="rules.yearRule"
+                    background-color="transparent"
+                    v-on="on"
+                    elevation="0"
+                  ></v-text-field>
+                </template>
+                <v-date-picker type="month" v-model="picker" @click="menu = false"/>
+              </v-menu>
+
           </v-col>
         </v-row>
 
@@ -82,6 +98,15 @@
           submit
           class="text-capitalize mr-2"
           >Guardar</v-btn
+        >
+        <v-btn
+          v-if="form.id"
+          color="danger"
+          @click="acceptRemove"
+          :disabled="!valid"
+          submit
+          class="text-capitalize mr-2"
+          >Eliminar</v-btn
         >
         <v-btn
           color="black"
@@ -97,28 +122,45 @@
       ref="snackBarRef"
       :snackbar="true"
     ></SnackBar>
+    <DialogConfirm
+      ref="DialogConfirm"
+      @handler-dialog-confirm="removeButton"
+      :message="messageDialog"
+    ></DialogConfirm>
   </v-card>
 </template>
 
 <script>
 import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
+import DialogConfirm from "../../components/DialogConfirm";
 export default {
   name: "RegisterDriverCarCar",
   props: {
     id: String,
+    value: {
+      type: String,
+      default: new Date().toISOString().substr(0, 10)
+    }
   },
   components: {
     SnackBar,
+    DialogConfirm,
   },
 
   data() {
     return {
+      loadingColour: false,
+      loadinglistTypeVh: false,
+      menu: false,
+      messageDialog: "",
       textSnackBar: "",
       valid: true,
       errorsBags: [],
+      colourList: [],
+      TypeVhList: [],
       form: {
-        id: "",
+        id: false,
         driver_id: "",
         license_plate: "",
         model: "",
@@ -145,12 +187,25 @@ export default {
     getDriverCars() {
       return this.$store.state.driver.drivers;
     },
+    picker: {
+      get() {
+        return this.value;
+      },
+      set(val) {
+        this.menu = false;
+        this.form.year = val;
+        this.$emit("input", val);
+      }
+    }
   },
   methods: {
     ...mapActions({
         createDriverCar: "driverCar/createDriverCar",
         driver: "driverCar/getDriverCarById",
         updateDriverCar: "driverCar/updateDriverCar",
+        removeDriverCar: "driverCar/removeDriverCar",
+        listColours: "referenceList/getReferenceListByReferenceIdData",
+        listTypeVh: "referenceList/getReferenceListByReferenceIdData",
     }),
     save() {
       this.$refs.form.validate();
@@ -163,21 +218,107 @@ export default {
         } 
       }
     },
+    acceptRemove() {
+      this.idDelete = this.form.id;
+      this.$refs.DialogConfirm.changeStateDialog(true);
+    },
+    removeButton() {
+
+      this.removeDriverCar(this.idDelete)
+        .then((result) => {
+          if (result) {
+            this.$refs.snackBarRef.changeStatusSnackbar(true);
+            this.textSnackBar = "Eliminado existosamente!";
+            this.reset_form();
+          }
+        })
+        .catch((err) => {
+          if (err.response) {
+            this.errorsBags = err.response.data.errors;
+            setTimeout(() => {
+              this.errorsBags = [];
+            }, 4000);
+          }
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = "Disculpe, ha ocurrido un error";
+        });
+ 
+      this.$refs.DialogConfirm.changeStateDialog(false);
+    },
     setData() {      
+      
+        this.loadingColour = true;
+        this.loadinglistTypeVh = true;
+        const rows = [];
+        const rowsTypeVh = [];
+
+      const referenceId = 1;
+      this.listColours(referenceId)
+        .then((result) => {
+          if (result) {
+            result.map((element) => {
+              rows.push({
+                value: element.id,
+                text: element.value,
+              });
+              this.colourList = rows;
+            });
+          }
+          this.loadingColour = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingColour = false;
+        });
+
+        
+      const referenceIdTypeVh = 2;
+      this.listTypeVh(referenceIdTypeVh)
+        .then((result) => {
+          if (result) {
+            result.map((element) => {
+              rowsTypeVh.push({
+                value: element.id,
+                text: element.value,
+              });
+              this.TypeVhList = rowsTypeVh;
+            });
+          }
+          this.loadinglistTypeVh = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingColour = false;
+        });
+
         if (this.id) {
           this.driver(this.id).then((result) => {
-            if(result.length>0){
+            
+          console.log(result);
+            if(Object.keys(result).length > 0){
               this.form = Object.assign({}, result);
             }
           });
         }
     },
-
-
+    reset_form() {
+      this.form = {
+        id: false,
+        driver_id: "",
+        license_plate: "",
+        model: "",
+        brand: "",
+        colour: "",
+        year: "",
+        type: ""
+      };
+    },
     update(payload) {
       this.updateDriverCar(payload)
-        .then((result) => {
+        .then((result) => { 
           if (result) {
+            
+            this.form = result;
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
           }

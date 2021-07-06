@@ -1,7 +1,7 @@
 <template >
   <div>
-    <v-icon small @click="car(item)" class="mr-2">mdi-car</v-icon>
     <v-icon small @click="edit(item)" class="mr-2">mdi-pencil</v-icon>
+    <v-icon small @click="car(item)" class="mr-2">mdi-car</v-icon>
     <v-icon small @click="remove(item)">mdi-delete</v-icon>
   </div>
 </template>

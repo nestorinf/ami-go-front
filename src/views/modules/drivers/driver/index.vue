@@ -36,9 +36,9 @@
 </template>
 
 <script>
-import DataTableDriver from "../../components/DataTableDriver";
-import ButtonRegister from "../../components/ButtonRegister";
+import DataTableDriver from "./components/DataTableDriver";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
+import ButtonRegister from "../../components/ButtonRegister";
 import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
 export default {

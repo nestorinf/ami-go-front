@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import ButtonRegister from "./ButtonRegister";
+import ButtonRegister from "../../../components/ButtonRegister";
 import ButtonCrudTableDriver from "./ButtonCrudTableDriver";
 
 export default {
