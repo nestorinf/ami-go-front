@@ -21,6 +21,7 @@
                     required
                     :rules="rules.commerceRule"
                     background-color="transparent"
+                    :error-messages="errorsBags.comerce"
                     ></v-select>
                 </v-col>
                 <v-col cols="12" lg="12">
@@ -31,42 +32,16 @@
                     filled
                     :rules="rules.nameRule"
                     background-color="transparent"
+                    :error-messages="errorsBags.name"
                     ></v-text-field>
                 </v-col>
                 <v-col cols="12" lg="12" >
-                    <GoogleMap :latitude= 13.7013266 :longitude= -89.226622 :title="'Titulo Marcador'" /> 
+                    <GoogleMap @coordinates="coordinates" 
+                    :latitude= 13.7013266 
+                    :longitude= -89.226622 
+                    :title="'Titulo Marcador'" 
+                    :editCoordinates="editCoordinates"/> 
                 </v-col>
-                <!-- <v-col cols="6" lg="6">
-                    <v-text-field
-                    type="email"
-                    v-model="form.email"
-                    label="Email Comercio"
-                    required
-                    filled
-                    :rules="rules.emailRule"
-                    background-color="transparent"
-                    ></v-text-field>
-                </v-col>
-                <v-col cols="6" lg="6">
-                    <v-text-field
-                    v-model="form.agent"
-                    label="Persona Contacto"
-                    filled
-                    required
-                    :rules="rules.agentRule"
-                    background-color="transparent"
-                    ></v-text-field>
-                </v-col>
-                <v-col cols="12" lg="6">
-                    <v-text-field
-                    v-model="form.phone"
-                    label="Telefono Persona Contacto"
-                    filled
-                    required
-                    :rules="rules.phoneRule"
-                    background-color="transparent"
-                    ></v-text-field>
-                </v-col> -->
                 </v-row>
         <v-btn
           color="success"
@@ -79,7 +54,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/commerce/commerce"
+          to="/commerce/commerce-address"
           dark
           >Cancelar</v-btn
         >
@@ -113,29 +88,21 @@ export default {
       textSnackBar: "",
       titleForm: "Dirección Comercio",
       valid: true,
+      errorsBags: [],
       loadingCommerces: false,
       commerceList: [],
+      editCoordinates:{},
       form: {
         id: "",
         commerce_id: null,
         name: "",
-        agent: "",
-        email: "",
-        phone: "",
+        latitude: 0,
+        longitude: 0,
       },
 
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
-        commerceRule: [(v) => !!v || "este campo es obligatorio"],
-        agentRule: [(v) => !!v || "este campo es obligatorio"],
-        phoneRule: [(v) => !!v || "este campo es obligatorio"],
-        emailRule: [
-          (v) => !!v || "el este campo es obligatorio",
-          (v) =>
-            !v ||
-            /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-            "el email es invalido",
-        ],
+        commerceRule: [(v) => !!v || "este campo es obligatorio"]
       },
     };
   },
@@ -156,10 +123,16 @@ export default {
       updateCommerceAddress: "commerceAddress/updateCommerceAddress",
       getCommercesData: "commerce/getCommercesData",
     }),
+    coordinates(coordinate){
+      console.log('entra en el padre')
+      this.form.latitude = coordinate.lat
+      this.form.longitude = coordinate.lng
+    },
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
         const payload = this.form;
+        console.log(payload)
         if (this.id) {
           this.update(payload);
         } else {
@@ -191,17 +164,22 @@ export default {
         this.getCommerceAddressById(this.id).then((result) => {
           this.form = {
             id: result.id,
-            value: result.value,
+            name: result.name,
             commerce_id: result.commerce_id,
-            alternative: result.alternative,
-            json_value: result.json_value
+            latitude: result.latitude,
+            longitude: result.longitude
           };
+          this.editCoordinates = {
+            lat:result.latitude,
+            lng:result.longitude
+          }
         });
-      }
+        
+      }      
     },
 
     create(payload) {
-      this.createReferenceList(payload)
+      this.createCommerceAddress(payload)
         .then((result) => {
           if (result) {
             this.form = {};
@@ -223,7 +201,7 @@ export default {
     },
 
     update(payload) {
-      this.updateReferenceList(payload)
+      this.updateCommerceAddress(payload)
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);

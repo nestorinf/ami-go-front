@@ -39,21 +39,21 @@ export default {
     // routes for direction Commerce
     {
       name: "Direction Commerce",
-      path: "commerce/commerce-direction",
-      component: () => import("../../views/modules/commerce/commerceDirection"),
+      path: "commerce/commerce-address",
+      component: () => import("../../views/modules/commerce/commerceAddress"),
     },
     {
       name: "Direction Commerce Register",
-      path: "commerce/commerce-direction/register",
+      path: "commerce/commerce-address/register",
       component: () =>
-        import("../../views/modules/commerce/commerceDirection/Register"),
+        import("../../views/modules/commerce/commerceAddress/Register"),
     },
     {
       name: "Direction Commerce Edit",
-      path: "commerce/commerce-direction/edit/:id",
+      path: "commerce/commerce-address/edit/:id",
       props: true,
       component: () =>
-        import("../../views/modules/commerce/commerceDirection/Register"),
+        import("../../views/modules/commerce/commerceAddress/Register"),
     },
   ],
   menu: {
@@ -75,7 +75,7 @@ export default {
       {
         title: "Dirección Comercio",
         icon: "mdi-comment-outline",
-        to: "commerce-direction",
+        to: "commerce-address",
       },
     ],
   },

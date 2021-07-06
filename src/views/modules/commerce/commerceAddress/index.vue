@@ -16,13 +16,13 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'commerce-direction/register',
+            path: 'commerce-address/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveCommerceDirection"
+          @remove-button="acceptRemoveCommerceAddress"
         ></DataTable>
       </v-col>
     </v-card>
@@ -75,54 +75,53 @@ export default {
         value: "action",
       },
       {
-        text: "Tipo de Comercio",
-        value: "commerce_type",
+        text: "Comercio",
+        value: "commerce",
       },
       {
-        text: "Nombre del Comercio",
+        text: "Dirección Comercio",
         align: "start",
         sortable: false,
         value: "name",
       },
-      { text: "Persona Contacto", value: "agent" },
-      { text: "Email Comercio", value: "email" },
-      { text: "Telefono", value: "phone" },
+      { text: "Latitud", value: "latitude" },
+      { text: "Longitud", value: "longitude" },
     ],
     items: [],
     idDelete: "",
   }),
 
   computed: {
-    ...mapGetters({ storeCommerceDirection: "commerceDirection/getCommerceDirections" }),
+    ...mapGetters({ storeCommerceAddresses: "commerceAddress/getCommerceAddresses" }),
   },
   watch: {
-    storeCommerceDirection(data) {
+    storeCommerceAddresses(data) {
       this.items = [];
-      if (data.length > 0) {
+      if (data.length > 0) {        
         this.items = data;
       }
     },
   },
   methods: {
     ...mapActions({
-      getCommerceDirectionsData: "commerceDirection/getCommerceDirectionsData",
-      removeCommerceDirection: "commerceDirection/removeCommerceDirection",
+      getCommerceAddressData: "commerceAddress/getCommerceAddressData",
+      removeCommerceAddress: "commerceAddress/removeCommerceAddress",
     }),
     editButton({ id }) {
-      this.$router.push("commerce-direction/edit/" + id);
+      this.$router.push("commerce-address/edit/" + id);
     },
-    acceptRemoveCommerceDirection(item) {
+    acceptRemoveCommerceAddress(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeCommerceDirection(this.idDelete);
+      this.removeCommerceAddress(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
   },
 
   mounted() {
-    this.getCommerceDirectionsData();
+    this.getCommerceAddressData();
   },
 };
 </script>

@@ -1,7 +1,7 @@
 import HTTP from "../axios";
 
-class CommerceDirectionService {
-  path = "commerce-directions";
+class CommerceAddressService {
+  path = "commerce-addresses";
   all() {
     return HTTP.get(`${this.path}`);
   }
@@ -22,4 +22,4 @@ class CommerceDirectionService {
     return HTTP.delete(`${this.path}/` + id);
   }
 }
-export default new CommerceDirectionService();
+export default new CommerceAddressService();

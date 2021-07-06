@@ -17,7 +17,7 @@
       :center='center'
       :zoom='13'
       style='width:100%;  height: 400px;'
-      @click=updateCoordinates
+      @click="updateCoordinates"
     >
       <GmapMarker
         :draggable="true"
@@ -28,22 +28,41 @@
         @dragend="updateCoordinates"
       />
     </GmapMap>
+    <h1>{{editCoordinates}}</h1>
    </v-col>
 </template>
 
 <script>
 export default {
   name: 'GoogleMap',
+  props:{
+   editCoordinates: Object
+  },  
   data() {
+
+  //   if (this.editCoordinates) {
+  //     this.markers = []
+  //       const coordinate = {
+  //       lat: this.editCoordinates.lat,
+  //       lng: this.editCoordinates.lng,
+  //   }
+  //   console.log(coordinate)
+  //   this.markers.push({ position: coordinate });
+  // }
+ 
     return {
       center: { lat: 13.6915591, lng: -89.2502712 },
       currentPlace: null,
-      markers: [],
+      markers: [
+        {
+          position: {lat:parseFloat(this.editCoordinates.lat), lng:parseFloat(this.editCoordinates.lng)}
+        }
+      ],
       places: [],
     }
   },
-  mounted() {
-    //this.geolocate();
+  mounted() {    
+    this.Coordinates()
   },
   methods: {
     setPlace(place) {
@@ -55,22 +74,37 @@ export default {
         lat: location.latLng.lat(),
         lng: location.latLng.lng(),
     }
+    // console.log(coordinate)
     this.markers.push({ position: coordinate });
+    this.$emit("coordinates", coordinate)
            
     },
     addMarker() {
     this.markers = []
       if (this.currentPlace) {
-        const marker = {
+        const coordinate = {
           lat: this.currentPlace.geometry.location.lat(),
           lng: this.currentPlace.geometry.location.lng(),
         };
-        this.markers.push({ position: marker });
+        this.markers.push({ position: coordinate });
         this.places.push(this.currentPlace);
-        this.center = marker;
+        this.center = coordinate;
         this.currentPlace = null;
+        this.$emit("coordinates", coordinate)
       }
     },
+    Coordinates() {
+      this.markers = []        
+          const coordinateedit = {
+            lat: this.editCoordinates.lat,
+            lng: this.editCoordinates.lng,
+          }
+        console.log('entro')
+        console.log(this.editCoordinates)
+    this.markers.push({ position: coordinateedit })
+    }
+    // this.markers.push({ position: coordinate });
+    // }
     //geolocate: function() {
     //  navigator.geolocation.getCurrentPosition(position => {
     //    this.center = {

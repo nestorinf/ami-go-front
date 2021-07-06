@@ -1,16 +1,16 @@
-import CommerceDirectionService from "@/services/commerceDirection";
+import CommerceAddressService from "@/services/commerceAddress";
 
 const state = {
-  commerceDirections: [],
-  commerceDirection: {},
+  commerceAddresses: [],
+  commerceAddress: {},
 };
 
 const mutations = {
-  setCommerceDirections(state, commerceDirections) {
-    state.commerceDirections = commerceDirections;
+  setCommerceAddresses(state, commerceAddresses) {
+    state.commerceAddresses = commerceAddresses;
   },
-  setCommerceDirection(state, commerceDirection) {
-    state.commerceDirection = commerceDirection;
+  setCommerceAddress(state, commerceAddresses) {
+    state.commerceAddresses = commerceAddresses;
   },
   setLoading(state, loading) {
     state.loading = loading;
@@ -18,92 +18,92 @@ const mutations = {
 };
 
 const actions = {
-  getCommerceDirectionData({ commit, dispatch }) {
+  getCommerceAddressData({ commit, dispatch }) {
     return new Promise((resolve, reject) => {
       dispatch("loading/loadingState", true, { root: true });
-      CommerceDirectionService.all()
+      CommerceAddressService.all()
         .then(({ data }) => {
-          const commerceDirection = data.payload;
+          const commerceAddress = data.payload;
 
-          commit("setCommerceDirections", commerceDirection);
+          commit("setCommerceAddresses", commerceAddress);
           dispatch("loading/loadingState", false, { root: true });
           resolve(data.payload);
         })
         .catch((err) => {
           dispatch("loading/loadingState", false, { root: true });
           reject(err);
-          commit("setCommerceDirections", []);
+          commit("setCommerceAddresses", []);
         });
     });
   },
 
-  getCommerceDirectionById({ commit, dispatch }, id) {
+  getCommerceAddressById({ commit, dispatch }, id) {
     return new Promise((resolve, reject) => {
       dispatch("loading/loadingState", true, { root: true });
-      CommerceDirectionService.getById(id)
+      CommerceAddressService.getById(id)
         .then(({ data }) => {
-          const commerceDirection = data.payload;
+          const commerceAddress = data.payload;
 
-          commit("setCommerceDirection", commerceDirection);
+          commit("setCommerceAddress", commerceAddress);
           dispatch("loading/loadingState", false, { root: true });
           resolve(data.payload);
         })
         .catch((err) => {
           dispatch("loading/loadingState", false, { root: true });
           reject(err);
-          commit("setCommerceDirection", {});
+          commit("setCommerceAddress", {});
         });
     });
   },
 
-  createCommerceDirection({ commit, dispatch }, body) {
+  createCommerceAddress({ commit, dispatch }, body) {
     return new Promise((resolve, reject) => {
       dispatch("loading/loadingState", true, { root: true });
-      CommerceDirectionService.create(body)
+      CommerceAddressService.create(body)
         .then(({ data }) => {
-          const commerceDirection = Object.assign({}, data.payload);
+          const commerceAddress = Object.assign({}, data.payload);
           dispatch("loading/loadingState", false, { root: true });
-          commit("setCommerceDirection", commerceDirection);
+          commit("setCommerceAddress", commerceAddress);
 
           resolve(data.payload);
         })
         .catch((err) => {
           dispatch("loading/loadingState", false, { root: true });
           reject(err);
-          commit("setCommerceDirections", {});
+          commit("setCommerceAddresses", {});
         });
     });
   },
-  updateCommerceDirection({ commit, dispatch }, body) {
+  updateCommerceAddress({ commit, dispatch }, body) {
     return new Promise((resolve, reject) => {
       dispatch("loading/loadingState", true, { root: true });
-      CommerceDirectionService.update(body)
+      CommerceAddressService.update(body)
         .then(({ data }) => {
-          const commerceDirection = Object.assign({}, data.payload);
+          const commerceAddress = Object.assign({}, data.payload);
           dispatch("loading/loadingState", false, { root: true });
-          commit("setCommerceDirection", commerceDirection);
+          commit("setCommerceAddress", commerceAddress);
 
           resolve(data.payload);
         })
         .catch((err) => {
           dispatch("loading/loadingState", false, { root: true });
           reject(err);
-          commit("setCommerceDirections", {});
+          commit("setCommerceAddresses", {});
         });
     });
   },
 
-  removeCommerceDirection({ commit, dispatch, state }, id) {
+  removeCommerceAddress({ commit, dispatch, state }, id) {
     return new Promise((resolve, reject) => {
       dispatch("loading/loadingState", true, { root: true });
-      CommerceDirectionService.remove(id)
+      CommerceAddressService.remove(id)
         .then(({ data }) => {
           dispatch("loading/loadingState", false, { root: true });
-          const index = state.commerceDirections.findIndex((x) => x.id === id);
-          const commerceDirections = [...state.commerceDirections];
-          commerceDirections.splice(index, 1);
+          const index = state.commerceAddresses.findIndex((x) => x.id === id);
+          const commerceAddresses = [...state.commerceAddresses];
+          commerceAddresses.splice(index, 1);
 
-          commit("setCommerceDirections", commerceDirections);
+          commit("setCommerceAddresses", commerceAddresses);
 
           resolve(data.payload);
         })
@@ -116,11 +116,11 @@ const actions = {
   },
 };
 const getters = {
-  getCommerceDirections: (state) => {
-    return state.commerceTypes;
+  getCommerceAddresses: (state) => {
+    return state.commerceAddresses;
   },
-  getCommerceDirection: (state) => {
-    return state.commerceType;
+  getCommerceAddress: (state) => {
+    return state.commerceAddress;
   },
 };
 
