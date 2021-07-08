@@ -45,7 +45,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/food/food-caegory"
+          to="/food/food-category"
           dark
           >Cancelar</v-btn
         >
