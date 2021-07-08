@@ -9,8 +9,8 @@ const mutations = {
   setCommerceAddresses(state, commerceAddresses) {
     state.commerceAddresses = commerceAddresses;
   },
-  setCommerceAddress(state, commerceAddresses) {
-    state.commerceAddresses = commerceAddresses;
+  setCommerceAddress(state, commerceAddress) {
+    state.commerceAddress = commerceAddress;
   },
   setLoading(state, loading) {
     state.loading = loading;

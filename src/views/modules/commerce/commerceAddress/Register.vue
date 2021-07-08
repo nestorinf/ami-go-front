@@ -35,11 +35,12 @@
                     :error-messages="errorsBags.name"
                     ></v-text-field>
                 </v-col>
-                <v-col cols="12" lg="12" >
-                    <GoogleMap @coordinates="coordinates" 
-                    :latitude= 13.7013266 
-                    :longitude= -89.226622 
-                    :title="'Titulo Marcador'" 
+                <v-col cols="12" lg="12">
+                    <GoogleMap
+                    v-if="loadingChild"
+                    @coordinates="coordinates"
+                    :centerMap="center"
+                    :title="'Titulo Marcador'"
                     :editCoordinates="editCoordinates"/> 
                 </v-col>
                 </v-row>
@@ -90,8 +91,14 @@ export default {
       valid: true,
       errorsBags: [],
       loadingCommerces: false,
+      loadingChild: false,
       commerceList: [],
       editCoordinates:{},
+      center:{
+        lat: 13.7013266, 
+        lng: -89.226622 
+        
+      },
       form: {
         id: "",
         commerce_id: null,
@@ -124,7 +131,6 @@ export default {
       getCommercesData: "commerce/getCommercesData",
     }),
     coordinates(coordinate){
-      console.log('entra en el padre')
       this.form.latitude = coordinate.lat
       this.form.longitude = coordinate.lng
     },
@@ -141,9 +147,10 @@ export default {
       }
     },
     setData() {
-      this.loadingCommerces = true;
+      this.loadingCommerces = true;       
       const rows = [];
       this.getCommercesData().then((result) => {
+         this.loadingChild = true;
         if(result) {
           result.map((element) => {
             rows.push({
@@ -162,6 +169,7 @@ export default {
       });
       if (this.id) {
         this.getCommerceAddressById(this.id).then((result) => {
+           this.loadingChild = true;
           this.form = {
             id: result.id,
             name: result.name,
@@ -175,7 +183,7 @@ export default {
           }
         });
         
-      }      
+      }          
     },
 
     create(payload) {

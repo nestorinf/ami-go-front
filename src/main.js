@@ -8,6 +8,7 @@ import "./plugins/base";
 import VueSkycons from "vue-skycons";
 import InstantSearch from "vue-instantsearch";
 import * as VueGoogleMaps from "vue2-google-maps";
+import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete';
 
 Vue.config.productionTip = false;
 
@@ -16,6 +17,14 @@ Vue.use(VueGoogleMaps, {
     key: "AIzaSyAJPZI_2z4PMidmCZlztC1yyPc6SA-XTZ0",
     libraries: "places",
   },
+});
+
+Vue.use(VuetifyGoogleAutocomplete, {
+  /*
+    not used as loaded with component
+    apiKey: key,
+  */
+  vueGoogleMapsCompatibility: true,
 });
 
 Vue.use(VueSkycons, {
