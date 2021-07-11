@@ -1,39 +1,36 @@
 <template>
   <v-card class="mb-7">
     <v-form ref="form" v-model="valid" lazy-validation>
-      <v-card-text class="pa-5 border-bottom">
-        <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-          Añadir Tipo de característica a la comida
-        </h3>
-        <h6 class="subtitle-2 font-weight-light">
-          En este formulario se añaden tipo de característica a la comida
-        </h6>
-      </v-card-text>
       <v-card-text> 
+         <h4 class="font-weight-light">
+          Nueva Característica
+        </h4>
         <v-row>
-          <v-col cols="12" lg="12">
+          <v-col cols="4" lg="4">
             <v-select
               @input="searchTypeFeature()"
               :loading="loadingTypeFeature"
-              label="Clasificación de la características"
+              label="Tipo de característica"
               :items="TypeFeaturesList"
               v-model="form.feature_type_id"
               filled
               required
               background-color="transparent"
+              :rules="rules.typeRule"
               :error-messages="errorsBags.feature_type_id"
             ></v-select>
           </v-col>
-          <v-col cols="12" lg="6">
+          <v-col cols="4" lg="4">
             <v-text-field
               v-model="form.name"
               label="Nombre"
               filled
               background-color="transparent"
+              :rules="rules.nameRule"
               :error-messages="errorsBags.name"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" lg="6" v-if="TypeFeatureSelected && TypeFeatureSelected.price">
+          <v-col cols="4" lg="4" v-if="TypeFeatureSelected && TypeFeatureSelected.price">
             <v-text-field
               v-model="form.price"
               label="Precio"
@@ -41,16 +38,9 @@
               number
               filled
               background-color="transparent"
+              :rules="rules.priceRule"
               :error-messages="errorsBags.price"
             ></v-text-field>
-          </v-col>
-          <v-col cols="12" lg="12">
-            <v-checkbox
-              v-model="form.enabled"
-              required
-              label="Habilitado"
-              :error-messages="errorsBags.price"
-            ></v-checkbox>
           </v-col>
         </v-row>
         <v-btn
@@ -60,13 +50,6 @@
           submit
           class="text-capitalize mr-2"
           >Guardar</v-btn
-        >
-        <v-btn
-          color="black"
-          class="text-capitalize"
-          @click="$router.go(-1)"
-          dark
-          >Cancelar</v-btn
         >
       </v-card-text>
     </v-form>
@@ -107,6 +90,11 @@ export default {
         price: "",
         enabled: true,
       },
+      rules: {
+        typeRule: [(v) => !!v || "este campo es obligatorio"],
+        nameRule: [(v) => !!v || "este campo es obligatorio"],
+        priceRule: [(v) => !!v || "este campo es obligatorio"],
+      },
     };
   },
 
@@ -118,7 +106,6 @@ export default {
     ...mapActions({
       createFoodFeature: "foodFeature/createFoodFeature",
       getFoodFeatureById: "foodFeature/getFoodFeatureById",
-      updateFoodFeature: "foodFeature/updateFoodFeature",      
       getTypeFeatureData: "foodTypeFeature/getFoodTypeFeatureData",
       foodTypeFeature: "foodTypeFeature/getFoodTypeFeatureById",
     }),
@@ -126,11 +113,7 @@ export default {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
         const payload = this.form;
-        if (this.idfeature) {
-          this.update(payload);
-        } else {
           this.create(payload);
-        }
       }
     },
     setData() {
@@ -158,7 +141,9 @@ export default {
       this.createFoodFeature(payload)
         .then((result) => {
           if (result) {
+            this.$emit("add-new-items", result);
             this.form = {};
+            this.TypeFeatureSelected = '';
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
@@ -176,29 +161,12 @@ export default {
         });
     },
 
-    update(payload) {
-      this.updateFoodFeature(payload)
-        .then((result) => {
-          if (result) {
-            this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Actualizado existosamente!";
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.errorsBags = err.response.data.errors;
-            setTimeout(() => {
-              this.errorsBags = [];
-            }, 4000);
-          }
-          this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = "Disculpe, ha ocurrido un error";
-        });
-    },
     searchTypeFeature() {
-      this.foodTypeFeature(this.form.feature_type_id).then((result) => {
-        this.TypeFeatureSelected = Object.assign({}, result);
-      });
+      if(this.form.feature_type_id){
+        this.foodTypeFeature(this.form.feature_type_id).then((result) => {
+          this.TypeFeatureSelected = Object.assign({}, result);
+        });
+      }
     },
   },
   

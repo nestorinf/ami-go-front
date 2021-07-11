@@ -55,18 +55,6 @@ export default {
             component: () => import("../../views/modules/food/foodFeature")
         },
         {
-            name: 'Food Type Feature Add',
-            path: "food/food/features/:idfood/add",
-            props: true,
-            component: () => import("../../views/modules/food/foodFeature/Register")
-        },
-        {
-            name: 'Food Type Feature Add',
-            path: "food/food/features/:idfeature/edit/:idfood",
-            props: true,
-            component: () => import("../../views/modules/food/foodFeature/Register")
-        },
-        {
             name: 'Food Edit',
             path: "food/food/edit/:id",
             props: true,

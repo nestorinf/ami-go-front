@@ -41,10 +41,10 @@ const actions = {
         return new Promise((resolve, reject) => {
             dispatch('loading/loadingState', true, { root: true })
             FoodFeatureService.getById(id).then(({ data }) => {
-                const company = data.payload
+                const foodFeature = data.payload
 
                 dispatch('loading/loadingState', false, { root: true })
-                commit('setFoodFeature', company)
+                commit('setFoodFeature', foodFeature)
 
                 resolve(data.payload)
             }).catch(err => {

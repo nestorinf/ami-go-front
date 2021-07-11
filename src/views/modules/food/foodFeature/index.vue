@@ -8,16 +8,16 @@
     <v-card class="mb-7">
       <v-card-text class="pa-5 border-bottom">
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-          {{ titleForm }} 
+          {{ titleForm }}: {{data_food.name}}
         </h3>
       </v-card-text>
+      <RegistrarFeature
+        :idfood="idfood"
+        @add-new-items="addNewItems"
+      ></RegistrarFeature>
 
       <v-col cols="12" lg="12" sm="12">
         <DataTable
-          :dataButtonRegister="{
-            title: 'Añadir',
-            path: '/food/food/features/2/add',
-          }"
           :headers="headers"
           :items="items"
           :loading="true"
@@ -31,15 +31,23 @@
       @handler-dialog-confirm="removeButton"
       :message="messageDialog"
     ></DialogConfirm>
+    
+    <SnackBar
+      :text="textSnackBar"
+      ref="snackBarRef"
+      :snackbar="true"
+    ></SnackBar>
   </v-container>
 </template>
 
 <script>
-import DataTable from "../../components/DataTable";
+import DataTable from "./components/DataTable";
 import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
+import RegistrarFeature from "./Register";
 import { mapGetters, mapActions } from "vuex";
+import SnackBar from "@/views/modules/components/SnackBar";
 
 export default {
   name: "FoodFeature",
@@ -49,6 +57,8 @@ export default {
   components: {
     DataTable,
     DialogConfirm,
+    RegistrarFeature,
+    SnackBar,
   },
 
   data: () => ({
@@ -80,12 +90,15 @@ export default {
         text: "Accion",
         value: "action",
       },
-      { text: "Clasificación", value: "type_feature.value" },
+      { text: "Tipo de Característica", value: "type_feature.value" },
       { text: "Nombre", value: "name" },
       { text: "Precio", value: "set_precio" },
+      { text: "Estatus", value: "status" },
     ],
     items: [],
     idDelete: "",
+    data_food: "",
+    textSnackBar: "",
   }),
 
   computed: {
@@ -94,7 +107,7 @@ export default {
   watch: {
     storeFoodFeature(data) {
       if (data.length > 0) {
-        this.items = data;        
+        this.items = data;
       }
     },
   },
@@ -103,23 +116,52 @@ export default {
     ...mapActions({
       getFoodFeaturesData: "foodFeature/getFoodFeaturesData",
       removeFoodFeature: "foodFeature/removeFoodFeature",
+      food: "food/getFoodById",
+      updateFoodFeature: "foodFeature/updateFoodFeature",      
     }),
-    editButton({ id }) {
-      this.$router.push(id+"/edit/"+this.idfood);
+    addNewItems(item) {
+      this.items.push(item);
+    },    
+    editButton(item) {
+      const payload = item;   
+      this.updateFoodFeature(payload)
+        .then((result) => {
+          if (result) {
+            this.getFoodFeaturesData(this.idfood);
+            this.$refs.snackBarRef.changeStatusSnackbar(true);
+            this.textSnackBar = "Actualizado existosamente!";
+          }
+        })
+        .catch((err) => {
+          if (err.response) {
+            this.errorsBags = err.response.data.errors;
+            setTimeout(() => {
+              this.errorsBags = [];
+            }, 4000);
+          }
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = "Disculpe, ha ocurrido un error";
+        });
     },
-    acceptRemoveCommerceType(item) {  
+    acceptRemoveCommerceType(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
       this.removeFoodFeature(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
-      // this.getFoodFeaturesData();
+    },
+    getDataFood(id) {
+      this.food(id).then((result) => {
+        this.data_food = Object.assign({}, result);
+        console.log("asd", this.data_food);
+      });
     },
   },
 
   mounted() {
     this.getFoodFeaturesData(this.idfood);
+    this.getDataFood(this.idfood);
   },
 };
 </script>
