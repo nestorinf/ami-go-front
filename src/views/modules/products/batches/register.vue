@@ -321,9 +321,9 @@ export default {
       this.updateProductBatches(payload)
         .then((result) => {
           if (result) {
+            this.form = Object.assign({}, result);
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
-            // this.$router.push("/products/categories");
           }
         })
         .catch((err) => {
@@ -353,7 +353,7 @@ export default {
           this.selectedFile.forEach((e) => {
             payload.append("images[]", e);
           });
-          this.createImagenes();
+          this.createImagenes(payload);
         }else{
           this.save();
         }
@@ -365,11 +365,13 @@ export default {
         .then((result) => {
           if (result) {
 
-            const images = [];
             result.forEach((e) => {
-              images.push(e.id);
+              this.form.images_id.push(e.id);
             });
-            this.form['images_id'] = images;  
+
+            this.selectedFile = [];
+            
+            console.log('ad',this.form);
             this.save();
 
             this.displayed = false;

@@ -8,10 +8,12 @@
                   data-v-69bb59a3=""
                   :src="item.imagen"
                 />
-                <span data-v-69bb59a3="" class="delete" style="color: white"
+                <span data-v-69bb59a3="" class="delete" :class="item.delete?'warning':'danger'" style="color: white" @click="deleteImagen(item)"
                 >
-                <svg
-                    @click="deleteImagen(item)"
+                
+                <i aria-hidden="true" class="v-icon notranslate v-icon--left mdi mdi-minus-circle theme--dark" v-if="item.delete"></i>
+                <svg 
+                    v-else
                     data-v-69bb59a3=""
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
