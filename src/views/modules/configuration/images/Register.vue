@@ -7,7 +7,7 @@
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se suben las Imagenes
       </h6>
-    </v-card-text>
+    </v-card-text> 
     <v-card-text>
       <v-form ref="form" v-model="valid" lazy-validation>
         <v-row>
@@ -94,7 +94,6 @@ export default {
         this.selectedFile.forEach((e) => {
           payload.append("images[]", e);
         });
-
         if (this.id) {
           this.update(payload);
         } else {
@@ -147,6 +146,7 @@ export default {
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });
     },
+
     onFileSelected(event) {
       this.selectedFile = event;
     }
