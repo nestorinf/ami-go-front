@@ -11,22 +11,13 @@
     <v-card-text>
       <v-form ref="form" v-model="valid" lazy-validation>
         <v-row>
-          <v-col cols="12" lg="6">
+          <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.name"
-              label="Nombre"
+              label="Nombres y Apellidos"
               filled
               required
               :rules="rules.nameRule"
-              background-color="transparent"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" lg="6">
-            <v-text-field
-              v-model="form.last_name"
-              label="Apellido"
-              filled
-              :rules="rules.LastNameRule"
               background-color="transparent"
             ></v-text-field>
           </v-col>
@@ -107,7 +98,6 @@ export default {
       form: {
         id: "",
         name: "",
-        last_name: "",
         phone: "",
         email: "",
         enabled: true,
@@ -116,7 +106,6 @@ export default {
       },
       rules: {
       nameRule: [(v) => !!v || "este campo es obligatorio"],
-      LastNameRule: [(v) => !!v || "este campo es obligatorio"],
       phoneRule: [(v) => !!v || "este campo es obligatorio"],
       emailRule: [(v) => !!v || "este campo es obligatorio"],
       },
