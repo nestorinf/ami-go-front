@@ -36,20 +36,20 @@ export default {
       component: () =>
         import("../../views/modules/commerce/commerceType/Register"),
     },
-    // routes for direction Commerce
+    // routes for Address Commerce
     {
-      name: "Direction Commerce",
+      name: "Address Commerce",
       path: "commerce/commerce-address",
       component: () => import("../../views/modules/commerce/commerceAddress"),
     },
     {
-      name: "Direction Commerce Register",
+      name: "Address Commerce Register",
       path: "commerce/commerce-address/register",
       component: () =>
         import("../../views/modules/commerce/commerceAddress/Register"),
     },
     {
-      name: "Direction Commerce Edit",
+      name: "Address Commerce Edit",
       path: "commerce/commerce-address/edit/:id",
       props: true,
       component: () =>

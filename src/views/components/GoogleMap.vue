@@ -23,7 +23,6 @@
           color="success"
           @click="addMarker"
           class="text-capitalize mr-2"
-          :disabled="!valid"
           >Agregar</v-btn
         >
     </div>

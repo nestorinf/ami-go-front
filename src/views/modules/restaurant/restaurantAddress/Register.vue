@@ -2,10 +2,10 @@
   <v-card class="mb-7">
       <v-card-text class="pa-5 border-bottom">
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-        Dirección Comercio
+        Dirección Restaurante
       </h3>
       <h6 class="subtitle-2 font-weight-light">
-        En este formulario se registran todas las direcciones de comercio
+        En este formulario se registran todas las direcciones de restaurant
       </h6>
     </v-card-text>    
       <v-card-text>
@@ -13,15 +13,15 @@
             <v-row>   
                 <v-col cols="12" lg="12">
                     <v-select
-                    :loading="loadingCommerces"
-                    label="Comercio"
-                    :items="commerceList"
-                    v-model="form.commerce_id"
+                    :loading="loadingRestaurants"
+                    label="Restaurante"
+                    :items="restaurantList"
+                    v-model="form.restaurant_id"
                     filled
                     required
-                    :rules="rules.commerceRule"
+                    :rules="rules.restaurantRule"
                     background-color="transparent"
-                    :error-messages="errorsBags.comerce"
+                    :error-messages="errorsBags.restaurant"
                     ></v-select>
                 </v-col>
                 <v-col cols="12" lg="12">
@@ -55,7 +55,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/commerce/commerce-address"
+          to="/restaurant/restaurant-address"
           dark
           >Cancelar</v-btn
         >
@@ -75,7 +75,7 @@ import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 import GoogleMap from "../../../components/GoogleMap";
 export default {
-  name: "RegisterCommerceAddress",
+  name: "RegisterRestaurantAddress",
   props: {
     id: String,
   },
@@ -87,12 +87,12 @@ export default {
   data() {
     return {
       textSnackBar: "",
-      titleForm: "Dirección Comercio",
+      titleForm: "Dirección Restaurante",
       valid: true,
       errorsBags: [],
-      loadingCommerces: false,
+      loadingRestaurants: false,
       loadingChild: false,
-      commerceList: [],
+      restaurantList: [],
       editCoordinates:{},
       center:{
         lat: 13.7013266, 
@@ -101,7 +101,7 @@ export default {
       },
       form: {
         id: "",
-        commerce_id: null,
+        restaurant_id: null,
         name: "",
         latitude: 0,
         longitude: 0,
@@ -109,7 +109,7 @@ export default {
 
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
-        commerceRule: [(v) => !!v || "este campo es obligatorio"]
+        restaurantRule: [(v) => !!v || "este campo es obligatorio"]
       },
     };
   },
@@ -118,17 +118,17 @@ export default {
     this.setData();
   },
   computed: {
-    getComerceAddresses() {
-      return this.$store.state.comerceAddress.comerceAddresses;
+    getRestaurantAddresses() {
+      return this.$store.state.restaurantAddress.restaurantAddresses;
     },
   },
 
   methods: {
     ...mapActions({
-      createCommerceAddress: "commerceAddress/createCommerceAddress",
-      getCommerceAddressById: "commerceAddress/getCommerceAddressById",
-      updateCommerceAddress: "commerceAddress/updateCommerceAddress",
-      getCommercesData: "commerce/getCommercesData",
+      createRestaurantAddress: "restaurantAddress/createRestaurantAddress",
+      getRestaurantAddressById: "restaurantAddress/getRestaurantAddressById",
+      updateRestaurantAddress: "restaurantAddress/updateRestaurantAddress",
+      getRestaurantsData: "restaurant/getRestaurantsData",
     }),
     coordinates(coordinate){
       this.form.latitude = coordinate.lat
@@ -147,34 +147,34 @@ export default {
       }
     },
     setData() {
-      this.loadingCommerces = true;       
+      this.loadingRestaurants = true;       
       const rows = [];
-      this.getCommercesData().then((result) => {
+      this.getRestaurantsData().then((result) => {
          this.loadingChild = true;
         if(result) {
           console.log(result)
           result.map((element) => {
             rows.push({
               value: element.id,
-              text: element.name,
+              text: element.description,
             });
-            this.commerceList = rows;
+            this.restaurantList = rows;
             
           });
 
         }
-        this.loadingCommerces = false;
+        this.loadingRestaurants = false;
       }).catch((err) => {
         console.log(err)
-        this.loadingCommerces = false; 
+        this.loadingRestaurants = false; 
       });
       if (this.id) {
-        this.getCommerceAddressById(this.id).then((result) => {
+        this.getRestaurantAddressById(this.id).then((result) => {
            this.loadingChild = true;
           this.form = {
             id: result.id,
             name: result.name,
-            commerce_id: result.commerce_id,
+            restaurant_id: result.restaurant_id,
             latitude: result.latitude,
             longitude: result.longitude
           };
@@ -188,7 +188,7 @@ export default {
     },
 
     create(payload) {
-      this.createCommerceAddress(payload)
+      this.createRestaurantAddress(payload)
         .then((result) => {
           if (result) {
             this.form = {};
@@ -210,7 +210,7 @@ export default {
     },
 
     update(payload) {
-      this.updateCommerceAddress(payload)
+      this.updateRestaurantAddress(payload)
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
