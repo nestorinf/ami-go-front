@@ -2,10 +2,10 @@
   <v-card class="mb-7">
     <v-card-text class="pa-5 border-bottom">
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-        Tipo de Comida
+        Tipo de característica
       </h3>
       <h6 class="subtitle-2 font-weight-light">
-        En este formulario se registran todos los Tipos de Comida
+        En este formulario se registran todos los Tipos de Características
       </h6>
     </v-card-text>
     <v-card-text>
@@ -13,25 +13,42 @@
         <v-row>
           <v-col cols="12" lg="12">
             <v-text-field
-              v-model="form.name"
+              v-model="form.value"
               label="Nombre"
               filled
               required
               :rules="rules.nameRule"
               background-color="transparent"
-              :error-messages="errorsBags.name"
+              :error-messages="errorsBags.value"
             ></v-text-field>
           </v-col>
+          <v-col cols="4" lg="4">
+            <v-checkbox
+              v-model="form.is_required"
+              label="¿Es Requerido?"
+              :error-messages="errorsBags.is_required"
+            ></v-checkbox>
+          </v-col>
+          <v-col cols="4" lg="4">
+            <v-checkbox
+              v-model="form.is_multiple"
+              label="¿Es Multiple?"
+              :error-messages="errorsBags.is_multiple"
+            ></v-checkbox>
+          </v-col>
+          <v-col cols="4" lg="4">
+            <v-checkbox
+              v-model="form.price"
+              label="Acepta Precio?"
+              :error-messages="errorsBags.price"
+            ></v-checkbox>
+          </v-col>
           <v-col cols="12" lg="12">
-            <v-text-field
-              v-model="form.description"
-              label="Descripción"
-              filled
-              required
-              :rules="rules.descriptionRule"
-              background-color="transparent"
-              :error-messages="errorsBags.description"
-            ></v-text-field>
+            <v-checkbox
+              v-model="form.enabled"
+              label="Habilitado"
+              :error-messages="errorsBags.price"
+            ></v-checkbox>
           </v-col>
         </v-row>
         <v-btn
@@ -45,7 +62,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/food/food-category"
+          to="/food/food-type-features"
           dark
           >Cancelar</v-btn
         >
@@ -63,7 +80,7 @@
 import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
-  name: "RegisterFoodCategory",
+  name: "RegisterFoodTypeFeature",
   props: {
     id: String,
   },
@@ -78,12 +95,14 @@ export default {
       errorsBags: [],
       form: {
         id: "",
-        name: "",
-        description: "",
+        value: "",
+        enabled: true,
+        is_required: false,
+        is_multiple: false,
+        price: false,
       },
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
-        descriptionRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },
@@ -92,15 +111,15 @@ export default {
     this.setData();
   },
   computed: {
-    getFoodCategorys() {
-      return this.$store.state.foodCategory.foodCategorys;
+    getFoodTypeFeatures() {
+      return this.$store.state.foodTypeFeature.foodTypeFeatures;
     },
   },
   methods: {
     ...mapActions({
-      createFoodCategory: "foodCategory/createFoodCategory",
-      foodCategory: "foodCategory/getFoodCategoryById",
-      updateFoodCategory: "foodCategory/updateFoodCategory",
+      createFoodTypeFeature: "foodTypeFeature/createFoodTypeFeature",
+      foodTypeFeature: "foodTypeFeature/getFoodTypeFeatureById",
+      updateFoodTypeFeature: "foodTypeFeature/updateFoodTypeFeature",
     }),
     save() {
       this.$refs.form.validate();
@@ -115,14 +134,14 @@ export default {
     },
     setData() {
       if (this.id) {
-        this.foodCategory(this.id).then((result) => {
+        this.foodTypeFeature(this.id).then((result) => {
           this.form = Object.assign({}, result);
         });
       }
     },
 
     create(payload) {
-      this.createFoodCategory(payload)
+      this.createFoodTypeFeature(payload)
         .then((result) => {
           if (result) {
             this.form = {};
@@ -144,7 +163,7 @@ export default {
     },
 
     update(payload) {
-      this.updateFoodCategory(payload)
+      this.updateFoodTypeFeature(payload)
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);

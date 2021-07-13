@@ -2,10 +2,10 @@
   <v-card class="mb-7">
     <v-card-text class="pa-5 border-bottom">
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-        Tipo de Comida
+        Conductor
       </h3>
       <h6 class="subtitle-2 font-weight-light">
-        En este formulario se registran todos los Tipos de Comida
+        En este formulario se registran todos los conductores
       </h6>
     </v-card-text>
     <v-card-text>
@@ -14,26 +14,45 @@
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.name"
-              label="Nombre"
+              label="Nombres y Apellidos"
               filled
               required
               :rules="rules.nameRule"
               background-color="transparent"
-              :error-messages="errorsBags.name"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" lg="12">
-            <v-text-field
-              v-model="form.description"
-              label="Descripción"
-              filled
-              required
-              :rules="rules.descriptionRule"
-              background-color="transparent"
-              :error-messages="errorsBags.description"
             ></v-text-field>
           </v-col>
         </v-row>
+        <v-row>
+          <v-col cols="12" lg="6">
+            <v-text-field
+              v-model="form.email"
+              label="Correo Electronico"
+              filled
+              required
+              :rules="rules.emailRule"
+              background-color="transparent"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-text-field
+              number
+              v-model="form.phone"
+              label="Teléfono"
+              filled
+              :rules="rules.phoneRule"
+              background-color="transparent"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-checkbox
+              v-model="form.enabled"
+              required
+              label="Habilitado"
+              :error-messages="errorsBags.enabled"
+            ></v-checkbox>
+          </v-col>        
+        </v-row>
+
         <v-btn
           color="success"
           @click="save"
@@ -45,7 +64,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/food/food-category"
+          to="/drivers"
           dark
           >Cancelar</v-btn
         >
@@ -63,7 +82,7 @@
 import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
-  name: "RegisterFoodCategory",
+  name: "RegisterDriver",
   props: {
     id: String,
   },
@@ -79,11 +98,16 @@ export default {
       form: {
         id: "",
         name: "",
-        description: "",
+        phone: "",
+        email: "",
+        enabled: true,
+        latitude:null,
+        longitude: null
       },
       rules: {
-        nameRule: [(v) => !!v || "este campo es obligatorio"],
-        descriptionRule: [(v) => !!v || "este campo es obligatorio"],
+      nameRule: [(v) => !!v || "este campo es obligatorio"],
+      phoneRule: [(v) => !!v || "este campo es obligatorio"],
+      emailRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },
@@ -92,15 +116,15 @@ export default {
     this.setData();
   },
   computed: {
-    getFoodCategorys() {
-      return this.$store.state.foodCategory.foodCategorys;
+    getDrivers() {
+      return this.$store.state.driver.drivers;
     },
   },
   methods: {
     ...mapActions({
-      createFoodCategory: "foodCategory/createFoodCategory",
-      foodCategory: "foodCategory/getFoodCategoryById",
-      updateFoodCategory: "foodCategory/updateFoodCategory",
+      createDriver: "driver/createDriver",
+      driver: "driver/getDriverById",
+      updateDriver: "driver/updateDriver",
     }),
     save() {
       this.$refs.form.validate();
@@ -115,14 +139,14 @@ export default {
     },
     setData() {
       if (this.id) {
-        this.foodCategory(this.id).then((result) => {
+        this.driver(this.id).then((result) => {
           this.form = Object.assign({}, result);
         });
       }
     },
 
     create(payload) {
-      this.createFoodCategory(payload)
+      this.createDriver(payload)
         .then((result) => {
           if (result) {
             this.form = {};
@@ -144,7 +168,7 @@ export default {
     },
 
     update(payload) {
-      this.updateFoodCategory(payload)
+      this.updateDriver(payload)
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);

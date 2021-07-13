@@ -16,14 +16,13 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'food/register',
+            path: 'food-type-feature/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @add-feature-button="addFeatureButton"
-          @remove-button="acceptRemoveFood"
+          @remove-button="acceptRemoveFoodTypeFeature"
         ></DataTable>
       </v-col>
     </v-card>
@@ -32,20 +31,27 @@
       @handler-dialog-confirm="removeButton"
       :message="messageDialog"
     ></DialogConfirm>
+    <SnackBar
+      :text="textSnackBar"
+      ref="snackBarRef"
+      :snackbar="true"
+    ></SnackBar>
   </v-container>
 </template>
 
 <script>
-import DataTable from "./components/DataTableFood";
+import DataTable from "./components/DataTableFoodTypeFeature";
 import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
+import SnackBar from "@/views/modules/components/SnackBar";
 export default {
   name: "Company",
   components: {
     DataTable,
     DialogConfirm,
+    SnackBar,
   },
 
   data: () => ({
@@ -59,36 +65,51 @@ export default {
         to: "#",
       },
       {
-        text: "Comidas",
+        text: "Tipo de características",
         disabled: true,
       },
     ],
     messageDialog: "",
 
+    textSnackBar: "",
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Comida",
+    titleForm: "Tipo de características",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
-      { text: "Restaurante", value: "restaurant_name" },
-      { text: "Categoría", value: "category_name" },
-      { text: "Nombre", value: "name" },
-      { text: "Descripción", value: "description" },
-      // { text: "Imagen", value: "image_id" },
-      { text: "Ingredientes", value: "ingredients" },
-      { text: "UDM", value: "uom_name" },
-      { text: "Precio", value: "price" },
-      { text: "Descuento", value: "discount" },
-      { text: "Taxes", value: "tax" },
-      { text: "Peso", value: "weight" },
-      { text: "Cantidad", value: "quantity" },
-      { text: "¿Es Grupo?", value: "is_group_formatted" },
-      { text: "¿Es Extra?", value: "is_extra_formatted" },
-      { text: "¿Con Características?", value: "with_features_formatted" },
-      { text: "¿En Stock?", value: "is_stock_formatted" },
+      {
+        text: "Nombre",
+        align: "start",
+        sortable: false,
+        value: "value",
+      },
+      {
+        text: "Requerido",
+        align: "start",
+        sortable: false,
+        value: "values.is_required",
+      },
+      {
+        text: "Multiple",
+        align: "start",
+        sortable: false,
+        value: "values.is_multiple",
+      },
+      {
+        text: "Acepta Precio",
+        align: "start",
+        sortable: false,
+        value: "values.price",
+      }, 
+      {
+        text: "Habilitado",
+        align: "start",
+        sortable: false,
+        value: "enabled",
+      }, 
     ],
     items: [],
     idDelete: "",
@@ -96,41 +117,48 @@ export default {
 
   computed: {
     ...mapGetters({
-      storeFoods: "food/getFoods",
+      storeFoodTypeFeatures: "foodTypeFeature/getFoodTypeFeatures",
     }),
   },
   watch: {
-    storeFoods(data) {
+    storeFoodTypeFeatures(data) {
       this.items = [];
       if (data.length > 0) {
         this.items = data;
-        console.log(this.items);
       }
     },
   },
   methods: {
     ...mapActions({
-      getFoodData: "food/getFoodData",
-      removeFood: "food/removeFood",
+      getFoodTypeFeatureData: "foodTypeFeature/getFoodTypeFeatureData",
+      removeFoodTypeFeature: "foodTypeFeature/removeFoodTypeFeature",
     }),
     editButton({ id }) {
-      this.$router.push("food/edit/" + id);
+      this.$router.push("food-type-feature/edit/" + id);
     },
-    addFeatureButton({ id }) {
-      this.$router.push("food/features/" + id);
-    },
-    acceptRemoveFood(item) {
+    acceptRemoveFoodTypeFeature(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeFood(this.idDelete);
+      this.removeFoodTypeFeature(this.idDelete)
+        .then((result) => {
+          if (result) {
+            this.$refs.snackBarRef.changeStatusSnackbar(true);
+            this.textSnackBar = "Eliminado existosamente!";
+          }
+        })
+        .catch(() => {          
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = "Disculpe, ha ocurrido un error";
+        });
+
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
   },
 
   mounted() {
-    this.getFoodData();
+    this.getFoodTypeFeatureData();
   },
 };
 </script>

@@ -16,14 +16,13 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'food/register',
+            path: 'commerce-address/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @add-feature-button="addFeatureButton"
-          @remove-button="acceptRemoveFood"
+          @remove-button="acceptRemoveCommerceAddress"
         ></DataTable>
       </v-col>
     </v-card>
@@ -36,13 +35,14 @@
 </template>
 
 <script>
-import DataTable from "./components/DataTableFood";
+import DataTable from "../../components/DataTable";
 import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
+
 export default {
-  name: "Company",
+  name: "Commerce",
   components: {
     DataTable,
     DialogConfirm,
@@ -54,83 +54,74 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Comidas",
+        text: "Comercio",
         disabled: false,
         to: "#",
       },
       {
-        text: "Comidas",
+        text: "Dirección Comercio",
         disabled: true,
       },
     ],
+
     messageDialog: "",
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Comida",
+    titleForm: "Dirección Comercio",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
-      { text: "Restaurante", value: "restaurant_name" },
-      { text: "Categoría", value: "category_name" },
-      { text: "Nombre", value: "name" },
-      { text: "Descripción", value: "description" },
-      // { text: "Imagen", value: "image_id" },
-      { text: "Ingredientes", value: "ingredients" },
-      { text: "UDM", value: "uom_name" },
-      { text: "Precio", value: "price" },
-      { text: "Descuento", value: "discount" },
-      { text: "Taxes", value: "tax" },
-      { text: "Peso", value: "weight" },
-      { text: "Cantidad", value: "quantity" },
-      { text: "¿Es Grupo?", value: "is_group_formatted" },
-      { text: "¿Es Extra?", value: "is_extra_formatted" },
-      { text: "¿Con Características?", value: "with_features_formatted" },
-      { text: "¿En Stock?", value: "is_stock_formatted" },
+      {
+        text: "Comercio",
+        value: "commerce",
+      },
+      {
+        text: "Dirección Comercio",
+        align: "start",
+        sortable: false,
+        value: "name",
+      },
+      { text: "Latitud", value: "latitude" },
+      { text: "Longitud", value: "longitude" },
     ],
     items: [],
     idDelete: "",
   }),
 
   computed: {
-    ...mapGetters({
-      storeFoods: "food/getFoods",
-    }),
+    ...mapGetters({ storeCommerceAddresses: "commerceAddress/getCommerceAddresses" }),
   },
   watch: {
-    storeFoods(data) {
+    storeCommerceAddresses(data) {
       this.items = [];
-      if (data.length > 0) {
+      if (data.length > 0) {        
         this.items = data;
-        console.log(this.items);
       }
     },
   },
   methods: {
     ...mapActions({
-      getFoodData: "food/getFoodData",
-      removeFood: "food/removeFood",
+      getCommerceAddressData: "commerceAddress/getCommerceAddressData",
+      removeCommerceAddress: "commerceAddress/removeCommerceAddress",
     }),
     editButton({ id }) {
-      this.$router.push("food/edit/" + id);
+      this.$router.push("commerce-address/edit/" + id);
     },
-    addFeatureButton({ id }) {
-      this.$router.push("food/features/" + id);
-    },
-    acceptRemoveFood(item) {
+    acceptRemoveCommerceAddress(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeFood(this.idDelete);
+      this.removeCommerceAddress(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
   },
 
   mounted() {
-    this.getFoodData();
+    this.getCommerceAddressData();
   },
 };
 </script>
