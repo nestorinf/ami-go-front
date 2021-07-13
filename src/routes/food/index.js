@@ -18,6 +18,24 @@ export default {
             component: () => import("../../views/modules/food/foodCategory/Register")
         },
 
+        // routes for Food features
+        {
+            name: 'Food Type Features',
+            path: "food/food-type-features",
+            component: () => import("../../views/modules/food/foodTypeFeature")
+        },
+        {
+            name: 'Food Type Feature Register',
+            path: "food/food-type-feature/register",
+            component: () => import("../../views/modules/food/foodTypeFeature/Register")
+        },
+        {
+            name: 'Food Type Feature Edit',
+            path: "food/food-type-feature/edit/:id",
+            props: true,
+            component: () => import("../../views/modules/food/foodTypeFeature/Register")
+        },
+
 
         // routes for food
         {
@@ -29,6 +47,12 @@ export default {
             name: 'Food Register',
             path: "food/food/register",
             component: () => import("../../views/modules/food/food/Register")
+        },
+        {
+            name: 'Food Type Feature Add',
+            path: "food/food/features/:idfood",
+            props: true,
+            component: () => import("../../views/modules/food/foodFeature")
         },
         {
             name: 'Food Edit',
@@ -49,6 +73,11 @@ export default {
                 title: "Tipos de comida",
                 icon: "mdi-variant",
                 to: "food-category",
+            },
+            {
+                title: "Tipos de características",
+                icon: "mdi-variant",
+                to: "food-type-features",
             },
             {
                 title: "Comidas",
