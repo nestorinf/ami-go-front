@@ -155,21 +155,25 @@
         <ShowsImages :items="form.imagenes" v-if="id" @delete-imagen="deleteImagen"></ShowsImages>
         
       
-        <v-btn
-          color="success"
-          @click="preparedDataFiles"
-          :disabled="!valid"
-          submit
-          class="text-capitalize mr-2"
-          >Guardar</v-btn
-        >
-        <v-btn
-          color="black"
-          class="text-capitalize"
-          to="/products/batches"
-          dark
-          >Cancelar</v-btn
-        >
+        <v-row class="pt-10">
+          <v-col cols="12" lg="12">
+            <v-btn
+              color="success"
+              @click="preparedDataFiles"
+              :disabled="!valid"
+              submit
+              class="text-capitalize mr-2"
+              >Guardar</v-btn
+            >
+            <v-btn
+              color="black"
+              class="text-capitalize"
+              to="/products/batches"
+              dark
+              >Cancelar</v-btn
+            >
+          </v-col>
+        </v-row>
       </v-form>
     </v-card-text>
     <SnackBar
@@ -401,7 +405,7 @@ export default {
     loadSize() {
       const rows = [];
       this.loadingSize = true;
-      const referenceId = 'size_product';
+      const referenceId = 'SIZE_PRODUCT';
       this.sizeData(referenceId)
         .then((result) => {
           console.log(result);
@@ -424,7 +428,7 @@ export default {
     loadColour() {
       const rows = [];
       this.loadingColour = true;
-      const referenceId = 'colours_product';
+      const referenceId = 'COLOURS';
       this.coloursData(referenceId)
         .then((result) => {
           console.log(result);

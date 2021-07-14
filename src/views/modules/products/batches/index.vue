@@ -8,7 +8,7 @@
     <v-card class="mb-7">
       <v-card-text class="pa-5 border-bottom">
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-          {{ titleForm }} <button @click="getProductsBatchesData">asd</button>
+          {{ titleForm }}
         </h3>
       </v-card-text>
 
