@@ -1,6 +1,7 @@
 import configuration from './configuration'
 import provider from './provider'
 import product from './product'
+import promotion from './promotion'
 import food from './food'
 import user from './user'
 
@@ -24,6 +25,7 @@ export default {
     commerce,
     restaurant,
     provider,
+    promotion,
     product,
     food,
     payment,
