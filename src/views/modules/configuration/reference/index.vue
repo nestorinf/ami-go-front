@@ -78,6 +78,12 @@ export default {
         sortable: false,
         value: "name",
       },
+      {
+        text: "Slug",
+
+        sortable: false,
+        value: "slug",
+      },
       { text: "Descripcion", value: "description" },
       { text: "Bloqueado", value: "is_lock" },
     ],
@@ -91,24 +97,25 @@ export default {
   watch: {
     storeReferences(data) {
       if (data.length > 0) {
-        this.items=[];
-         data.map((element) =>{
-         this.items.push( 
-           {
-            id:element.id,
-            name:element.name,
-            description:element.description,
-            is_lock:element.is_lock ? 'Sí' : 'No'
-            },
-        //  element.name;
-         )
-         
-        // this.items = data;
-        // this.items[0].description = data.description;
-        // this.items[0].is_lock = data.is_lock ? 'Sí' : 'No';
-      })
-    }
-  },
+        this.items = [];
+        data.map((element) => {
+          this.items.push(
+            {
+              id: element.id,
+              name: element.name,
+              slug: element.slug,
+              description: element.description,
+              is_lock: element.is_lock ? "Sí" : "No",
+            }
+            //  element.name;
+          );
+
+          // this.items = data;
+          // this.items[0].description = data.description;
+          // this.items[0].is_lock = data.is_lock ? 'Sí' : 'No';
+        });
+      }
+    },
   },
   methods: {
     ...mapActions({

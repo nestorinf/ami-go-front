@@ -23,18 +23,7 @@
               :error-messages="errorsBags.restaurant_type_id"
             ></v-select>
           </v-col>
-          <v-col cols="12" lg="6">
-            <v-select
-              :loading="loadingCommerce"
-              label="Comercio a que pertenece el restaurante"
-              :items="commerceList"
-              v-model="form.commerce_id"
-              filled
-              required
-              background-color="transparent"
-              :error-messages="errorsBags.commerce_id"
-            ></v-select>
-          </v-col>
+
           <v-col cols="12" lg="6">
             <v-select
               :loading="loadingDepartment"
@@ -150,7 +139,7 @@ export default {
     return {
       textSnackBar: "",
       valid: true,
-      loadingCommerce: false,
+
       loadingRestaurantType: false,
       loadingDepartment: false,
       loadingMunicipality: false,
@@ -161,7 +150,7 @@ export default {
       errorsBags: [],
       form: {
         id: "",
-        commerce_id: "",
+
         restaurant_type_id: "",
         department_id: "",
         municipality_id: "",
@@ -183,7 +172,7 @@ export default {
       createRestaurant: "restaurant/createRestaurant",
       getRestaurantById: "restaurant/getRestaurantById",
       updateRestaurant: "restaurant/updateRestaurant",
-      getCommercesData: "commerce/getCommercesData",
+
       getRestaurantTypeData: "restaurantType/getRestaurantTypeData",
       getDepartmentsData: "department/getDepartmentsData",
       getMunicipalitiesData: "municipality/getMunicipalitiesData",
@@ -200,24 +189,14 @@ export default {
       }
     },
     setData() {
-      this.loadingCommerce = true;
       this.loadingRestaurantType = true;
       this.loadingDepartment = true;
       this.loadingMunicipality = true;
-      const commerces = [];
+
       const departments = [];
       const municipalities = [];
       const restaurantTypes = [];
-      this.getCommercesData().then((result) => {
-        result.map((element) => {
-          commerces.push({
-            value: element.id,
-            text: element.name,
-          });
-          this.commerceList = commerces;
-        });
-        this.loadingCommerce = false;
-      });
+
       this.getRestaurantTypeData().then((result) => {
         result.map((element) => {
           restaurantTypes.push({

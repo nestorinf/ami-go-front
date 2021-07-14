@@ -24,6 +24,17 @@
           </v-col>
           <v-col cols="12" lg="12">
             <v-text-field
+              v-model="form.slug"
+              label="Slug"
+              filled
+              required
+              :rules="rules.slugRule"
+              background-color="transparent"
+              :error-messages="errorsBags.slug"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="12">
+            <v-text-field
               v-model="form.description"
               label="Descripcion"
               filled
@@ -87,11 +98,13 @@ export default {
       form: {
         id: "",
         name: "",
+        slug: "",
         description: "",
         is_lock: false,
       },
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
+        slugRule: [(v) => !!v || "este campo es obligatorio"],
         descriptionRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
