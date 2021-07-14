@@ -8,7 +8,7 @@
     <v-card class="mb-7">
       <v-card-text class="pa-5 border-bottom">
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-          {{ titleForm }}
+          {{ titleForm }} <button @click="getProductsBatchesData">asd</button>
         </h3>
       </v-card-text>
 
@@ -16,13 +16,13 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'reference/register',
+            path: 'batches/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveReference"
+          @remove-button="acceptRemoveProductBatches"
         ></DataTable>
       </v-col>
     </v-card>
@@ -40,8 +40,9 @@ import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
+
 export default {
-  name: "Company",
+  name: "ProductsBatches",
   components: {
     DataTable,
     DialogConfirm,
@@ -53,83 +54,103 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Configuracion",
+        text: "Producto",
         disabled: false,
         to: "#",
       },
       {
-        text: "Referencia",
+        text: "Lotes",
         disabled: true,
       },
     ],
     messageDialog: "",
-
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Referencia",
+    titleForm: "Lotes",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
       {
+        text: "Producto",
+        align: "start",
+        value: "product",
+      },
+      {
         text: "Nombre",
         align: "start",
-        sortable: false,
         value: "name",
       },
-      { text: "Descripcion", value: "description" },
-      { text: "Bloqueado", value: "is_lock" },
+      {
+        text: "Stock",
+        value: "stock",
+      },
+      {
+        text: "Stock minimo",
+        value: "stock_min",
+      },
+      {
+        text: "Estatu",
+        value: "status",
+      },
+      {
+        text: "Precio Unitario",
+        value: "unit_price",
+      },
+      {
+        text: "Precio Regular",
+        value: "regular_price",
+      },
+      {
+        text: "Fecha de expiración",
+        value: "expired_date",
+      },
+      {
+        text: "Color",
+        value: "colour",
+      },
+      {
+        text: "Talla",
+        value: "size",
+      },
+
+      // { text: "Categoria Padre", value: "category_father" },
     ],
     items: [],
     idDelete: "",
   }),
-
   computed: {
-    ...mapGetters({ storeReferences: "reference/getReferences" }),
+    ...mapGetters({ storeProductsBatches: "productBatches/getProductsBatches" }),
   },
   watch: {
-    storeReferences(data) {
+    storeProductsBatches(data) {
+      this.items = [];
       if (data.length > 0) {
-        this.items=[];
-         data.map((element) =>{
-         this.items.push( 
-           {
-            id:element.id,
-            name:element.name,
-            description:element.description,
-            is_lock:element.is_lock ? 'Sí' : 'No'
-            },
-        //  element.name;
-         )
-         
-        // this.items = data;
-        // this.items[0].description = data.description;
-        // this.items[0].is_lock = data.is_lock ? 'Sí' : 'No';
-      })
-    }
-  },
+        this.items = data;
+        console.log(this.items);
+      }
+    },
   },
   methods: {
     ...mapActions({
-      getReferenceData: "reference/getReferenceData",
-      removeReference: "reference/removeReference",
+      getProductsBatchesData: "productBatches/getProductsBatchesData",
+      removeProductBatches: "productBatches/removeProductBatches",
     }),
     editButton({ id }) {
-      this.$router.push("reference/edit/" + id);
+      this.$router.push("batches/edit/" + id);
     },
-    acceptRemoveReference(item) {
+    acceptRemoveProductBatches(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeReference(this.idDelete);
+      this.removeProductBatches(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
   },
-
   mounted() {
-    this.getReferenceData();
+    this.getProductsBatchesData();
   },
 };
 </script>
