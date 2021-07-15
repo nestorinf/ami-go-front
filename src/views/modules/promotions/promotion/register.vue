@@ -11,7 +11,7 @@
       </v-card-text>
       <v-card-text>
         <v-row>
-          <v-col cols="12" lg="4">
+          <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
               label="Nombre de la promoción"
@@ -22,16 +22,16 @@
               :error-messages="errorsBags.name"
             ></v-text-field>
           </v-col>
-          <v-col cols="6" lg="4">
+          <v-col cols="12" lg="6">
             <v-text-field
-              v-model="form.expire_date"
-              label="Fecha de Expiración"
+              v-model="form.description"
+              label="Descripción de la promoción"
               filled
               background-color="transparent"
-              :error-messages="errorsBags.expire_date"
+              :error-messages="errorsBags.description"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" lg="4">
+          <v-col cols="12" lg="6">
             <v-select
               label="Aplica para.."
               :items="types"
@@ -43,17 +43,54 @@
               :error-messages="errorsBags.type"
             ></v-select>
           </v-col>
-           <v-col cols="12" lg="3">
+          <v-col cols="6" lg="6">
+            <v-text-field
+              type="date"
+              v-model="form.expire_date"
+              label="Fecha de Expiración"
+              filled
+              background-color="transparent"
+              :error-messages="errorsBags.expire_date"
+            ></v-text-field>
+          </v-col>
+         </v-row>
+
+        <v-row>        
+          <v-col cols="12" lg="6">            
+            <v-select
+              label="Tipo de Descuento"
+              :items="types_promotion"
+              v-model="form.type_descuent"
+              filled
+              required
+              :rules="rules.type_descuentRule"
+              background-color="transparent"
+              :error-messages="errorsBags.type_descuent"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-text-field
+              type="number"
+              v-model="form.amount"
+              label="Descuento"
+              filled
+              required
+              :rules="rules.amountRule"
+              background-color="transparent"
+              :error-messages="errorsBags.amount"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+         
+        <v-row>          
+           <v-col cols="12" lg="4">
             <v-checkbox
               v-model="form.is_cupon"
               required
               label="¿Acepta Cupones?"
             ></v-checkbox>
           </v-col>
-         </v-row>
-
-        <v-row v-if="form.is_cupon">
-          <v-col cols="6" lg="6">
+          <v-col cols="12" lg="4" v-if="form.is_cupon">
             <v-text-field
               v-model="form.code_cupon"
               label="Código del Cupon"
@@ -64,7 +101,7 @@
               :error-messages="errorsBags.code_cupon"
             ></v-text-field>
           </v-col>
-          <v-col cols="6" lg="6">
+          <v-col cols="12" lg="4" v-if="form.is_cupon">
             <v-text-field
               type="number"
               v-model="form.total_cupon"
@@ -77,21 +114,43 @@
             ></v-text-field>
           </v-col>
         </v-row>
-        <v-btn
-          color="success"
-          @click="save"
-          :disabled="!valid"
-          submit
-          class="text-capitalize mr-2"
-          >Guardar</v-btn
-        >
-        <v-btn
-          color="black"
-          class="text-capitalize"
-          to="/promotions/promotion"
-          dark
-          >Cancelar</v-btn
-        >
+        <v-row>          
+           <v-col cols="12" lg="4">
+            <v-checkbox
+              v-model="form.enabled"
+              required
+              label="¿Visible?"
+            ></v-checkbox>
+          </v-col>
+        </v-row>
+        
+        <v-row>
+          <v-col cols="12" lg="12">
+            <UploadImages v-if="displayed" :max="50" @change="onFileSelected" />
+          </v-col>
+        </v-row>
+        
+        <ShowsImages :items="form.imagenes" v-if="id" @delete-imagen="deleteImagen"></ShowsImages>
+        
+        <v-row class="pt-10">
+          <v-col cols="12" lg="12">
+            <v-btn
+              color="success"
+              @click="preparedDataFiles"
+              :disabled="!valid"
+              submit
+              class="text-capitalize mr-2"
+              >Guardar</v-btn
+            >
+            <v-btn
+              color="black"
+              class="text-capitalize"
+              to="/promotions/promotion"
+              dark
+              >Cancelar</v-btn
+            >
+          </v-col>
+        </v-row>
       </v-card-text>
     </v-form>
     <SnackBar
@@ -104,6 +163,8 @@
 
 <script>
 import { mapActions } from "vuex";
+import UploadImages from "vue-upload-drop-images";
+import ShowsImages from "../../components/ShowsImages";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
   name: "RegisterPromotion",
@@ -111,6 +172,8 @@ export default {
     id: String,
   },
   components: {
+    UploadImages,
+    ShowsImages,
     SnackBar,
   },
 
@@ -142,11 +205,16 @@ export default {
       form: {
         id: "",
         name: "",
+        description: "",
         expire_date: "",
         type: "",
         is_cupon: false,
         code_cupon: "",
-        total_cupon: ""
+        total_cupon: "",
+        enabled: true,
+        type_descuent: "",
+        amount: "",
+        images_id: []
       },
       types: [{
           value: 'all',
@@ -158,6 +226,13 @@ export default {
           value: 'restaurant',
           text: 'Restaurantes',
       }],
+      types_promotion: [{
+          value: 'porc',
+          text: 'Procentaje',
+        },{
+          value: 'total',
+          text: 'Deducible del total',
+        }],
       errorsBags: [],
 
       rules: {
@@ -165,10 +240,14 @@ export default {
         typeRule: [(v) => !!v || "este campo es obligatorio"],
         code_cuponRule: [(v) => !!v || "este campo es obligatorio"],
         total_cuponRule: [(v) => !!v || "este campo es obligatorio"],
+        type_descuentRule: [(v) => !!v || "este campo es obligatorio"],
+        amountRule: [(v) => !!v || "este campo es obligatorio"],
       },
 
-      ListEntities : []
+      ListEntities : [],
 
+      displayed: true, 
+      selectedFile: [],
     };
   },
 
@@ -180,7 +259,10 @@ export default {
       createPromotion: "promotion/createPromotion",
       getPromotionById: "promotion/getPromotionById",
       updatePromotion: "promotion/updatePromotion",
+      
+      createImage: "image/createImage",
     }),
+    
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
@@ -198,6 +280,8 @@ export default {
         
         this.getPromotionById(this.id).then((result) => {
           console.log(result)
+          
+          // this.form = Object.assign({}, result);
           this.form = {
             id: result.id,
             name: result.name,
@@ -206,6 +290,12 @@ export default {
             is_cupon: result.is_cupon,
             code_cupon: result.code_cupon,
             total_cupon: result.total_cupon,
+            description : result.description,
+            enabled: result.enabled,
+            type_descuent: result.type_descuent,
+            amount: result.amount,
+            images_id: result.images_id,
+            imagenes: result.imagenes,
           };
         });
       }
@@ -215,10 +305,11 @@ export default {
     create(payload) {
       this.createPromotion(payload)
         .then((result) => {
+          console.log(result);
           if (result) {
-            this.form = {};
-            this.$refs.form.reset();
-            this.form.is_cupon = false;
+            // this.form = {};
+            // this.$refs.form.reset();
+            // this.form.is_cupon = false;
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
           }
@@ -240,6 +331,7 @@ export default {
       this.updatePromotion(payload)
         .then((result) => {
           if (result) {
+            this.form = Object.assign({}, result);
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
           }
@@ -256,6 +348,67 @@ export default {
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });
     },
+
+
+    
+    onFileSelected(event) {
+      console.log('event',event);
+      this.selectedFile = event;
+    },
+    
+    preparedDataFiles() {
+      
+      this.$refs.form.validate();
+      if (this.$refs.form.validate()) {
+        if (this.selectedFile.length) {
+          const payload = new FormData();
+          this.selectedFile.forEach((e) => {
+            payload.append("images[]", e);
+          });
+          this.createImagenes(payload);
+        }else{
+          this.save();
+        }
+      }
+    },
+               
+    createImagenes(payload) {
+      this.createImage(payload)
+        .then((result) => {
+          if (result) {
+
+            result.forEach((e) => {
+              this.form.images_id.push(e.id);
+            });
+
+            this.selectedFile = [];
+             
+            this.displayed = false;
+            this.$nextTick(() => {
+              this.displayed = true;
+            });
+            
+            this.save();
+
+
+            this.$refs.snackBarRef.changeStatusSnackbar(true);
+            this.textSnackBar = "Guardado existosamente!";
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = "Disculpe, ha ocurrido un error";
+        });
+    },
+
+    deleteImagen(item) { 
+      this.form.imagenes.forEach((e) => {
+        if(e.id == item){
+          e.delete = !e.delete;
+        }
+      });
+    }
   },
   
 };

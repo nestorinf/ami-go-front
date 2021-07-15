@@ -198,9 +198,9 @@ export default {
       this.loadingRestaurantType = true;
       this.loadingDepartment = true;
       this.loadingMunicipality = true;
-      const departments = [];
-      const municipalities = [];
-      const restaurantTypes = [];
+      // const departments = [];
+      // const municipalities = [];
+      // const restaurantTypes = [];
       const departments = [];
       const municipalities = [];
       const restaurantTypes = [];

@@ -97,6 +97,18 @@ export default {
         sortable: false,
         value: "accept_cupon",
       },
+      {
+        text: "Tipo Descuento",
+        align: "start",
+        sortable: false,
+        value: "tipo_descuento",
+      },
+      {
+        text: "Descuento",
+        align: "start",
+        sortable: false,
+        value: "amount",
+      },
     ],
     items: [],
   }),

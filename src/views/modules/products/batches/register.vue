@@ -199,13 +199,13 @@ export default {
     ShowsImages,
     SnackBar,
   },
-
+ 
   data() {
     return {
       textSnackBar: "",
       valid: true, 
-      form_images: null,
       form: {
+        id: "",
         product_id: "",
         accept_size: false,
         size_id: null,
@@ -218,7 +218,7 @@ export default {
         regular_price: "",
         colour_id: "",
         expired_date:"",
-        images_id:""
+        images_id:[]
       },
 
       sizeList: [],
@@ -301,8 +301,8 @@ export default {
         .then((result) => {
           if (result) {
             console.log('result_reg',result)
-            // this.form = {};
-            // this.$refs.form.reset();
+            this.form = {};
+            this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
             // this.$router.push("/products/categories");
@@ -374,14 +374,15 @@ export default {
             });
 
             this.selectedFile = [];
-            
-            console.log('ad',this.form);
-            this.save();
-
+             
             this.displayed = false;
             this.$nextTick(() => {
               this.displayed = true;
             });
+            
+            this.save();
+
+
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
           }
