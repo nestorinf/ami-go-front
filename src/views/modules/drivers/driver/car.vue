@@ -204,8 +204,9 @@ export default {
         driver: "driverCar/getDriverCarById",
         updateDriverCar: "driverCar/updateDriverCar",
         removeDriverCar: "driverCar/removeDriverCar",
-        listColours: "referenceList/getReferenceListByReferenceIdData",
-        listTypeVh: "referenceList/getReferenceListByReferenceIdData",
+        listColours: "referenceList/getReferenceListByReferenceSlugData",      
+        listTypeVh: "referenceList/getReferenceListByReferenceSlugData",
+
     }),
     save() {
       this.$refs.form.validate();
@@ -252,7 +253,7 @@ export default {
         const rows = [];
         const rowsTypeVh = [];
 
-      const referenceId = 1;
+      const referenceId = 'COLOURS';
       this.listColours(referenceId)
         .then((result) => {
           if (result) {
@@ -272,7 +273,7 @@ export default {
         });
 
         
-      const referenceIdTypeVh = 2;
+      const referenceIdTypeVh = 'TYPE_CARS';
       this.listTypeVh(referenceIdTypeVh)
         .then((result) => {
           if (result) {

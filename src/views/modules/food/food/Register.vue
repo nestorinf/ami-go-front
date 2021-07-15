@@ -241,6 +241,7 @@ export default {
       const restaurants = [];
       const foodCategories = [];
       this.getRestaurantsData().then((result) => {
+        console.log('getRestaurantsData',result)
         result.map((element) => {
           restaurants.push({
             value: element.id,
