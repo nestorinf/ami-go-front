@@ -57,15 +57,37 @@ const router = new Router({
 
 import NProgress from "nprogress";
 
+const checkRoles= ( roles ) => {
+  console.log(roles)
+  if (roles && roles.length > 0) {
+    const rol = roles.some(role => {
+      if (role.slug) {
+        return roles.includes(role.slug)
+      }
+   
+    })
 
+    if (rol) {
+      return true
+    } 
+  } else {
+    throw new Error('error....')
+  }
+}
 
 router.beforeEach((to, from, next) => {
+  // console.log(to)
   if (to.matched.some((record) => record.meta.authenticated)) {
+    
     const roleUser = JSON.parse(sessionStorage.getItem('role_user'))
     if (!sessionStorage.getItem('token') || !roleUser.length) {
       next('/login')
     } else {
       next()
+    }
+    if (to.meta.roles) {
+      checkRoles(roleUser)
+      // next()
     }
   } else {
     next()

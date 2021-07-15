@@ -2,10 +2,10 @@
   <v-card class="mb-7">
     <v-card-text class="pa-5 border-bottom">
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-        Tipo de Comida
+        Categoria de Comida
       </h3>
       <h6 class="subtitle-2 font-weight-light">
-        En este formulario se registran todos los Tipos de Comida
+        En este formulario se registran todos los categorias de Comida
       </h6>
     </v-card-text>
     <v-card-text>

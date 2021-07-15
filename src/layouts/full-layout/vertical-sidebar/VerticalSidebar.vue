@@ -39,6 +39,7 @@
         </v-row>
         <!---If Sidebar Caption -->
         <BaseItemGroup
+          :roles="item"
           @click="this.returnHome()"
           v-else-if="item.children"
           :key="`group-${i}`"
@@ -117,6 +118,7 @@ export default {
     },
   },
   created() {
+    // console.log(this.items);
     this.user = JSON.parse(sessionStorage.getItem("user"));
   },
   watch: {

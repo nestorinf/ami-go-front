@@ -220,7 +220,7 @@ export default {
       categoryData: "category/getCategoriesData",
       providerData: "provider/getProvidersData",
       productById: "product/getProductById",
-      uomData: "referenceList/getReferenceListByReferenceIdData",
+      uomData: "referenceList/getReferenceListByReferenceSlugData",
     }),
 
     save() {
@@ -375,7 +375,7 @@ export default {
     loadUom() {
       const rows = [];
       this.loadingUom = true;
-      const referenceId = 1;
+      const referenceId = "UNIT_MEASURE";
       this.uomData(referenceId)
         .then((result) => {
           if (result) {

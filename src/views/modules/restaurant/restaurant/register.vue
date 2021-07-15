@@ -201,9 +201,7 @@ export default {
       const departments = [];
       const municipalities = [];
       const restaurantTypes = [];
-      const departments = [];
-      const municipalities = [];
-      const restaurantTypes = [];
+
       this.getRestaurantTypeData().then((result) => {
         result.map((element) => {
           restaurantTypes.push({

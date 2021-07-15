@@ -8,7 +8,11 @@
     <v-card class="mb-7">
       <v-card-text class="pa-5 border-bottom">
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-          {{ titleForm }}: {{data_food.name}}
+          {{ titleForm }}
+          <v-chip cclass="ma-2" color="blue" label text-color="white">
+            <v-icon left>mdi-label</v-icon>
+            {{ data_food.name }}
+          </v-chip>
         </h3>
       </v-card-text>
       <RegistrarFeature
@@ -31,7 +35,7 @@
       @handler-dialog-confirm="removeButton"
       :message="messageDialog"
     ></DialogConfirm>
-    
+
     <SnackBar
       :text="textSnackBar"
       ref="snackBarRef"
@@ -117,13 +121,13 @@ export default {
       getFoodFeaturesData: "foodFeature/getFoodFeaturesData",
       removeFoodFeature: "foodFeature/removeFoodFeature",
       food: "food/getFoodById",
-      updateFoodFeature: "foodFeature/updateFoodFeature",      
+      updateFoodFeature: "foodFeature/updateFoodFeature",
     }),
     addNewItems(item) {
       this.items.push(item);
-    },    
+    },
     editButton(item) {
-      const payload = item;   
+      const payload = item;
       this.updateFoodFeature(payload)
         .then((result) => {
           if (result) {
