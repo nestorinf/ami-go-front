@@ -66,6 +66,15 @@
           </v-col> -->
           <v-col cols="12" lg="6">
             <v-text-field
+              v-model="form.name"
+              label="Nombre"
+              filled
+              background-color="transparent"
+              :error-messages="errorsBags.name"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-text-field
               v-model="form.description"
               label="Breve descripción"
               filled
@@ -139,18 +148,16 @@ export default {
     return {
       textSnackBar: "",
       valid: true,
-
       loadingRestaurantType: false,
       loadingDepartment: false,
       loadingMunicipality: false,
-      commerceList: [],
       restaurantTypeList: [],
       departmentList: [],
       municipalityList: [],
       errorsBags: [],
       form: {
         id: "",
-
+        name: "",
         restaurant_type_id: "",
         department_id: "",
         municipality_id: "",
@@ -172,7 +179,6 @@ export default {
       createRestaurant: "restaurant/createRestaurant",
       getRestaurantById: "restaurant/getRestaurantById",
       updateRestaurant: "restaurant/updateRestaurant",
-
       getRestaurantTypeData: "restaurantType/getRestaurantTypeData",
       getDepartmentsData: "department/getDepartmentsData",
       getMunicipalitiesData: "municipality/getMunicipalitiesData",
@@ -192,11 +198,12 @@ export default {
       this.loadingRestaurantType = true;
       this.loadingDepartment = true;
       this.loadingMunicipality = true;
-
       const departments = [];
       const municipalities = [];
       const restaurantTypes = [];
-
+      const departments = [];
+      const municipalities = [];
+      const restaurantTypes = [];
       this.getRestaurantTypeData().then((result) => {
         result.map((element) => {
           restaurantTypes.push({

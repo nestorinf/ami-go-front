@@ -72,7 +72,7 @@ export default {
         text: "Accion",
         value: "action",
       },
-
+      { text: "Nombre", value: "name" },
       { text: "Departamento", value: "department_name" },
       { text: "Municipio", value: "municipality_name" },
       { text: "Tipo de restaurante", value: "restaurant_type_name" },
