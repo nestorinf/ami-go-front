@@ -58,6 +58,23 @@ const actions = {
         });
     });
   },
+  getReferenceListByReferenceSlugData({ commit, dispatch }, id) {
+    return new Promise((resolve, reject) => {
+      dispatch("loading/loadingState", true, { root: true });
+      ReferenceListService.getReferenceListByReferenceSlug(id)
+        .then(({ data }) => {
+          const referenceList = data.payload; 
+          commit("setReferenceListByReferences", referenceList);
+          dispatch("loading/loadingState", false, { root: true });
+          resolve(data.payload);
+        })
+        .catch((err) => {
+          reject(err);
+          dispatch("loading/loadingState", false, { root: true });
+          commit("setReferenceListByReferences", []);
+        });
+    });
+  },
 
   getReferenceListById({ commit, dispatch }, id) {
     return new Promise((resolve, reject) => {

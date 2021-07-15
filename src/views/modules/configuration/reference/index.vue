@@ -73,6 +73,10 @@ export default {
         value: "action",
       },
       {
+        text: "Slug",
+        value: "slug",
+      },
+      {
         text: "Nombre",
         align: "start",
         sortable: false,
@@ -91,24 +95,25 @@ export default {
   watch: {
     storeReferences(data) {
       if (data.length > 0) {
-        this.items=[];
-         data.map((element) =>{
-         this.items.push( 
-           {
-            id:element.id,
-            name:element.name,
-            description:element.description,
-            is_lock:element.is_lock ? 'Sí' : 'No'
-            },
-        //  element.name;
-         )
-         
-        // this.items = data;
-        // this.items[0].description = data.description;
-        // this.items[0].is_lock = data.is_lock ? 'Sí' : 'No';
-      })
-    }
-  },
+        this.items = [];
+        data.map((element) => {
+          this.items.push(
+            {
+              id: element.id,
+              slug: element.slug,
+              name: element.name,
+              description: element.description,
+              is_lock: element.is_lock ? "Sí" : "No",
+            }
+            //  element.name;
+          );
+
+          // this.items = data;
+          // this.items[0].description = data.description;
+          // this.items[0].is_lock = data.is_lock ? 'Sí' : 'No';
+        });
+      }
+    },
   },
   methods: {
     ...mapActions({

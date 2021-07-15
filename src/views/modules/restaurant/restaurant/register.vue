@@ -23,6 +23,7 @@
               :error-messages="errorsBags.restaurant_type_id"
             ></v-select>
           </v-col>
+
           <v-col cols="12" lg="6">
             <v-select
               :loading="loadingDepartment"
@@ -197,6 +198,9 @@ export default {
       this.loadingRestaurantType = true;
       this.loadingDepartment = true;
       this.loadingMunicipality = true;
+      const departments = [];
+      const municipalities = [];
+      const restaurantTypes = [];
       const departments = [];
       const municipalities = [];
       const restaurantTypes = [];

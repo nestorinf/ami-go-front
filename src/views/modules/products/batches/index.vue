@@ -8,7 +8,7 @@
     <v-card class="mb-7">
       <v-card-text class="pa-5 border-bottom">
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-          {{ titleForm }}
+          {{ titleForm }} <button @click="getProductsBatchesData">asd</button>
         </h3>
       </v-card-text>
 
@@ -16,13 +16,13 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'restaurant/register',
+            path: 'batches/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveCommerceType"
+          @remove-button="acceptRemoveProductBatches"
         ></DataTable>
       </v-col>
     </v-card>
@@ -42,7 +42,7 @@ import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
-  name: "Restaurant",
+  name: "ProductsBatches",
   components: {
     DataTable,
     DialogConfirm,
@@ -54,69 +54,103 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Restaurante",
+        text: "Producto",
         disabled: false,
         to: "#",
       },
       {
-        text: "Restaurantes",
+        text: "Lotes",
         disabled: true,
       },
     ],
     messageDialog: "",
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Restaurante",
+    titleForm: "Lotes",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
-      { text: "Nombre", value: "name" },
-      { text: "Departamento", value: "department_name" },
-      { text: "Municipio", value: "municipality_name" },
-      { text: "Tipo de restaurante", value: "restaurant_type_name" },
-      // { text: "Logo", value: "logo" },
-      // { text: "Cover", value: "cover" },
-      { text: "Descripción", value: "description" },
-      { text: "Teléfono", value: "phone" },
+      {
+        text: "Producto",
+        align: "start",
+        value: "product",
+      },
+      {
+        text: "Nombre",
+        align: "start",
+        value: "name",
+      },
+      {
+        text: "Stock",
+        value: "stock",
+      },
+      {
+        text: "Stock minimo",
+        value: "stock_min",
+      },
+      {
+        text: "Estatu",
+        value: "status",
+      },
+      {
+        text: "Precio Unitario",
+        value: "unit_price",
+      },
+      {
+        text: "Precio Regular",
+        value: "regular_price",
+      },
+      {
+        text: "Fecha de expiración",
+        value: "expired_date",
+      },
+      {
+        text: "Color",
+        value: "colour",
+      },
+      {
+        text: "Talla",
+        value: "size",
+      },
+
+      // { text: "Categoria Padre", value: "category_father" },
     ],
     items: [],
     idDelete: "",
   }),
-
   computed: {
-    ...mapGetters({ storeRestaurant: "restaurant/getRestaurants" }),
+    ...mapGetters({ storeProductsBatches: "productBatches/getProductsBatches" }),
   },
   watch: {
-    storeRestaurant(data) {
+    storeProductsBatches(data) {
+      this.items = [];
       if (data.length > 0) {
         this.items = data;
+        console.log(this.items);
       }
     },
   },
-
   methods: {
     ...mapActions({
-      getRestaurantsData: "restaurant/getRestaurantsData",
-      removeRestaurant: "restaurant/removeRestaurant",
+      getProductsBatchesData: "productBatches/getProductsBatchesData",
+      removeProductBatches: "productBatches/removeProductBatches",
     }),
     editButton({ id }) {
-      this.$router.push("restaurant/edit/" + id);
+      this.$router.push("batches/edit/" + id);
     },
-    acceptRemoveCommerceType(item) {
+    acceptRemoveProductBatches(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeRestaurant(this.idDelete);
+      this.removeProductBatches(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
-      // this.getRestaurantsData();
     },
   },
-
   mounted() {
-    this.getRestaurantsData();
+    this.getProductsBatchesData();
   },
 };
 </script>
