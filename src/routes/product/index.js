@@ -36,6 +36,25 @@ export default {
             path: "products/categories/edit/:id",
             props: true,
             component: () => import("../../views/modules/products/category/register")
+        },
+
+        
+        // routes for Lotes
+        {
+            name: 'products Batches',
+            path: "products/batches",
+            component: () => import("../../views/modules/products/batches")
+        },
+        {
+            name: 'products Batches Register',
+            path: "products/batches/register",
+            component: () => import("../../views/modules/products/batches/register")
+        },
+        {
+            name: 'products Batches Edit',
+            path: "products/batches/edit/:id",
+            props: true,
+            component: () => import("../../views/modules/products/batches/register")
         }
     ],
 
@@ -55,6 +74,11 @@ export default {
                 title: "Producto",
                 icon: "mdi-comment-outline",
                 to: "product",
+            },
+            {
+                title: "Lotes",
+                icon: "mdi-comment-outline",
+                to: "batches",
             }
 
         ]

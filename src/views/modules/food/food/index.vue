@@ -22,6 +22,7 @@
           :items="items"
           :loading="true"
           @edit-button="editButton"
+          @add-feature-button="addFeatureButton"
           @remove-button="acceptRemoveFood"
         ></DataTable>
       </v-col>
@@ -35,7 +36,7 @@
 </template>
 
 <script>
-import DataTable from "../../components/DataTable";
+import DataTable from "./components/DataTableFood";
 import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
@@ -83,9 +84,7 @@ export default {
       { text: "Descuento", value: "discount" },
       { text: "Taxes", value: "tax" },
       { text: "Peso", value: "weight" },
-      { text: "Cantidad", value: "quantity" },
       { text: "¿Es Grupo?", value: "is_group_formatted" },
-      { text: "¿Es Extra?", value: "is_extra_formatted" },
       { text: "¿Con Características?", value: "with_features_formatted" },
       { text: "¿En Stock?", value: "is_stock_formatted" },
     ],
@@ -103,6 +102,7 @@ export default {
       this.items = [];
       if (data.length > 0) {
         this.items = data;
+        console.log(this.items);
       }
     },
   },
@@ -113,6 +113,9 @@ export default {
     }),
     editButton({ id }) {
       this.$router.push("food/edit/" + id);
+    },
+    addFeatureButton({ id }) {
+      this.$router.push("food/features/" + id);
     },
     acceptRemoveFood(item) {
       this.idDelete = item.id;

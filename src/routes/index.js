@@ -9,6 +9,7 @@ import commerce from './commerce'
 import restaurant from './restaurant'
 import payment from './payment'
 import location from './location'
+import driver from './driver'
 import home from './home'
 
 // import { readFileSync } from 'fs'
@@ -30,4 +31,5 @@ export default {
     food,
     payment,
     user,
+    driver,
 }

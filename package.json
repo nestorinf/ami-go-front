@@ -45,10 +45,12 @@
     "vue-the-mask": "^0.11.1",
     "vue-upload-drop-images": "^1.0.6",
     "vue-world-map": "^0.1.1",
+    "vue2-google-maps": "^0.10.7",
     "vuebar": "0.0.20",
     "vuedraggable": "^2.24.3",
     "vuelidate": "^0.7.6",
     "vuetify": "^2.5.1",
+    "vuetify-google-autocomplete": "^2.0.4",
     "vuex": "^3.6.2"
   },
   "devDependencies": {
