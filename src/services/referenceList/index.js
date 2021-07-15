@@ -18,6 +18,10 @@ class ReferenceListService {
     return HTTP.get(`${this.path}/references/` + id);
   }
 
+  getReferenceListByReferenceSlug(id) {
+    return HTTP.get(`${this.path}/references_slug/` + id);
+  }
+
   update(data) {
     return HTTP.put(`${this.path}/` + data.id, data);
   }

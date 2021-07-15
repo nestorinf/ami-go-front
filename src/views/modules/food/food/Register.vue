@@ -110,18 +110,6 @@
               :error-messages="errorsBags.weight"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" lg="6">
-            <v-text-field
-              type="number"
-              v-model="form.quantity"
-              label="Cantidad"
-              filled
-              required
-              :rules="rules.quantityRule"
-              background-color="transparent"
-              :error-messages="errorsBags.quantity"
-            ></v-text-field>
-          </v-col>
           <v-col cols="6" lg="6">
             <v-checkbox
               v-model="form.is_group"
@@ -129,15 +117,6 @@
               label="¿Es Grupo?"
               :rules="rules.is_groupRule"
               :error-messages="errorsBags.is_group"
-            ></v-checkbox>
-          </v-col>
-          <v-col cols="6" lg="6">
-            <v-checkbox
-              v-model="form.is_extra"
-              required
-              label="¿Es Extra?"
-              :rules="rules.is_extraRule"
-              :error-messages="errorsBags.is_extra"
             ></v-checkbox>
           </v-col>
           <v-col cols="6" lg="6">
@@ -213,9 +192,7 @@ export default {
         tax: "",
         uom: "",
         weight: "",
-        quantity: "",
         is_group: "",
-        is_extra: "",
         with_features: "",
         is_stock: "",
       },
@@ -264,10 +241,11 @@ export default {
       const restaurants = [];
       const foodCategories = [];
       this.getRestaurantsData().then((result) => {
+        console.log("getRestaurantsData", result);
         result.map((element) => {
           restaurants.push({
             value: element.id,
-            text: element.commerce_name,
+            text: element.name,
           });
           this.restaurantList = restaurants;
         });
