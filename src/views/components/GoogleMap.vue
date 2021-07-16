@@ -10,7 +10,7 @@
           id="map"
           placeholder="Ingrese una Direccion"
           @place_changed='setPlace'
-          country="ve"
+          country="SV"
           v-on:placechanged="getAddressData">
       </vuetify-google-autocomplete>
 
@@ -80,7 +80,6 @@ export default {
     }
     this.markers.push({ position: coordinate });
     this.$emit("coordinates", coordinate)
-           
     },
     addMarker() {
     this.markers = []
@@ -88,12 +87,14 @@ export default {
         const coordinate = {
           lat: this.address.latitude,
           lng: this.address.longitude,
-        };
+        };        
         this.markers.push({ position: coordinate });
         this.places.push(this.currentPlace);
+        this.$emit("coordinates", coordinate)
         this.center = coordinate;
         this.currentPlace = null;
       }
+      
     },
     Coordinates() {
       this.markers = []        

@@ -150,9 +150,8 @@ export default {
       this.loadingCommerces = true;       
       const rows = [];
       this.getCommercesData().then((result) => {
-         this.loadingChild = true;
-        if(result) {
-          console.log(result)
+        this.loadingChild = true;
+        if(result) {   
           result.map((element) => {
             rows.push({
               value: element.id,

@@ -79,6 +79,9 @@ export default {
         value: "name",
       },
       { text: "Codigo", value: "code" },
+      { text: "Latitud", value: "latitude" },
+      { text: "Longitud", value: "longitude" },
+      { text: "Predeterminado", value: "is_default" },
     ],
     items: [],
     idDelete: "",
@@ -90,9 +93,26 @@ export default {
   watch: {
     storeCountries(data) {
         this.items=[];
-      if (data.length > 0) {             
-         this.items = data;        
-    }
+      if (data.length > 0) {
+        this.items = [];
+        data.map((element) => {
+          this.items.push(
+            {
+              id: element.id,
+              name: element.name,
+              code: element.code,
+              latitude: element.latitude,
+              longitude: element.longitude,
+              is_default: element.is_default ? "Sí" : "No",
+            }
+            //  element.name;
+          );
+
+          // this.items = data;
+          // this.items[0].description = data.description;
+          // this.items[0].is_lock = data.is_lock ? 'Sí' : 'No';
+        });
+      }
   },
   },
   methods: {
