@@ -270,7 +270,6 @@ export default {
       this.loadingRestaurant = true;
       const restaurants = [];
       this.getRestaurantsData().then((result) => {
-        console.log("getRestaurantsData", result);
         result.map((element) => {
           restaurants.push({
             value: element.id,

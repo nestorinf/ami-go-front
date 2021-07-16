@@ -116,7 +116,6 @@ export default {
         });
         this.items = rows;
       }
-      console.log(data);
     },
   },
 
