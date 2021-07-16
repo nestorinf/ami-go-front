@@ -22,20 +22,23 @@ export default {
         // routes for user
         {
             name: 'User',
-            path: "security/user",
+            path: "security/user/:type",
+            props: true,
             component: () => import("../../views/modules/security/user")
-        },
+        },        
         {
             name: 'User Register',
-            path: "security/user/register",
+            path: "security/user/:type/register",
+            props: true,
             component: () => import("../../views/modules/security/user/register")
         },
         {
             name: 'User Edit',
-            path: "security/user/edit/:id",
+            path: "security/user/:type/edit/:id",
             props: true,
             component: () => import("../../views/modules/security/user/register")
         }
+
     ],
 
 
@@ -51,9 +54,19 @@ export default {
                 to: "roles",
             },
             {
-                title: "Usuario",
+                title: "Usuarios",
                 icon: "mdi-account",
-                to: "user",
+                to: "user/admin",
+            },
+            {
+                title: "Usuarios Comercios",
+                icon: "mdi-account",
+                to: "user/commerces",
+            },
+            {
+                title: "Usuarios Restaurants",
+                icon: "mdi-account",
+                to: "user/restaurants",
             },
         ]
     }

@@ -18,10 +18,12 @@ const mutations = {
 
 
 const actions = {
-    getUsersData({ commit, dispatch }) {
+    getUsersData({ commit, dispatch }, type) {     
+        
         return new Promise((resolve, reject) => {
+            commit('setUsers', [])
             dispatch('loading/loadingState', true, { root: true })
-            UserService.all().then(({ data }) => {
+            UserService.all(type).then(({ data }) => {
                 const users = data.payload
 
                 dispatch('loading/loadingState', false, { root: true })
