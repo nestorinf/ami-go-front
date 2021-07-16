@@ -84,7 +84,6 @@ export default {
       { text: "Descuento", value: "discount" },
       { text: "Taxes", value: "tax" },
       { text: "Peso", value: "weight" },
-      { text: "¿Es Grupo?", value: "is_group_formatted" },
       { text: "¿Con Características?", value: "with_features_formatted" },
       { text: "¿En Stock?", value: "is_stock_formatted" },
     ],
