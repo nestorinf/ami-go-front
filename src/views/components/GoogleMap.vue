@@ -60,6 +60,7 @@ export default {
       markers: [],
       places: [],
       address: '',
+      country : this.centerMap.country
     }
   },
   mounted()  {    

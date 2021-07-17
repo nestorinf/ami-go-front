@@ -71,9 +71,9 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 import GoogleMap from "../../../components/GoogleMap";
+import { mapGetters,mapActions } from "vuex";
 export default {
   name: "RegisterCommerceAddress",
   props: {
@@ -94,11 +94,7 @@ export default {
       loadingChild: false,
       commerceList: [],
       editCoordinates:{},
-      center:{
-        lat: 13.7013266, 
-        lng: -89.226622 
-        
-      },
+      center:{},
       form: {
         id: "",
         commerce_id: null,
@@ -121,14 +117,15 @@ export default {
     getComerceAddresses() {
       return this.$store.state.comerceAddress.comerceAddresses;
     },
+    ...mapGetters({ storeCountries: "country/getCountries" }),
   },
-
   methods: {
     ...mapActions({
       createCommerceAddress: "commerceAddress/createCommerceAddress",
       getCommerceAddressById: "commerceAddress/getCommerceAddressById",
       updateCommerceAddress: "commerceAddress/updateCommerceAddress",
       getCommercesData: "commerce/getCommercesData",
+      getCountryData: "country/getCountryData",
     }),
     coordinates(coordinate){
       this.form.latitude = coordinate.lat
@@ -147,8 +144,16 @@ export default {
       }
     },
     setData() {
+      this.getCountryData().then((result => {
+        const country = result.filter(country =>  country.is_default === 1  );
+        this.center = {
+        lat: parseFloat(country[0].latitude), 
+        lng: parseFloat(country[0].longitude),
+        country: country[0].code,
+      }
+      }))
       this.loadingCommerces = true;       
-      const rows = [];
+      const rows = [];      
       this.getCommercesData().then((result) => {
         this.loadingChild = true;
         if(result) {   

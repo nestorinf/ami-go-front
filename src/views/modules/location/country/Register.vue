@@ -41,7 +41,7 @@
               required
               :rules="rules.latitudeRule"
               background-color="transparent"
-              :error-messages="errorsBags.latitudee"
+              :error-messages="errorsBags.latitude"
             ></v-text-field>
           </v-col>
           <v-col cols="12" lg="6">
@@ -58,6 +58,7 @@
           <v-col cols="12" lg="6">
             <v-checkbox
               v-model="form.is_default"
+              filled
               required
               label="Predeterminado"
               :error-messages="errorsBags.is_default"
