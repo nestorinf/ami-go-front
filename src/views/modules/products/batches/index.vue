@@ -31,6 +31,11 @@
       @handler-dialog-confirm="removeButton"
       :message="messageDialog"
     ></DialogConfirm>
+    <SnackBar
+      :text="textSnackBar"
+      ref="snackBarRef"
+      :snackbar="true"
+    ></SnackBar>
   </v-container>
 </template>
 
@@ -40,12 +45,14 @@ import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
+import SnackBar from "@/views/modules/components/SnackBar";
 
 export default {
   name: "ProductsBatches",
   components: {
     DataTable,
     DialogConfirm,
+    SnackBar,
   },
 
   data: () => ({
@@ -64,6 +71,7 @@ export default {
       },
     ],
     messageDialog: "",
+    textSnackBar: "",
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
     titleForm: "Lotes",
@@ -144,9 +152,25 @@ export default {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
-    removeButton() {
-      this.removeProductBatches(this.idDelete);
-      this.$refs.DialogConfirm.changeStateDialog(false);
+    removeButton() {      
+       this.removeProductBatches(this.idDelete)
+        .then((result) => {
+          if (result) {
+            this.$refs.snackBarRef.changeStatusSnackbar(true);
+            this.textSnackBar = "Eliminado existosamente!";
+          }
+        }).catch((err) => {
+          if (err.response) {
+            this.errorsBags = err.response.data.errors;
+            setTimeout(() => {
+              this.errorsBags = [];
+            }, 4000);
+          }
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = "Disculpe, ha ocurrido un error";
+        });
+
+      this.$refs.DialogConfirm.changeStateDialog(false); 
     },
   },
   mounted() {
