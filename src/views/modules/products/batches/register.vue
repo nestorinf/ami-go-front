@@ -77,7 +77,7 @@
               v-model="form.unit_price"
               label="Precio unitario"
               type="number"
-              filled
+              prefix="$"
               required
               :rules="rules.unit_priceRule"
               background-color="transparent"
@@ -89,7 +89,7 @@
               v-model="form.regular_price"
               label="Precio regular"
               type="number"
-              filled
+              prefix="$"
               required
               :rules="rules.regular_priceRule"
               background-color="transparent"
@@ -97,16 +97,34 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" lg="12">
-            <v-text-field
-              v-model="form.expired_date"
-              label="Fecha de expiración"
-              type="date"
-              filled
-              required
-              :rules="rules.expired_dateRule"
-              background-color="transparent"
-              :error-messages="errorsBags.expired_date"
-            ></v-text-field>
+         <v-menu
+        v-model="menu2"
+        :close-on-content-click="false"
+        :nudge-right="40"
+        transition="scale-transition"
+        offset-y
+        min-width="auto"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-text-field
+            v-model="form.expired_date"
+            label="Fecha de expiración (Dejar en blanco si no aplica)" 
+            hint="Dejar en blanco si no aplica..."
+            readonly
+            v-bind="attrs"
+            v-on="on"
+            clearable
+            @click:clear="form.expired_date = null"
+          ></v-text-field>
+        </template>
+        <v-date-picker
+          v-model="form.expired_date"
+          @input="menu2 = false"
+        ></v-date-picker>
+      </v-menu>
+        
+
+
           </v-col>
           <v-col cols="12" lg="12">
             <v-select
@@ -199,13 +217,14 @@ export default {
     ShowsImages,
     SnackBar,
   },
-
+ 
   data() {
     return {
+      menu2: false,
       textSnackBar: "",
       valid: true, 
-      form_images: null,
       form: {
+        id: "",
         product_id: "",
         accept_size: false,
         size_id: null,
@@ -218,7 +237,7 @@ export default {
         regular_price: "",
         colour_id: "",
         expired_date:"",
-        images_id:""
+        images_id:[]
       },
 
       sizeList: [],
@@ -301,8 +320,8 @@ export default {
         .then((result) => {
           if (result) {
             console.log('result_reg',result)
-            // this.form = {};
-            // this.$refs.form.reset();
+            this.form = {};
+            this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
             // this.$router.push("/products/categories");
@@ -374,14 +393,15 @@ export default {
             });
 
             this.selectedFile = [];
-            
-            console.log('ad',this.form);
-            this.save();
-
+             
             this.displayed = false;
             this.$nextTick(() => {
               this.displayed = true;
             });
+            
+            this.save();
+
+
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
           }

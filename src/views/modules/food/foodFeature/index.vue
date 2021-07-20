@@ -152,7 +152,24 @@ export default {
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeFoodFeature(this.idDelete);
+       this.removeFoodFeature(this.idDelete)
+        .then((result) => {
+          if (result) {
+            this.$refs.snackBarRef.changeStatusSnackbar(true);
+            this.textSnackBar = "Eliminado existosamente!";
+          }
+        })
+        .catch((err) => {
+          if (err.response) {
+            this.errorsBags = err.response.data.errors;
+            setTimeout(() => {
+              this.errorsBags = [];
+            }, 4000);
+          }
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = "Disculpe, ha ocurrido un error";
+        });
+
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
     getDataFood(id) {
