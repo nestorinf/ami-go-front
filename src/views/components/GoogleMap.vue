@@ -1,24 +1,14 @@
 <template>
   <v-col cols="12" lg="12">
     <div>
-      <h2>Busque una Dirección y Agregue</h2>
-      <!-- <GmapAutocomplete
-        @place_changed='setPlace'
-        :options="{fields: ['geometry', 'formatted_address', 'address_components']}"
-      /> -->
-      <vuetify-google-autocomplete
+      <h2>Busque una Dirección y Agregue O Seleccione en el Mapa</h2>
+        <vuetify-google-autocomplete
           id="map"
           placeholder="Ingrese una Direccion"
           @place_changed='setPlace'
-          country="ve"
+          :country="''+this.center.country+''"
           v-on:placechanged="getAddressData">
       </vuetify-google-autocomplete>
-
-      <!-- <v-text-field
-            label="Ingrese una Direccion"
-            v-on:changed="setPlace"
-            :options="{fields: ['geometry', 'formatted_address', 'address_components']}"
-          ></v-text-field> -->
       <v-btn
           color="success"
           @click="addMarker"
@@ -28,7 +18,7 @@
     </div>
     <br>
     <GmapMap
-      :center='center'
+      :center='this.center'
       :zoom='13'
       style='width:100%;  height: 400px;'
       @click="updateCoordinates"      
@@ -46,26 +36,33 @@
 </template>
 
 <script>
-
+import {mapGetters, mapActions } from "vuex";
 export default {
   name: 'GoogleMap',  
   props:{
    editCoordinates: Object,
-   centerMap: Object
   }, 
   data() { 
     return {
-      center: { lat:this.centerMap.lat, lng: this.centerMap.lng },
+       center: { lat:0.00, lng: 0.00 },
       currentPlace: null, 
       markers: [],
       places: [],
       address: '',
     }
+    
   },
-  mounted()  {    
-    this.Coordinates()
+  mounted()  { 
+     this.Coordinates()
   },
+  computed: {
+   ...mapGetters({ storeCountries: "country/getCountries" }),
+    },
   methods: {
+    ...mapActions({
+      getCountryData: "country/getCountryData",
+    }),    
+    
     getAddressData: function (addressData) {
                 this.address = addressData;
             },
@@ -80,7 +77,6 @@ export default {
     }
     this.markers.push({ position: coordinate });
     this.$emit("coordinates", coordinate)
-           
     },
     addMarker() {
     this.markers = []
@@ -88,12 +84,14 @@ export default {
         const coordinate = {
           lat: this.address.latitude,
           lng: this.address.longitude,
-        };
+        };        
         this.markers.push({ position: coordinate });
         this.places.push(this.currentPlace);
+        this.$emit("coordinates", coordinate)
         this.center = coordinate;
         this.currentPlace = null;
       }
+      
     },
     Coordinates() {
       this.markers = []        
@@ -102,7 +100,19 @@ export default {
             lng: parseFloat(this.editCoordinates.lng),
           }
       this.markers.push({ position: coordinateedit });
+      
+      this.getCountryData().then((result => {
+        const country = result.filter(country =>  country.is_default === 1  );
+        
+        this.center = {
+        lat: parseFloat(country[0].latitude), 
+        lng: parseFloat(country[0].longitude),
+        country: country[0].code,
+      }        
+      }))
     }
+
+    
     //geolocate: function() {
     //  navigator.geolocation.getCurrentPosition(position => {
     //    this.center = {

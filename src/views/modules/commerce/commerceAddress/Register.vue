@@ -39,10 +39,16 @@
                     <GoogleMap
                     v-if="loadingChild"
                     @coordinates="coordinates"
-                    :centerMap="center"
                     :title="'Titulo Marcador'"
                     :editCoordinates="editCoordinates"/> 
                 </v-col>
+                <!-- <v-col cols="12" lg="12">
+                    <GoogleMap
+                    v-if="loadingChild"
+                    @coordinates="coordinates"
+                    :title="'Titulo Marcador'"
+                    :editCoordinates="editCoordinates"/> 
+                </v-col> -->
                 </v-row>
         <v-btn
           color="success"
@@ -71,9 +77,9 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 import GoogleMap from "../../../components/GoogleMap";
+import { mapActions } from "vuex";
 export default {
   name: "RegisterCommerceAddress",
   props: {
@@ -94,11 +100,7 @@ export default {
       loadingChild: false,
       commerceList: [],
       editCoordinates:{},
-      center:{
-        lat: 13.7013266, 
-        lng: -89.226622 
-        
-      },
+      center:{},
       form: {
         id: "",
         commerce_id: null,
@@ -122,7 +124,6 @@ export default {
       return this.$store.state.comerceAddress.comerceAddresses;
     },
   },
-
   methods: {
     ...mapActions({
       createCommerceAddress: "commerceAddress/createCommerceAddress",
@@ -148,11 +149,10 @@ export default {
     },
     setData() {
       this.loadingCommerces = true;       
-      const rows = [];
+      const rows = [];      
       this.getCommercesData().then((result) => {
-         this.loadingChild = true;
-        if(result) {
-          console.log(result)
+        this.loadingChild = true;        
+        if(result) {   
           result.map((element) => {
             rows.push({
               value: element.id,
