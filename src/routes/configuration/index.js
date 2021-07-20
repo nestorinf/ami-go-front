@@ -91,11 +91,11 @@ export default {
         icon: "mdi-comment-outline",
         to: "frequent-question",
       },
-      {
-        title: "Subir Imagenes",
-        icon: "mdi-comment-outline",
-        to: "images"
-      }
+      // {
+      //   title: "Subir Imagenes",
+      //   icon: "mdi-comment-outline",
+      //   to: "images"
+      // }
     ]
   }
 };

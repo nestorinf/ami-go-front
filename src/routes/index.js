@@ -7,7 +7,7 @@ import user from './user'
 
 import commerce from './commerce'
 import restaurant from './restaurant'
-import payment from './payment'
+// import payment from './payment'
 import location from './location'
 import driver from './driver'
 import home from './home'
@@ -29,7 +29,7 @@ export default {
     promotion,
     product,
     food,
-    payment,
+  
     user,
     driver,
 }
