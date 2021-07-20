@@ -99,8 +99,8 @@ export default {
         value: "stock_min",
       },
       {
-        text: "Estatu",
-        value: "status",
+        text: "Estatus",
+        value: "estatus",
       },
       {
         text: "Precio Unitario",
