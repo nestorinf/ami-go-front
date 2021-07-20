@@ -11,12 +11,25 @@
       </v-card-text>
       <v-card-text>
         <v-row>
+          
+          <v-col cols="12" lg="12" v-if="ExpirePromotion">
+            <v-alert
+              outlined
+              type="warning"
+              prominent
+              border="left"
+            >
+              No se puede editar una promoción que ya ha expirado.
+            </v-alert>
+          </v-col>
+
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
               label="Nombre de la promoción"
               required
               filled
+              :disabled="ExpirePromotion"
               :rules="rules.nameRule"
               background-color="transparent"
               :error-messages="errorsBags.name"
@@ -27,6 +40,7 @@
               v-model="form.description"
               label="Descripción de la promoción"
               filled
+              :disabled="ExpirePromotion"
               background-color="transparent"
               :error-messages="errorsBags.description"
             ></v-text-field>
@@ -38,6 +52,7 @@
               v-model="form.type"
               filled
               required
+              :disabled="ExpirePromotion"
               :rules="rules.typeRule"
               background-color="transparent"
               :error-messages="errorsBags.type"
@@ -49,6 +64,7 @@
               v-model="form.expire_date"
               label="Fecha de Expiración"
               filled
+              :disabled="ExpirePromotion"
               background-color="transparent"
               :error-messages="errorsBags.expire_date"
             ></v-text-field>
@@ -63,6 +79,7 @@
               v-model="form.type_descuent"
               filled
               required
+              :disabled="ExpirePromotion"
               :rules="rules.type_descuentRule"
               background-color="transparent"
               :error-messages="errorsBags.type_descuent"
@@ -75,6 +92,7 @@
               label="Descuento"
               filled
               required
+              :disabled="ExpirePromotion"
               :rules="rules.amountRule"
               background-color="transparent"
               :error-messages="errorsBags.amount"
@@ -87,6 +105,7 @@
             <v-checkbox
               v-model="form.is_cupon"
               required
+              :disabled="ExpirePromotion"
               label="¿Acepta Cupones?"
             ></v-checkbox>
           </v-col>
@@ -96,6 +115,7 @@
               label="Código del Cupon"
               filled
               required
+              :disabled="ExpirePromotion"
               :rules="rules.code_cuponRule"
               background-color="transparent"
               :error-messages="errorsBags.code_cupon"
@@ -108,6 +128,7 @@
               label="Cantidad de Cupones"
               filled
               required
+              :disabled="ExpirePromotion"
               :rules="rules.total_cuponRule"
               background-color="transparent"
               :error-messages="errorsBags.total_cupon"
@@ -119,22 +140,24 @@
             <v-checkbox
               v-model="form.enabled"
               required
+              :disabled="ExpirePromotion"
               label="¿Visible?"
             ></v-checkbox>
           </v-col>
         </v-row>
         
-        <v-row>
+        <v-row v-if="!ExpirePromotion">
           <v-col cols="12" lg="12">
             <UploadImages v-if="displayed" :max="50" @change="onFileSelected" />
           </v-col>
         </v-row>
         
-        <ShowsImages :items="form.imagenes" v-if="id" @delete-imagen="deleteImagen"></ShowsImages>
+        <ShowsImages :items="form.imagenes" :disabled="ExpirePromotion" v-if="id" @delete-imagen="deleteImagen"></ShowsImages>
         
         <v-row class="pt-10">
           <v-col cols="12" lg="12">
             <v-btn
+              v-if="!ExpirePromotion"
               color="success"
               @click="preparedDataFiles"
               :disabled="!valid"
@@ -179,7 +202,7 @@ export default {
 
   data() {
     return {
-
+      date_expired : false,
       headers: [
       {
         text: "Accion",
@@ -279,8 +302,8 @@ export default {
       if (this.id) {
         
         this.getPromotionById(this.id).then((result) => {
-          console.log(result)
-          
+          console.log('result',result)
+          this.date_expired = result.expired;
           // this.form = Object.assign({}, result);
           this.form = {
             id: result.id,
@@ -408,6 +431,12 @@ export default {
           e.delete = !e.delete;
         }
       });
+    }
+  },
+  computed: {
+    ExpirePromotion(){
+      var date_expired = this.date_expired;
+      return date_expired;
     }
   },
   
