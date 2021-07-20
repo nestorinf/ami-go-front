@@ -93,6 +93,7 @@ const actions = {
         })
     },
 
+    
     removeFoodFeature({ commit, dispatch, state }, id) {
         return new Promise((resolve, reject) => {
             dispatch('loading/loadingState', true, { root: true })
