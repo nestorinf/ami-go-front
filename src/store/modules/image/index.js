@@ -51,13 +51,14 @@ const actions = {
             })
         })
     },
-
-    createImage({ commit }, body) {
+ 
+    createImage({ commit, dispatch }, body) {
         return new Promise((resolve, reject) => {
+            dispatch("loading/loadingState", true, { root: true });
             ImageService.create(body).then(({ data }) => {
-                const image = Object.assign({}, data.payload)
-
-                commit('setImage', image)
+                const image = Object.assign({}, data.payload);
+                dispatch("loading/loadingState", false, { root: true });
+                commit('setImage', image);
 
                 resolve(data.payload)
             }).catch(err => {

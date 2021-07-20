@@ -123,7 +123,6 @@ export default {
         value: "size",
       },
 
-      // { text: "Categoria Padre", value: "category_father" },
     ],
     items: [],
     idDelete: "",
@@ -140,7 +139,7 @@ export default {
       }
     },
   },
-  methods: {
+  methods: { 
     ...mapActions({
       getProductsBatchesData: "productBatches/getProductsBatchesData",
       removeProductBatches: "productBatches/removeProductBatches",

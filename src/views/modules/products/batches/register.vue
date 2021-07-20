@@ -77,7 +77,7 @@
               v-model="form.unit_price"
               label="Precio unitario"
               type="number"
-              filled
+              prefix="$"
               required
               :rules="rules.unit_priceRule"
               background-color="transparent"
@@ -89,7 +89,7 @@
               v-model="form.regular_price"
               label="Precio regular"
               type="number"
-              filled
+              prefix="$"
               required
               :rules="rules.regular_priceRule"
               background-color="transparent"
@@ -217,14 +217,14 @@ export default {
     ShowsImages,
     SnackBar,
   },
-
+ 
   data() {
     return {
       menu2: false,
       textSnackBar: "",
       valid: true, 
-      form_images: null,
       form: {
+        id: "",
         product_id: "",
         accept_size: false,
         size_id: null,
@@ -393,14 +393,15 @@ export default {
             });
 
             this.selectedFile = [];
-            
-            console.log('ad',this.form);
-            this.save();
-
+             
             this.displayed = false;
             this.$nextTick(() => {
               this.displayed = true;
             });
+            
+            this.save();
+
+
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
           }
