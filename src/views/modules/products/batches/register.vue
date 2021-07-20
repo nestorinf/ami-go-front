@@ -77,7 +77,7 @@
               v-model="form.unit_price"
               label="Precio unitario"
               type="number"
-              filled
+              prefix="$"
               required
               :rules="rules.unit_priceRule"
               background-color="transparent"
@@ -89,7 +89,7 @@
               v-model="form.regular_price"
               label="Precio regular"
               type="number"
-              filled
+              prefix="$"
               required
               :rules="rules.regular_priceRule"
               background-color="transparent"

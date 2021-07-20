@@ -73,19 +73,20 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.price"
+              type="number"
               label="Precio"
-              filled
+              prefix="$"
               required
               :rules="rules.priceRule"
               background-color="transparent"
-            ></v-text-field>
+          ></v-text-field>
+ 
           </v-col>
           <v-col cols="12" lg="6">
             <v-text-field
-              number
+              type="number"
               v-model="form.weight"
-              label="Peso"
-              filled
+              label="Peso" 
               background-color="transparent"
             ></v-text-field>
           </v-col>
