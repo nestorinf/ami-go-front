@@ -10,7 +10,7 @@
           id="map"
           placeholder="Ingrese una Direccion"
           @place_changed='setPlace'
-          country="SV"
+          :country="''+this.center.country+''"
           v-on:placechanged="getAddressData">
       </vuetify-google-autocomplete>
 
@@ -28,7 +28,7 @@
     </div>
     <br>
     <GmapMap
-      :center='center'
+      :center='this.center'
       :zoom='13'
       style='width:100%;  height: 400px;'
       @click="updateCoordinates"      
@@ -46,7 +46,7 @@
 </template>
 
 <script>
-
+import {mapGetters, mapActions } from "vuex";
 export default {
   name: 'GoogleMap',  
   props:{
@@ -55,18 +55,25 @@ export default {
   }, 
   data() { 
     return {
-      center: { lat:this.centerMap.lat, lng: this.centerMap.lng },
+       center: { lat:0.00, lng: 0.00 },
       currentPlace: null, 
       markers: [],
       places: [],
       address: '',
-      country : this.centerMap.country
     }
+    
   },
-  mounted()  {    
-    this.Coordinates()
+  mounted()  { 
+     this.Coordinates()
   },
+  computed: {
+   ...mapGetters({ storeCountries: "country/getCountries" }),
+    },
   methods: {
+    ...mapActions({
+      getCountryData: "country/getCountryData",
+    }),    
+    
     getAddressData: function (addressData) {
                 this.address = addressData;
             },
@@ -104,7 +111,19 @@ export default {
             lng: parseFloat(this.editCoordinates.lng),
           }
       this.markers.push({ position: coordinateedit });
+      
+      this.getCountryData().then((result => {
+        const country = result.filter(country =>  country.is_default === 1  );
+        
+        this.center = {
+        lat: parseFloat(country[0].latitude), 
+        lng: parseFloat(country[0].longitude),
+        country: country[0].code,
+      }        
+      }))
     }
+
+    
     //geolocate: function() {
     //  navigator.geolocation.getCurrentPosition(position => {
     //    this.center = {

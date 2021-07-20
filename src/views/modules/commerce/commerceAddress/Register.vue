@@ -43,6 +43,13 @@
                     :title="'Titulo Marcador'"
                     :editCoordinates="editCoordinates"/> 
                 </v-col>
+                <!-- <v-col cols="12" lg="12">
+                    <GoogleMap
+                    v-if="loadingChild"
+                    @coordinates="coordinates"
+                    :title="'Titulo Marcador'"
+                    :editCoordinates="editCoordinates"/> 
+                </v-col> -->
                 </v-row>
         <v-btn
           color="success"
@@ -73,7 +80,7 @@
 <script>
 import SnackBar from "@/views/modules/components/SnackBar";
 import GoogleMap from "../../../components/GoogleMap";
-import { mapGetters,mapActions } from "vuex";
+import {mapGetters, mapActions } from "vuex";
 export default {
   name: "RegisterCommerceAddress",
   props: {
@@ -117,7 +124,7 @@ export default {
     getComerceAddresses() {
       return this.$store.state.comerceAddress.comerceAddresses;
     },
-    ...mapGetters({ storeCountries: "country/getCountries" }),
+     ...mapGetters({ storeCountries: "country/getCountries" }),
   },
   methods: {
     ...mapActions({
@@ -144,18 +151,10 @@ export default {
       }
     },
     setData() {
-      this.getCountryData().then((result => {
-        const country = result.filter(country =>  country.is_default === 1  );
-        this.center = {
-        lat: parseFloat(country[0].latitude), 
-        lng: parseFloat(country[0].longitude),
-        country: country[0].code,
-      }
-      }))
       this.loadingCommerces = true;       
       const rows = [];      
       this.getCommercesData().then((result) => {
-        this.loadingChild = true;
+        this.loadingChild = true;        
         if(result) {   
           result.map((element) => {
             rows.push({
@@ -175,6 +174,14 @@ export default {
       if (this.id) {
         this.getCommerceAddressById(this.id).then((result) => {
            this.loadingChild = true;
+           this.getCountryData().then((result => {
+        const country = result.filter(country =>  country.is_default === 1  );
+        this.center = {
+        lat: parseFloat(country[0].latitude), 
+        lng: parseFloat(country[0].longitude),
+        country: country[0].code,
+      }
+      }))
           this.form = {
             id: result.id,
             name: result.name,
