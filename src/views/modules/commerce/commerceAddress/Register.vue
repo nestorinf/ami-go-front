@@ -39,7 +39,6 @@
                     <GoogleMap
                     v-if="loadingChild"
                     @coordinates="coordinates"
-                    :centerMap="center"
                     :title="'Titulo Marcador'"
                     :editCoordinates="editCoordinates"/> 
                 </v-col>
@@ -80,7 +79,7 @@
 <script>
 import SnackBar from "@/views/modules/components/SnackBar";
 import GoogleMap from "../../../components/GoogleMap";
-import {mapGetters, mapActions } from "vuex";
+import { mapActions } from "vuex";
 export default {
   name: "RegisterCommerceAddress",
   props: {
@@ -124,7 +123,6 @@ export default {
     getComerceAddresses() {
       return this.$store.state.comerceAddress.comerceAddresses;
     },
-     ...mapGetters({ storeCountries: "country/getCountries" }),
   },
   methods: {
     ...mapActions({
@@ -132,7 +130,6 @@ export default {
       getCommerceAddressById: "commerceAddress/getCommerceAddressById",
       updateCommerceAddress: "commerceAddress/updateCommerceAddress",
       getCommercesData: "commerce/getCommercesData",
-      getCountryData: "country/getCountryData",
     }),
     coordinates(coordinate){
       this.form.latitude = coordinate.lat
@@ -174,14 +171,6 @@ export default {
       if (this.id) {
         this.getCommerceAddressById(this.id).then((result) => {
            this.loadingChild = true;
-           this.getCountryData().then((result => {
-        const country = result.filter(country =>  country.is_default === 1  );
-        this.center = {
-        lat: parseFloat(country[0].latitude), 
-        lng: parseFloat(country[0].longitude),
-        country: country[0].code,
-      }
-      }))
           this.form = {
             id: result.id,
             name: result.name,

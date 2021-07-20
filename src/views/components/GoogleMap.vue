@@ -1,24 +1,14 @@
 <template>
   <v-col cols="12" lg="12">
     <div>
-      <h2>Busque una Dirección y Agregue</h2>
-      <!-- <GmapAutocomplete
-        @place_changed='setPlace'
-        :options="{fields: ['geometry', 'formatted_address', 'address_components']}"
-      /> -->
-      <vuetify-google-autocomplete
+      <h2>Busque una Dirección y Agregue O Seleccione en el Mapa</h2>
+        <vuetify-google-autocomplete
           id="map"
           placeholder="Ingrese una Direccion"
           @place_changed='setPlace'
           :country="''+this.center.country+''"
           v-on:placechanged="getAddressData">
       </vuetify-google-autocomplete>
-
-      <!-- <v-text-field
-            label="Ingrese una Direccion"
-            v-on:changed="setPlace"
-            :options="{fields: ['geometry', 'formatted_address', 'address_components']}"
-          ></v-text-field> -->
       <v-btn
           color="success"
           @click="addMarker"
@@ -51,7 +41,6 @@ export default {
   name: 'GoogleMap',  
   props:{
    editCoordinates: Object,
-   centerMap: Object
   }, 
   data() { 
     return {

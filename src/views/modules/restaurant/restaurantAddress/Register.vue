@@ -39,7 +39,6 @@
                     <GoogleMap
                     v-if="loadingChild"
                     @coordinates="coordinates"
-                    :centerMap="center"
                     :title="'Titulo Marcador'"
                     :editCoordinates="editCoordinates"/> 
                 </v-col>
@@ -94,11 +93,7 @@ export default {
       loadingChild: false,
       restaurantList: [],
       editCoordinates:{},
-      center:{
-        lat: 13.7013266, 
-        lng: -89.226622 
-        
-      },
+      center:{},
       form: {
         id: "",
         restaurant_id: null,
