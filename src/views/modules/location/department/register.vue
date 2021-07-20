@@ -53,7 +53,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/department/department"
+          to="/location/department"
           dark
           >Cancelar</v-btn
         >

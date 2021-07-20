@@ -1,10 +1,8 @@
 <template>
   <v-card class="mb-7">
     <v-form ref="form" v-model="valid" lazy-validation>
-      <v-card-text> 
-         <h4 class="font-weight-light">
-          Nueva Característica
-        </h4>
+      <v-card-text>
+        <h4 class="font-weight-light">Nueva Característica</h4>
         <v-row>
           <v-col cols="4" lg="4">
             <v-select
@@ -30,7 +28,11 @@
               :error-messages="errorsBags.name"
             ></v-text-field>
           </v-col>
-          <v-col cols="4" lg="4" v-if="TypeFeatureSelected && TypeFeatureSelected.price">
+          <v-col
+            cols="4"
+            lg="4"
+            v-if="TypeFeatureSelected && TypeFeatureSelected.price"
+          >
             <v-text-field
               v-model="form.price"
               label="Precio"
@@ -50,6 +52,9 @@
           submit
           class="text-capitalize mr-2"
           >Guardar</v-btn
+        >
+        <v-btn color="black" class="text-capitalize" to="/food/food" dark
+          >Cancelar</v-btn
         >
       </v-card-text>
     </v-form>
@@ -80,7 +85,7 @@ export default {
       valid: true,
       loadingTypeFeature: false,
       TypeFeaturesList: [],
-      TypeFeatureSelected: '',
+      TypeFeatureSelected: "",
       errorsBags: [],
       form: {
         id: "",
@@ -113,7 +118,7 @@ export default {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
         const payload = this.form;
-          this.create(payload);
+        this.create(payload);
       }
     },
     setData() {
@@ -123,7 +128,7 @@ export default {
         result.map((element) => {
           TypeFeatures.push({
             value: element.id,
-            text: element.value
+            text: element.value,
           });
           this.TypeFeaturesList = TypeFeatures;
         });
@@ -137,13 +142,13 @@ export default {
     },
 
     create(payload) {
-      payload['food_id'] = this.idfood;
+      payload["food_id"] = this.idfood;
       this.createFoodFeature(payload)
         .then((result) => {
           if (result) {
             this.$emit("add-new-items", result);
             this.form = {};
-            this.TypeFeatureSelected = '';
+            this.TypeFeatureSelected = "";
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
@@ -162,13 +167,12 @@ export default {
     },
 
     searchTypeFeature() {
-      if(this.form.feature_type_id){
+      if (this.form.feature_type_id) {
         this.foodTypeFeature(this.form.feature_type_id).then((result) => {
           this.TypeFeatureSelected = Object.assign({}, result);
         });
       }
     },
   },
-  
 };
 </script>

@@ -4,7 +4,11 @@ export default {
         {
             name: 'Food Category',
             path: "food/food-category",
-            component: () => import("../../views/modules/food/foodCategory")
+            component: () => import("../../views/modules/food/foodCategory"),
+          
+            meta: {
+                roles: ['ROLE_ROOT']
+            }
         },
         {
             name: 'Food Category Register',
@@ -70,9 +74,11 @@ export default {
         icon: 'mdi-basket',
         children: [
             {
-                title: "Tipos de comida",
+                title: "Categoria de comida",
                 icon: "mdi-variant",
                 to: "food-category",
+                roles: ['ROLE_ROOT']
+               
             },
             {
                 title: "Tipos de características",
@@ -83,6 +89,7 @@ export default {
                 title: "Comidas",
                 icon: "mdi-burger",
                 to: "food",
+                roles: ['ROLE_ROOT']
             },
         ]
     }

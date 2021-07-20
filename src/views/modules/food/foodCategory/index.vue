@@ -58,7 +58,7 @@ export default {
         to: "#",
       },
       {
-        text: "Tipos de Comida",
+        text: "Categoria de Comida",
         disabled: true,
       },
     ],
@@ -66,7 +66,7 @@ export default {
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Tipo de Comida",
+    titleForm: "Categoria de Comida",
     headers: [
       {
         text: "Accion",

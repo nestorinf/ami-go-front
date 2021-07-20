@@ -1,5 +1,4 @@
 <template>
-
   <BaseItemGroup
     :item="item"
     text
@@ -11,19 +10,22 @@
 </template>
 
 <script>
-  export default {
-    name: 'BaseItemSubGroup',
+export default {
+  name: "BaseItemSubGroup",
 
-    props: {
-      item: {
-        type: Object,
-        default: () => ({
-          avatar: undefined,
-          group: undefined, 
-          title: undefined,
-          children: [],
-        }),
-      },
+  props: {
+    item: {
+      type: Object,
+      default: () => ({
+        avatar: undefined,
+        group: undefined,
+        title: undefined,
+        children: [],
+      }),
     },
-  }
+  },
+  mounted() {
+    console.log(this.item);
+  },
+};
 </script>
