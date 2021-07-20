@@ -2,8 +2,8 @@ import HTTP from '../axios'
 
 class UserService {
     path = 'users'
-    all() {
-        return HTTP.get(`${this.path}`)
+    all(type) {
+        return HTTP.get(`${this.path}`+'?type='+type)
     }
 
     create(data) {
