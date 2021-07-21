@@ -112,15 +112,6 @@
           </v-col>
           <v-col cols="6" lg="6">
             <v-checkbox
-              v-model="form.is_group"
-              required
-              label="¿Es Grupo?"
-              :rules="rules.is_groupRule"
-              :error-messages="errorsBags.is_group"
-            ></v-checkbox>
-          </v-col>
-          <v-col cols="6" lg="6">
-            <v-checkbox
               v-model="form.with_features"
               required
               label="¿Con Características?"
@@ -192,7 +183,6 @@ export default {
         tax: "",
         uom: "",
         weight: "",
-        is_group: "",
         with_features: "",
         is_stock: "",
       },

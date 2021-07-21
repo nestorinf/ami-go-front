@@ -11,7 +11,7 @@
     <v-card-text>
       <v-form ref="form" v-model="valid" lazy-validation>
         <v-row>
-          <v-col cols="12" lg="12">
+          <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
               label="Nombre"
@@ -22,7 +22,7 @@
               :error-messages="errorsBags.name"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" lg="12">
+          <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.code"
               label="Código"
@@ -32,6 +32,37 @@
               background-color="transparent"
               :error-messages="errorsBags.code"
             ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-text-field
+              v-model="form.latitude"
+              label="Latitud"
+              filled
+              required
+              :rules="rules.latitudeRule"
+              background-color="transparent"
+              :error-messages="errorsBags.latitude"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-text-field
+              v-model="form.longitude"
+              label="Longitud"
+              filled
+              required
+              :rules="rules.longitudeRule"
+              background-color="transparent"
+              :error-messages="errorsBags.longitude"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-checkbox
+              v-model="form.is_default"
+              filled
+              required
+              label="Predeterminado"
+              :error-messages="errorsBags.is_default"
+            ></v-checkbox>
           </v-col>
         </v-row>
         <v-btn
@@ -80,10 +111,15 @@ export default {
         id: "",
         name: "",
         code: "",
+        latitude: "",
+        longitude: "",
+        is_default: false,
       },
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
         codeRule: [(v) => !!v || "este campo es obligatorio"],
+        latitudeRule: [(v) => !!v || "este campo es obligatorio"],
+        longitudeRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },

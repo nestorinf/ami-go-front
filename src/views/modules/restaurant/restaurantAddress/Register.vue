@@ -1,49 +1,49 @@
 <template>
   <v-card class="mb-7">
-      <v-card-text class="pa-5 border-bottom">
+    <v-card-text class="pa-5 border-bottom">
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
         Dirección Restaurante
       </h3>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registran todas las direcciones de restaurant
       </h6>
-    </v-card-text>    
-      <v-card-text>
-        <v-form ref="form" v-model="valid" lazy-validation>
-            <v-row>   
-                <v-col cols="12" lg="12">
-                    <v-select
-                    :loading="loadingRestaurants"
-                    label="Restaurante"
-                    :items="restaurantList"
-                    v-model="form.restaurant_id"
-                    filled
-                    required
-                    :rules="rules.restaurantRule"
-                    background-color="transparent"
-                    :error-messages="errorsBags.restaurant"
-                    ></v-select>
-                </v-col>
-                <v-col cols="12" lg="12">
-                    <v-text-field
-                    v-model="form.name"
-                    label="Dirección"
-                    required
-                    filled
-                    :rules="rules.nameRule"
-                    background-color="transparent"
-                    :error-messages="errorsBags.name"
-                    ></v-text-field>
-                </v-col>
-                <v-col cols="12" lg="12">
-                    <GoogleMap
-                    v-if="loadingChild"
-                    @coordinates="coordinates"
-                    :centerMap="center"
-                    :title="'Titulo Marcador'"
-                    :editCoordinates="editCoordinates"/> 
-                </v-col>
-                </v-row>
+    </v-card-text>
+    <v-card-text>
+      <v-form ref="form" v-model="valid" lazy-validation>
+        <v-row>
+          <v-col cols="12" lg="12">
+            <v-select
+              :loading="loadingRestaurants"
+              label="Restaurante"
+              :items="restaurantList"
+              v-model="form.restaurant_id"
+              filled
+              required
+              :rules="rules.restaurantRule"
+              background-color="transparent"
+              :error-messages="errorsBags.restaurant"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" lg="12">
+            <v-text-field
+              v-model="form.name"
+              label="Dirección"
+              required
+              filled
+              :rules="rules.nameRule"
+              background-color="transparent"
+              :error-messages="errorsBags.name"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="12">
+            <GoogleMap
+              v-if="loadingChild"
+              @coordinates="coordinates"
+              :title="'Titulo Marcador'"
+              :editCoordinates="editCoordinates"
+            />
+          </v-col>
+        </v-row>
         <v-btn
           color="success"
           @click="save"
@@ -59,9 +59,9 @@
           dark
           >Cancelar</v-btn
         >
-        </v-form>
-      </v-card-text>
-    
+      </v-form>
+    </v-card-text>
+
     <SnackBar
       :text="textSnackBar"
       ref="snackBarRef"
@@ -93,12 +93,8 @@ export default {
       loadingRestaurants: false,
       loadingChild: false,
       restaurantList: [],
-      editCoordinates:{},
-      center:{
-        lat: 13.7013266, 
-        lng: -89.226622 
-        
-      },
+      editCoordinates: {},
+      center: {},
       form: {
         id: "",
         restaurant_id: null,
@@ -109,7 +105,7 @@ export default {
 
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
-        restaurantRule: [(v) => !!v || "este campo es obligatorio"]
+        restaurantRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },
@@ -130,15 +126,15 @@ export default {
       updateRestaurantAddress: "restaurantAddress/updateRestaurantAddress",
       getRestaurantsData: "restaurant/getRestaurantsData",
     }),
-    coordinates(coordinate){
-      this.form.latitude = coordinate.lat
-      this.form.longitude = coordinate.lng
+    coordinates(coordinate) {
+      this.form.latitude = coordinate.lat;
+      this.form.longitude = coordinate.lng;
     },
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
         const payload = this.form;
-        console.log(payload)
+        console.log(payload);
         if (this.id) {
           this.update(payload);
         } else {
@@ -147,44 +143,43 @@ export default {
       }
     },
     setData() {
-      this.loadingRestaurants = true;       
+      this.loadingRestaurants = true;
       const rows = [];
-      this.getRestaurantsData().then((result) => {
-         this.loadingChild = true;
-        if(result) {
-          console.log(result)
-          result.map((element) => {
-            rows.push({
-              value: element.id,
-              text: element.description,
+      this.getRestaurantsData()
+        .then((result) => {
+          this.loadingChild = true;
+          if (result) {
+            console.log(result);
+            result.map((element) => {
+              rows.push({
+                value: element.id,
+                text: element.name,
+              });
+              this.restaurantList = rows;
             });
-            this.restaurantList = rows;
-            
-          });
-
-        }
-        this.loadingRestaurants = false;
-      }).catch((err) => {
-        console.log(err)
-        this.loadingRestaurants = false; 
-      });
+          }
+          this.loadingRestaurants = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingRestaurants = false;
+        });
       if (this.id) {
         this.getRestaurantAddressById(this.id).then((result) => {
-           this.loadingChild = true;
+          this.loadingChild = true;
           this.form = {
             id: result.id,
             name: result.name,
             restaurant_id: result.restaurant_id,
             latitude: result.latitude,
-            longitude: result.longitude
+            longitude: result.longitude,
           };
           this.editCoordinates = {
-            lat:result.latitude,
-            lng:result.longitude
-          }
+            lat: result.latitude,
+            lng: result.longitude,
+          };
         });
-        
-      }          
+      }
     },
 
     create(payload) {

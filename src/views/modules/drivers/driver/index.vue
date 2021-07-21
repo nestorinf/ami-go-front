@@ -31,6 +31,11 @@
         @handler-dialog-confirm="removeButton"
         :message="messageDialog"
       ></DialogConfirm>
+    <SnackBar
+      :text="textSnackBar"
+      ref="snackBarRef"
+      :snackbar="true"
+    ></SnackBar>
     </v-card>
   </v-container>
 </template>
@@ -40,12 +45,14 @@ import DataTableDriver from "./components/DataTableDriver";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 import ButtonRegister from "../../components/ButtonRegister";
 import DialogConfirm from "../../components/DialogConfirm";
+import SnackBar from "@/views/modules/components/SnackBar";
 import { mapGetters, mapActions } from "vuex";
 export default {
   name: "Driver",
   components: {
     DataTableDriver,
     DialogConfirm,
+    SnackBar,
   },
 
   data: () => ({
@@ -67,6 +74,7 @@ export default {
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
     titleForm: "Conductores",
+    textSnackBar: "",
     messageDialog: "",
     headers: [
       {
@@ -108,7 +116,6 @@ export default {
         });
         this.items = rows;
       }
-      console.log(data);
     },
   },
 
@@ -128,10 +135,23 @@ export default {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
+    
     removeButton() {
-      this.removeDriver(this.idDelete);
+      this.removeDriver(this.idDelete)
+        .then((result) => {
+          if (result) {
+            this.$refs.snackBarRef.changeStatusSnackbar(true);
+            this.textSnackBar = "Eliminado existosamente!";
+          }
+        })
+        .catch(() => {          
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = "Disculpe, ha ocurrido un error";
+        });
+
       this.$refs.DialogConfirm.changeStateDialog(false);
-    },
+    }, 
+ 
   },
 
   mounted() {

@@ -1,9 +1,9 @@
 import HTTP from '../axios'
 
-class UserService {
-    path = 'users'
-    all(type) {
-        return HTTP.get(`${this.path}`+'?type='+type)
+class PromotionEntitieService {
+    path = 'promotion_entities'
+    all() {
+        return HTTP.get(`${this.path}`)
     }
 
     create(data) {
@@ -24,4 +24,4 @@ class UserService {
 
 
 }
-export default new UserService()
+export default new PromotionEntitieService()

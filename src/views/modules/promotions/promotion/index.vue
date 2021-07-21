@@ -16,32 +16,33 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'country/register',
+            path: 'promotion/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveCountry"
+          @remove-button="acceptRemove"
+          @entities-button="entitiesButton"
         ></DataTable>
       </v-col>
+      <DialogConfirm
+        ref="DialogConfirm"
+        @handler-dialog-confirm="removeButton"
+        :message="messageDialog"
+      ></DialogConfirm>
     </v-card>
-    <DialogConfirm
-      ref="DialogConfirm"
-      @handler-dialog-confirm="removeButton"
-      :message="messageDialog"
-    ></DialogConfirm>
   </v-container>
 </template>
 
 <script>
-import DataTable from "../../components/DataTable";
-import ButtonRegister from "../../components/ButtonRegister";
-import ButtonCrudTable from "../../components/ButtonCrudTable";
+import DataTable from "./components/DataTable";
+import ButtonRegister from "./components/ButtonRegister";
+import ButtonCrudTable from "./components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
 export default {
-  name: "Company",
+  name: "Promotion",
   components: {
     DataTable,
     DialogConfirm,
@@ -53,20 +54,20 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Ubicación",
+        text: "Promociones",
         disabled: false,
         to: "#",
       },
       {
-        text: "País",
+        text: "Promociones",
         disabled: true,
       },
     ],
-    messageDialog: "",
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "País",
+    titleForm: "Promociones",
+    messageDialog: "",
     headers: [
       {
         text: "Accion",
@@ -78,63 +79,75 @@ export default {
         sortable: false,
         value: "name",
       },
-      { text: "Codigo", value: "code" },
-      { text: "Latitud", value: "latitude" },
-      { text: "Longitud", value: "longitude" },
-      { text: "Predeterminado", value: "is_default" },
+      {
+        text: "Fecha de Expiración",
+        align: "start",
+        sortable: false,
+        value: "expire_date",
+      },
+      {
+        text: "Aplica para...",
+        align: "start",
+        sortable: false,
+        value: "to",
+      },
+      {
+        text: "Acepta Cupon?",
+        align: "start",
+        sortable: false,
+        value: "accept_cupon",
+      },
+      {
+        text: "Tipo Descuento",
+        align: "start",
+        sortable: false,
+        value: "tipo_descuento",
+      },
+      {
+        text: "Descuento",
+        align: "start",
+        sortable: false,
+        value: "amount",
+      },
     ],
     items: [],
-    idDelete: "",
   }),
-
   computed: {
-    ...mapGetters({ storeCountries: "country/getCountries" }),
+    ...mapGetters({ storePromotions: "promotion/getPromotions" }),
   },
   watch: {
-    storeCountries(data) {
-        this.items=[];
+    storePromotions(data){
+      this.items = [];
       if (data.length > 0) {
-        this.items = [];
-        data.map((element) => {
-          this.items.push(
-            {
-              id: element.id,
-              name: element.name,
-              code: element.code,
-              latitude: element.latitude,
-              longitude: element.longitude,
-              is_default: element.is_default ? "Sí" : "No",
-            }
-            //  element.name;
-          );
-
-          // this.items = data;
-          // this.items[0].description = data.description;
-          // this.items[0].is_lock = data.is_lock ? 'Sí' : 'No';
-        });
+        this.items = data;
       }
+    },
   },
-  },
+
   methods: {
     ...mapActions({
-      getCountryData: "country/getCountryData",
-      removeCountry: "country/removeCountry",
+      getPromotionData: "promotion/getPromotionData",
+      removePromotion: "promotion/removePromotion",
     }),
+
     editButton({ id }) {
-      this.$router.push("country/edit/" + id);
+      this.$router.push("promotion/edit/" + id);
     },
-    acceptRemoveCountry(item) {
+    entitiesButton({ id }) {
+      this.$router.push("promotion/entities/" + id);
+    },
+    acceptRemove(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeCountry(this.idDelete);
+      this.removePromotion(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
   },
 
   mounted() {
-    this.getCountryData();
+    this.getPromotionData();
   },
 };
 </script>

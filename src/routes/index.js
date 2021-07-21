@@ -1,12 +1,13 @@
 import configuration from './configuration'
 import provider from './provider'
 import product from './product'
+import promotion from './promotion'
 import food from './food'
 import user from './user'
 
 import commerce from './commerce'
 import restaurant from './restaurant'
-import payment from './payment'
+// import payment from './payment'
 import location from './location'
 import driver from './driver'
 import home from './home'
@@ -25,9 +26,10 @@ export default {
     commerce,
     restaurant,
     provider,
+    promotion,
     product,
     food,
-    payment,
+  
     user,
     driver,
 }

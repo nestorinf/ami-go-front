@@ -73,8 +73,9 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.price"
+              type="number"
               label="Precio"
-              filled
+              prefix="$"
               required
               :rules="rules.priceRule"
               background-color="transparent"
@@ -82,10 +83,9 @@
           </v-col>
           <v-col cols="12" lg="6">
             <v-text-field
-              number
+              type="number"
               v-model="form.weight"
               label="Peso"
-              filled
               background-color="transparent"
             ></v-text-field>
           </v-col>
@@ -128,13 +128,6 @@
               v-model="form.on_stock"
               required
               label="En Stock"
-            ></v-checkbox>
-          </v-col>
-          <v-col cols="12" lg="3">
-            <v-checkbox
-              v-model="form.owns_batch"
-              required
-              label="Tiene Lote"
             ></v-checkbox>
           </v-col>
         </v-row>
@@ -189,7 +182,7 @@ export default {
       sku: "",
       enabled: 1 || 0,
       on_stock: 1 || 0,
-      owns_batch: 0,
+      owns_batch: 1,
       description: "",
       conditions: "",
       commerce_id: "",
@@ -296,7 +289,6 @@ export default {
             commerce_id: result.commerce.id,
             enabled: result.enabled,
             on_stock: result.on_stock,
-            owns_batch: result.owns_batch,
           };
 
           this.form = Object.assign({}, parseData);

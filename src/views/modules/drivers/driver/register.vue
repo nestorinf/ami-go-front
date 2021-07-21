@@ -18,6 +18,7 @@
               filled
               required
               :rules="rules.nameRule"
+              :error-messages="errorsBags.name"
               background-color="transparent"
             ></v-text-field>
           </v-col>
@@ -26,10 +27,12 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.email"
+              type="email"
               label="Correo Electronico"
               filled
               required
               :rules="rules.emailRule"
+              :error-messages="errorsBags.email"
               background-color="transparent"
             ></v-text-field>
           </v-col>
@@ -41,6 +44,7 @@
               filled
               :rules="rules.phoneRule"
               background-color="transparent"
+              :error-messages="errorsBags.phone"
             ></v-text-field>
           </v-col>
           <v-col cols="12" lg="6">
