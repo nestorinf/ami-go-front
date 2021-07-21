@@ -113,16 +113,7 @@ export default {
       {
         text: "Fecha de expiración",
         value: "expired_date",
-      },
-      {
-        text: "Color",
-        value: "colour",
-      },
-      {
-        text: "Talla",
-        value: "size",
-      },
-
+      }
     ],
     items: [],
     idDelete: "",
