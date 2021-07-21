@@ -272,7 +272,7 @@ export default {
       types_promotion: [
         {
           value: "porc",
-          text: "Procentaje",
+          text: "Porcentaje",
         },
         {
           value: "total",
