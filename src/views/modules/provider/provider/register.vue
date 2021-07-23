@@ -12,6 +12,18 @@
       <v-card-text>
         <v-row>
           <v-col cols="12" lg="6">
+            <v-select
+              :items="providerType"
+              v-model="form.providerType_id"
+              filled
+              required
+              :rules="rules.providerTypeRule"
+              :loading="loadingProviderType"
+              label="Tipo Proveedor"
+              background-color="transparent"
+            ></v-select>
+            </v-col>
+          <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
               label="Nombre del Proveedor"
@@ -103,12 +115,15 @@ export default {
   data() {
     return {
       textSnackBar: "",
+      providerType: [],
+      loadingProviderType: false,
       valid: true,
       form: {
         id: "",
         name: "",
         agent: "",
         email: "",
+        providerType_id: "",
         // code_provider: "",
         phone: "",
       },
@@ -125,6 +140,7 @@ export default {
             /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
             "el email es invalido",
         ],
+         providerTypeRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },
@@ -138,6 +154,7 @@ export default {
       createCompany: "provider/createProvider",
       getCompanyById: "provider/getProviderById",
       updateCompany: "provider/updateProvider",
+      providerTypeData: "referenceList/getReferenceListByReferenceSlugData",
     }),
     save() {
       this.$refs.form.validate();
@@ -151,11 +168,37 @@ export default {
       }
     },
     setData() {
+      // load provider type (providerType)
+      this.loadProviderType();
+
       if (this.id) {
         this.getCompanyById(this.id).then((result) => {
           this.form = Object.assign({}, result);
         });
       }
+    },
+
+    loadProviderType() {
+      const rows = [];
+      this.loadingProviderType = true;
+      const referenceId = "PROVIDER_TYPES";
+      this.providerTypeData(referenceId)
+        .then((result) => {
+          if (result) {
+            result.map((element) => {
+              rows.push({
+                value: element.id,
+                text: element.value,
+              });
+              this.providerType = rows;
+            });
+          }
+          this.loadingProviderType = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingUom = false;
+        });
     },
 
     create(payload) {
