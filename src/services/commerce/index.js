@@ -2,6 +2,7 @@ import HTTP from '../axios'
 
 class CommerceService {
     path = 'commerces'
+    
     all() {
         return HTTP.get(`${this.path}`)
     }
@@ -12,6 +13,10 @@ class CommerceService {
 
     getById(id) {
         return HTTP.get(`${this.path}/` + id)
+    }
+
+    getProductsByIdCommerce(id) {
+        return HTTP.get(`${this.path+'_products'}/` + id)
     }
 
     update(data) {

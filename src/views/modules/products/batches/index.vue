@@ -81,6 +81,11 @@ export default {
         value: "action",
       },
       {
+        text: "Comercio",
+        align: "start",
+        value: "commerce",
+      },
+      {
         text: "Producto",
         align: "start",
         value: "product",
@@ -113,16 +118,7 @@ export default {
       {
         text: "Fecha de expiración",
         value: "expired_date",
-      },
-      {
-        text: "Color",
-        value: "colour",
-      },
-      {
-        text: "Talla",
-        value: "size",
-      },
-
+      }
     ],
     items: [],
     idDelete: "",

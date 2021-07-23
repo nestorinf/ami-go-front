@@ -83,7 +83,7 @@ export default {
         text: "Fecha de Expiración",
         align: "start",
         sortable: false,
-        value: "expire_date",
+        value: "expire_dates",
       },
       {
         text: "Aplica para...",
