@@ -53,6 +53,21 @@ const actions = {
             })
         })
     },
+    getProductsByIdCommerce({ commit, dispatch }, id) {
+        return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
+            CommerceService.getProductsByIdCommerce(id).then(({ data }) => {
+                const company = data.payload
+                commit('setCommerce', company)
+                dispatch('loading/loadingState', false, { root: true })
+                resolve(data.payload)
+            }).catch(err => {
+                dispatch('loading/loadingState', false, { root: true })
+                reject(err)
+                // commit('setCommerceType', {})
+            })
+        })
+    },
 
     createCommerce({ commit, dispatch }, body) {
         return new Promise((resolve, reject) => {
