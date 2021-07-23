@@ -413,6 +413,7 @@ export default {
           if (result) {
             this.form = {};
             this.$refs.form.reset();
+            this.form.images_id = [];
             this.form.is_cupon = false;
             this.form.images_id = [];
             this.$refs.snackBarRef.changeStatusSnackbar(true);

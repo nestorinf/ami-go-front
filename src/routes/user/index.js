@@ -64,7 +64,7 @@ export default {
                 to: "user/commerces",
             },
             {
-                title: "Usuarios Restaurants",
+                title: "Usuarios Restaurantes",
                 icon: "mdi-account",
                 to: "user/restaurants",
             },

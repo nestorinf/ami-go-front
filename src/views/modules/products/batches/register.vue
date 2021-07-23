@@ -27,6 +27,7 @@
           </v-col>
           <v-col cols="12" lg="12">
             <v-select
+              @change="setPrecios"
               :loading="loadingProduct"
               label="Productos"
               :items="producList"
@@ -136,9 +137,6 @@
           @input="menu2 = false"
         ></v-date-picker>
       </v-menu>
-        
-
-
           </v-col>
           <v-col cols="12" lg="12">
             <v-select
@@ -147,7 +145,8 @@
               :items="colourList"
               v-model="form.colour_id"
               filled
-              :rules="rules.colour_idRule"
+              multiple
+              chips
               background-color="transparent"
               :error-messages="errorsBags.colour_id"
             ></v-select>
@@ -167,8 +166,9 @@
               :items="sizeList"
               v-model="form.size_id"
               filled
+              multiple
+              chips
               background-color="transparent"
-              :rules="rules.size_idRule"
               :error-messages="errorsBags.size_id"
             ></v-select>
           </v-col>
@@ -257,6 +257,7 @@ export default {
       sizeList: [],
       loadingSize: false,
 
+      listProducts: [],
       producList: [],
       loadingProduct: false,
 
@@ -272,9 +273,6 @@ export default {
         stock_minRule: [(v) => !!v || "el campo es obligatorio"],
         unit_priceRule: [(v) => !!v || "el campo es obligatorio"],
         regular_priceRule: [(v) => !!v || "el campo es obligatorio"],
-        colour_idRule: [(v) => !!v || "el campo es obligatorio"],
-        expired_dateRule: [(v) => !!v || "el campo es obligatorio"],
-        size_idRule: [(v) => !!v || "el campo es obligatorio"],
       },
       
       displayed: true,
@@ -292,6 +290,7 @@ export default {
     this.setData();
   },
   computed: {
+    
   },
   methods: {
     ...mapActions({
@@ -308,6 +307,17 @@ export default {
       commerceData: "commerce/getCommercesData",
 
     }),
+    setPrecios(){
+      var _this = this;
+      var product_id = this.form.product_id;
+      var listProducts = this.listProducts;
+      listProducts.map((element) => {
+        if(element.id==product_id){
+          _this.form.unit_price = element.price;
+          _this.form.regular_price = element.price;
+        }
+      });
+    },
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
@@ -346,6 +356,7 @@ export default {
             console.log('result_reg',result)
             this.form = {};
             this.$refs.form.reset();
+            this.form.images_id = [];
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
             // this.$router.push("/products/categories");
@@ -545,6 +556,7 @@ export default {
         .then((result) => {
           console.log(result);
           if (result) {
+            this.listProducts = result;
             result.map((element) => {
               rows.push({
                 value: element.id,
