@@ -41,15 +41,29 @@
           </v-col>
           <v-col cols="12" lg="6">
             <v-select
+              @input="ChangeType"
               label="Aplica para.."
               :items="types"
               v-model="form.type"
               filled
+              :disabled="!!id && form.type=='products' || ExpirePromotion || form.entities>0"
               required
-              :disabled="ExpirePromotion"
               :rules="rules.typeRule"
               background-color="transparent"
               :error-messages="errorsBags.type"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" lg="6" v-if="form.type=='products'">
+            <v-select
+              :items="commerces"
+              :loading="loadingCommerces"
+              filled
+              required
+              :disabled="!!id"
+              v-model="form.commerce_id"
+              label="Comercio"
+              :rules="rules.commerceRule"
+              background-color="transparent"
             ></v-select>
           </v-col>
           <v-col cols="6" lg="6">
@@ -146,13 +160,19 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" lg="4">
-            <v-checkbox
-              v-model="form.enabled"
-              required
+          <v-col cols="12" lg="6">
+            
+            <v-select
+              label="Visible en..."
+              :items="types_visible"
+              v-model="form.visible"
               :disabled="ExpirePromotion"
-              label="¿Visible?"
-            ></v-checkbox>
+              filled
+              required
+              :rules="rules.types_visibleRule"
+              background-color="transparent"
+              :error-messages="errorsBags.visible"
+            ></v-select>
           </v-col>
         </v-row>
 
@@ -250,10 +270,12 @@ export default {
         is_cupon: false,
         code_cupon: "",
         total_cupon: "",
-        enabled: true,
+        visible: '',
         type_descuent: "",
         amount: "",
         images_id: [],
+        commerce_id: '',
+        entities:0,
       },
       types: [
         {
@@ -265,8 +287,38 @@ export default {
           text: "Comercios",
         },
         {
+          value: "delivery_commerce",
+          text: "Delivery (Comercios)",
+        },
+        {
           value: "restaurant",
           text: "Restaurantes",
+        },
+        {
+          value: "delivery_restaurant",
+          text: "Delivery (Restaurantes)",
+        },
+        {
+          value: "products",
+          text: "Productos",
+        },
+      ],
+      types_visible: [
+        {
+          value: "all",
+          text: "Todos",
+        },
+        {
+          value: "commerce",
+          text: "Tiendas",
+        },
+        {
+          value: "restaurant",
+          text: "Comidas",
+        },
+        {
+          value: "no",
+          text: "Ninguna",
         },
       ],
       types_promotion: [
@@ -288,12 +340,16 @@ export default {
         total_cuponRule: [(v) => !!v || "este campo es obligatorio"],
         type_descuentRule: [(v) => !!v || "este campo es obligatorio"],
         amountRule: [(v) => !!v || "este campo es obligatorio"],
+        commerceRule: [(v) => !!v || "este campo es obligatorio"],
+        types_visibleRule: [(v) => !!v || "este campo es obligatorio"],
       },
 
       ListEntities: [],
 
       displayed: true,
       selectedFile: [],
+      commerces: [],
+      loadingCommerces: false,
     };
   },
 
@@ -307,9 +363,11 @@ export default {
       updatePromotion: "promotion/updatePromotion",
 
       createImage: "image/createImage",
+      commerceData: "commerce/getCommercesData",
     }),
 
     save() {
+      console.log('guarda normalmente')
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
         const payload = this.form;
@@ -320,6 +378,7 @@ export default {
         }
       }
     },
+
     setData() {
       if (this.id) {
         this.getPromotionById(this.id).then((result) => {
@@ -333,12 +392,17 @@ export default {
             code_cupon: result.code_cupon,
             total_cupon: result.total_cupon,
             description: result.description,
-            enabled: result.enabled,
+            visible: result.visible,
             type_descuent: result.type_descuent,
             amount: result.amount,
             images_id: result.images_id,
             imagenes: result.imagenes,
+            commerce_id: result.commerce_id,
+            entities: result.entities,
           };
+          if(result.commerce_id!=''){
+            this.loadCommerces();
+          }
         });
       }
     },
@@ -351,6 +415,7 @@ export default {
             this.$refs.form.reset();
             this.form.images_id = [];
             this.form.is_cupon = false;
+            this.form.images_id = [];
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
           }
@@ -392,12 +457,14 @@ export default {
 
     onFileSelected(event) {
       this.selectedFile = event;
+      console.log('Vamos cargando las imagenes en el array a enviar',event,this.selectedFile)
     },
 
     preparedDataFiles() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
         if (this.selectedFile.length) {
+          console.log('como hay mas de una imagen las guardar en el FormData')
           const payload = new FormData();
           this.selectedFile.forEach((e) => {
             payload.append("images[]", e);
@@ -410,13 +477,18 @@ export default {
     },
 
     createImagenes(payload) {
+      
+      console.log('entra en el metodo de guardar imagenes')
       this.createImage(payload)
         .then((result) => {
           if (result) {
+            
+            console.log('todo bien con el guardar imagenes')
             result.forEach((e) => {
               this.form.images_id.push(e.id);
             });
-
+            
+            console.log('las integro al images_id del form')
             this.selectedFile = [];
 
             this.displayed = false;
@@ -444,6 +516,39 @@ export default {
         }
       });
     },
+
+    ChangeType(){
+      this.form.commerce_id = '';
+      if(this.form.type == 'products'){
+        this.loadCommerces();
+      }
+    },
+    loadCommerces() {
+      const rows = [];
+      this.commerces = [];
+      this.loadingCommerces = true;
+      this.commerceData()
+        .then((result) => {
+          if (result) {
+            result.map((element) => {
+              if (element.commerce_type !== "Restaurantes") {
+                rows.push({
+                  value: element.id,
+                  text: element.name,
+                });
+              }
+              this.commerces = rows;
+            });
+          }
+          this.loadingCommerces = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingCommerces = false;
+        });
+    },
+
+
   },
   computed: {
     ExpirePromotion() {
@@ -451,5 +556,6 @@ export default {
       return date_expired;
     },
   },
+
 };
 </script>

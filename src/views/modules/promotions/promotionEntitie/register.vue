@@ -3,11 +3,17 @@
     <v-form ref="form" v-model="valid" lazy-validation>
       <v-card-text class="pa-5 border-bottom">
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-          {{ titleForm }}: {{form.name}}
+          {{ titleForm }}: {{form.name}} ({{form.to_entities}})
         </h3>
       </v-card-text>
       <v-card-text>
         <v-row class="pb-10">
+          
+          <v-col cols="12" lg="12" sm="12"> 
+            <h3 class="title blue-grey--text text--darken-2 font-weight-regular" v-if="DataCommerces">
+              Comercio: {{DataCommerces.name}}
+            </h3>
+          </v-col>
           <v-col cols="12" lg="12" sm="12">  
             <DataTable
               :type="form.type"
@@ -81,11 +87,14 @@ export default {
       textSnackBar: "",
       titleForm: "Promoción",
       valid: true,
+      DataCommerces: '',
       form: {
         id: "",
         name: "",
         expire_date: "",
         type: "",
+        to_entities: "",
+        commerce_id: "",
       },
       types: [{
         value: 'commerce',
@@ -93,7 +102,14 @@ export default {
       },{
         value: 'restaurant',
         text: 'Restaurantes',
-      }],
+      },{
+          value: "delivery_restaurant",
+          text: "Delivery (Restaurantes)",
+        },
+        {
+          value: "delivery_commerce",
+          text: "Delivery (Comercios)",
+        }],
       errorsBags: [],
 
       rules: {
@@ -143,22 +159,26 @@ export default {
       createPromotionEntitie: "promotionEntitie/createPromotionEntitie",
       
       getCommercesData: "commerce/getCommercesData",
+      getProductsByIdCommerce: "commerce/getProductsByIdCommerce",
       getRestaurantsData: "restaurant/getRestaurantsData",
 
-      // getCommercesData: "commerce/getCommercesData",
     }),
     setData() {
 
       if (this.id) {
         
         this.getPromotionById(this.id).then((result) => {
+          console.log(result)
           this.form = {
             id: result.id,
             name: result.name,
             type: result.type,
+            to_entities: result.to_entities,
             expire_date: result.expire_date,
             commerces_id: result.commerces_id,
             restaurates_id: result.restaurates_id,
+            commerce_id: result.commerce_id,
+            promotions_products: result.promotions_products,
           };
 
           this.SearchEntities();
@@ -172,7 +192,8 @@ export default {
       this.entities = {
         promotion_id: this.id,
         entities: this.EntitiesSelected,
-        type: this.form.type
+        type: this.form.type,
+        commerce_id: this.form.commerce_id
       };
 
       this.createPromotionEntitie(this.entities)
@@ -196,11 +217,36 @@ export default {
 
     SearchEntities() {
       this.ListEntities = [];
-      if(this.form.type=='commerce'){        
+      if(this.form.type=='commerce' || this.form.type=='delivery_commerce'){        
         this.getCommercesData();
-      }else if(this.form.type=='restaurant'){        
+      }else if(this.form.type=='restaurant' || this.form.type=='delivery_restaurant'){        
         this.getRestaurantsData();
+      }else if(this.form.type=='products'){        
+        this.ProductsByIdCommerce();
       }
+    },
+    
+    ProductsByIdCommerce() {
+      const rows = [];
+      this.getProductsByIdCommerce(this.form.commerces_id)
+        .then((result) => {
+          if (result) {
+            this.DataCommerces = result;
+            this.DataCommerces.products.map((element) => {
+              rows.push({
+                id: element.id,
+                name: element.name,
+                type: element.category.name,
+                seleted: this.form.promotions_products.includes(element.id)
+              });
+              this.ListEntities = rows;
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingUom = false;
+        });
     },
   },
   watch: {
