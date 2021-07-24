@@ -100,28 +100,52 @@
               :error-messages="errorsBags.phone_2"
             ></v-text-field>
           </v-col>
-          <v-checkbox
+          <v-switch
             v-model="form.enabled"
-            required
+            inset
             label="Habilitado"
             :error-messages="errorsBags.enabled"
-          ></v-checkbox>
+            hide-details
+          ></v-switch>
         </v-row>
-        <v-btn
-          color="success"
-          @click="save"
-          :disabled="!valid"
-          submit
-          class="text-capitalize mr-2"
-          >Guardar</v-btn
-        >
-        <v-btn
-          color="black"
-          class="text-capitalize"
-          to="/restaurant/restaurant"
-          dark
-          >Cancelar</v-btn
-        >
+
+        <v-row>
+          <v-col cols="12" lg="12" class="mb-5">
+            <strong>Logo</strong>
+            <UploadImages
+              v-if="displayed"
+              :max="1"
+              uploadMsg="Haz clic aquí o arrastra una imagen"
+              fileError="Archivo no soportado"
+              @changed="onFileSelected"
+            />
+          </v-col>
+
+          <ShowsImages
+            :items="form.images_id"
+            @delete-imagen="deleteImagen"
+          ></ShowsImages>
+        </v-row>
+
+        <v-row>
+          <v-col cols="12" lg="12">
+            <v-btn
+              color="success"
+              @click="save"
+              :disabled="!valid"
+              submit
+              class="text-capitalize mr-2"
+              >Guardar</v-btn
+            >
+            <v-btn
+              color="black"
+              class="text-capitalize"
+              to="/restaurant/restaurant"
+              dark
+              >Cancelar</v-btn
+            >
+          </v-col>
+        </v-row>
       </v-card-text>
     </v-form>
     <SnackBar
@@ -135,6 +159,8 @@
 <script>
 import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
+import UploadImages from "vue-upload-drop-images";
+import ShowsImages from "../../components/ShowsImages";
 export default {
   name: "RegisterRestaurant",
   props: {
@@ -142,6 +168,8 @@ export default {
   },
   components: {
     SnackBar,
+    UploadImages,
+    ShowsImages,
   },
 
   data() {
@@ -155,6 +183,8 @@ export default {
       departmentList: [],
       municipalityList: [],
       errorsBags: [],
+      displayed: true,
+      selectedLogo: [],
       form: {
         id: "",
         name: "",
@@ -166,6 +196,7 @@ export default {
         cover: null,
         phone_2: "",
         enabled: true,
+        images_id:[]
       },
     };
   },
@@ -182,11 +213,69 @@ export default {
       getRestaurantTypeData: "restaurantType/getRestaurantTypeData",
       getDepartmentsData: "department/getDepartmentsData",
       getMunicipalitiesData: "municipality/getMunicipalitiesData",
+      createImage: "image/createImage",
     }),
+    onFileSelected(file) {
+      console.log("event", file);
+      this.selectedLogo = file;
+    },
+    // preparedDataFiles() {
+    //   this.$refs.form.validate();
+    //   if (this.$refs.form.validate()) {
+    //     if (this.selectedLogo.length) {
+    //       const payload = new FormData();
+    //       this.selectedLogo.forEach((e) => {
+    //         payload.append("logo", e);
+    //       });
+    //       this.createImagenes(payload);
+    //     } else {
+    //       this.save();
+    //     }
+    //   }
+    // },
+    createImagenes(payload) {
+      this.createImage(payload)
+        .then((result) => {
+          if (result) {
+            console.log(result);
+            result.forEach((e) => {
+              this.form.logo = e.id;
+              this.form.images_id.push(e.id);
+            });
+
+            this.selectedLogo = [];
+
+            this.displayed = false;
+            this.$nextTick(() => {
+              this.displayed = true;
+            });
+
+            // this.save();
+
+            this.$refs.snackBarRef.changeStatusSnackbar(true);
+            this.textSnackBar = "Guardado existosamente!";
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = "Disculpe, ha ocurrido un error";
+        });
+    },
+    deleteImagen() {
+      this.form.logo = null;
+    },
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
         const payload = this.form;
+        if (this.selectedLogo.length) {
+          const payload = new FormData();
+          this.selectedLogo.forEach((e) => {
+            payload.append("images[]", e);
+          });
+          this.createImagenes(payload);
+        }
         if (this.id) {
           this.update(payload);
         } else {
@@ -237,6 +326,7 @@ export default {
       if (this.id) {
         this.getRestaurantById(this.id).then((result) => {
           this.form = Object.assign({}, result);
+          this.form.images_id = ['images/1626988698.20622101_10210141043504370_5195984019231654835_n.jpg'];
         });
       }
     },
@@ -285,3 +375,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.error {
+  color: #fff;
+}
+</style>
