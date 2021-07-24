@@ -14,15 +14,38 @@
           <v-col cols="12" lg="6">
             <v-select
               :items="providerType"
-              v-model="form.providerType_id"
+              v-model="form.provider_type_id"
               filled
               required
-              :rules="rules.providerTypeRule"
+              :rules="rules.provider_type_idRule"
               :loading="loadingProviderType"
               label="Tipo Proveedor"
               background-color="transparent"
+              :error-messages="errorsBags.provider_type_id"
             ></v-select>
             </v-col>
+             <v-col cols="12" lg="6">
+            <v-text-field
+              v-model="form.registerno"
+              label="Número Registro"
+              filled
+              required
+              :rules="rules.registernoRule"
+              background-color="transparent"
+              :error-messages="errorsBags.registerno"
+            ></v-text-field>
+          </v-col>
+           <v-col cols="12" lg="6">
+            <v-text-field
+              v-model="form.nit"
+              label="NIT"
+              filled
+              required
+              :rules="rules.nitRule"
+              background-color="transparent"
+              :error-messages="errorsBags.nit"
+            ></v-text-field>
+          </v-col>
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
@@ -31,6 +54,7 @@
               filled
               :rules="rules.nameRule"
               background-color="transparent"
+              :error-messages="errorsBags.name"
             ></v-text-field>
           </v-col>
           <v-col cols="6" lg="6">
@@ -42,6 +66,7 @@
               filled
               :rules="rules.emailRule"
               background-color="transparent"
+              :error-messages="errorsBags.email"
             ></v-text-field>
           </v-col>
           <v-col cols="6" lg="6">
@@ -52,6 +77,7 @@
               required
               :rules="rules.agentRule"
               background-color="transparent"
+              :error-messages="errorsBags.agent"
             ></v-text-field>
           </v-col>
           <!-- <v-col cols="6" lg="6">
@@ -72,8 +98,20 @@
               required
               :rules="rules.phoneRule"
               background-color="transparent"
+              :error-messages="errorsBags.phone"
             ></v-text-field>
           </v-col>
+          <v-col cols="12" lg="6">
+            <v-text-field
+              v-model="form.description"
+              label="Breve Descripción"
+              filled
+              required
+              :rules="rules.descriptionRule"
+              background-color="transparent"
+              :error-messages="errorsBags.description"
+            ></v-text-field>
+            </v-col>
         </v-row>
         <v-btn
           color="success"
@@ -118,17 +156,25 @@ export default {
       providerType: [],
       loadingProviderType: false,
       valid: true,
+      errorsBags: [],
       form: {
         id: "",
+        provider_type_id: "",
+        registerno: "",
+        nit: "",
         name: "",
         agent: "",
         email: "",
-        providerType_id: "",
+        
         // code_provider: "",
         phone: "",
+        description: "",
       },
 
       rules: {
+        provider_type_idRule: [(v) => !!v || "este campo es obligatorio"],
+        registernoRule: [(v) => !!v || "este campo es obligatorio"],
+        nitRule: [(v) => !!v || "este campo es obligatorio"],
         nameRule: [(v) => !!v || "este campo es obligatorio"],
         agentRule: [(v) => !!v || "este campo es obligatorio"],
         phoneRule: [(v) => !!v || "este campo es obligatorio"],
@@ -139,8 +185,8 @@ export default {
             !v ||
             /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
             "el email es invalido",
-        ],
-         providerTypeRule: [(v) => !!v || "este campo es obligatorio"],
+        ],  
+        description: [(v) => !!v || "este campo es obligatorio"],      
       },
     };
   },
@@ -181,7 +227,7 @@ export default {
     loadProviderType() {
       const rows = [];
       this.loadingProviderType = true;
-      const referenceId = "PROVIDER_TYPES";
+      const referenceId = "PROVIDER_TYPE";
       this.providerTypeData(referenceId)
         .then((result) => {
           if (result) {
@@ -212,7 +258,12 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          if (err.response) {
+            this.errorsBags = err.response.data.errors;
+            setTimeout(() => {
+              this.errorsBags = [];
+            }, 4000);
+          }
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });
@@ -227,7 +278,12 @@ export default {
           }
         })
         .catch((err) => {
-          console.log(err);
+          if (err.response) {
+            this.errorsBags = err.response.data.errors;
+            setTimeout(() => {
+              this.errorsBags = [];
+            }, 4000);
+          }
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });
