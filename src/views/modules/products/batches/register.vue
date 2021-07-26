@@ -14,13 +14,26 @@
           
           <v-col cols="12" lg="12">
             <v-select
+              @change="ProductsByIdCommerce"
+              :loading="loadingCommerces"
+              label="Comercios"
+              :items="commerces"
+              v-model="commerce_id"
+              filled
               :disabled="!!id"
-              @input="setPrecios()"
+              background-color="transparent"
+              :error-messages="errorsBags.product_id"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" lg="12">
+            <v-select
+              @change="setPrecios"
               :loading="loadingProduct"
               label="Productos"
               :items="producList"
               v-model="form.product_id"
               filled
+              :disabled="!!id"
               background-color="transparent"
               :rules="rules.product_idRule"
               :error-messages="errorsBags.product_id"
@@ -264,6 +277,11 @@ export default {
       
       displayed: true,
       selectedFile: [],
+      
+      commerce_id: '',
+      commerces: [],
+      loadingCommerces: false,
+    
 
     };
   },
@@ -284,7 +302,9 @@ export default {
       coloursData: "referenceList/getReferenceListByReferenceSlugData",
       productData: "product/getProductData",
       
+      getProductsByIdCommerce: "commerce/getProductsByIdCommerce",
       createImage: "image/createImage",
+      commerceData: "commerce/getCommercesData",
 
     }),
     setPrecios(){
@@ -314,15 +334,18 @@ export default {
       
       this.loadSize();
       this.loadColour();
-      this.loadProducts();
+      this.loadCommerces();
         
       if (this.id) {
         this.ProductBatches(this.id).then((result) => {
-          
-          console.log('result',result);          
+          this.commerce_id = result.commerce_id;
           this.form = Object.assign({}, result);
-          console.log(this.form);          
+          console.log(this.form);    
+          
+          this.ProductsByIdCommerce();      
+
         });
+
       }
     },
 
@@ -434,6 +457,52 @@ export default {
     },
 
 
+    loadCommerces() {
+      const rows = [];
+      this.commerces = [];
+      this.loadingCommerces = true;
+      this.commerceData()
+        .then((result) => {
+          if (result) {
+            result.map((element) => {
+              if (element.commerce_type !== "Restaurantes") {
+                rows.push({
+                  value: element.id,
+                  text: element.name,
+                });
+              }
+              this.commerces = rows;
+            });
+          }
+          this.loadingCommerces = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingCommerces = false;
+        });
+    },
+    ProductsByIdCommerce() {
+      console.log('asdasda')
+      const rows = [];
+      this.loadingProduct = true;
+      this.getProductsByIdCommerce(this.commerce_id)
+        .then((result) => {
+          if (result) {
+            result.products.map((element) => {
+              rows.push({
+                value: element.id,
+                text: element.name,
+              });
+              this.producList = rows;
+            });
+          }
+          this.loadingProduct = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingUom = false;
+        });
+    },
     loadSize() {
       const rows = [];
       this.loadingSize = true;
@@ -483,7 +552,7 @@ export default {
     loadProducts() {
       const rows = [];
       this.loadingProduct = true;
-      this.productData()
+      this.getProductsByIdCommerce(this.form.product_id)
         .then((result) => {
           console.log(result);
           if (result) {

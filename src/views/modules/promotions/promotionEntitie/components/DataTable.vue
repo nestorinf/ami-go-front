@@ -1,11 +1,12 @@
 <template>
   <div> 
     <h3 class="font-weight-light">
-      Marcar la casilla si la promoción es valido para algunos {{type=='commerce'?'comercios':'restaurantes'}}
+      Marcar la casilla si la promoción es valido para algunos {{Types.titulo}}
     </h3>
+    
     <v-card>
       <v-card-title> 
-        {{type=='commerce'?'Comercios':'Restaurantes'}} Disponibles
+        {{Types.titulo_tabla}}
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -52,5 +53,21 @@ export default {
     search: "",
     loading: false,
   }),
+  computed: {
+    Types(){
+      var type = this.type;
+      if(type=='commerce' || type=='delivery_commerce'){
+        return {titulo : 'comercios', titulo_tabla : 'Comercios Disponibles'}
+      }
+      if(type=='restaurant' || type=='delivery_restaurant'){
+        return {titulo : 'restaurantes', titulo_tabla : 'Restaurantes Disponibles'}
+      }
+      if(type=='products'){
+        return {titulo : 'productos', titulo_tabla : 'Productos Disponibles'}
+      }
+      
+      return {titulo : null, titulo_tabla : null}
+    }
+  },
 };
 </script>

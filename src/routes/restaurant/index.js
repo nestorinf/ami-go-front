@@ -58,6 +58,28 @@ export default {
       component: () =>
         import("../../views/modules/restaurant/restaurantAddress/Register"),
     },
+
+    // routes for restaurant groups
+
+    {
+      name: "Restaurant Group",
+      path: "restaurant/restaurant-group",
+      component: () =>
+        import("../../views/modules/restaurant/restaurantGroup"),
+    },
+    {
+      name: "Restaurant Group Register",
+      path: "restaurant/restaurant-group/register",
+      component: () =>
+        import("../../views/modules/restaurant/restaurantGroup/Register"),
+    },
+    {
+      name: "Restaurant Group Edit",
+      path: "restaurant/restaurant-group/edit/:id",
+      props: true,
+      component: () =>
+        import("../../views/modules/restaurant/restaurantGroup/Register"),
+    },
   ],
 
   menu: {
@@ -76,9 +98,14 @@ export default {
         to: "restaurant",
       },
       {
-        title: "Dirección Restaurante",
+        title: "Dirección Restaurantes",
         icon: "mdi-store",
         to: "restaurant-address",
+      },
+      {
+        title: "Agrupar Restaurantes",
+        icon: "mdi-store",
+        to: "restaurant-group",
       },
     ],
   },

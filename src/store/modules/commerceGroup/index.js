@@ -1,31 +1,31 @@
-import CommerceService from '@/services/commerce'
+import CommerceGroupService from '@/services/commerceGroup'
 
 const state = {
-    commerces: [],
-    commerce: {},
+    commerceGroups: [],
+    commerceGroup: {},
 
 }
 
 
 const mutations = {
-    setCommerces(state, commerces) {
-        state.commerces = commerces
+    setCommerceGroups(state, commerceGroups) {
+        state.commerceGroups = commerceGroups
     },
-    setCommerce(state, commerce) {
-        state.commerce = commerce
+    setCommerceGroup(state, commerceGroup) {
+        state.commerceGroup = commerceGroup
     }
 }
 
 
 const actions = {
-    getCommercesData({ commit, dispatch }) {
+    getCommerceGroupData({ commit, dispatch }) {
         return new Promise((resolve, reject) => {
             dispatch('loading/loadingState', true, { root: true })
-            CommerceService.all().then(({ data }) => {
-                const commerces = data.payload
+            CommerceGroupService.all().then(({ data }) => {
+                const commerceGroups = data.payload
 
-                commit('setCommerces', commerces)
                 dispatch('loading/loadingState', false, { root: true })
+                commit('setCommerceGroups', commerceGroups)
 
                 resolve(data.payload)
             }).catch(err => {
@@ -37,31 +37,18 @@ const actions = {
         })
     },
 
-    getCommerceById({ commit, dispatch }, id) {
+    getCommerceGroupById({ commit, dispatch }, id) {
         return new Promise((resolve, reject) => {
             dispatch('loading/loadingState', true, { root: true })
-            CommerceService.getById(id).then(({ data }) => {
-                const company = data.payload
+            CommerceGroupService.getById(id).then(({ data }) => {
+                const commerceGroup = data.payload
 
-                commit('setCommerce', company)
                 dispatch('loading/loadingState', false, { root: true })
+                commit('setCommerceGroup', commerceGroup)
+
                 resolve(data.payload)
             }).catch(err => {
-                dispatch('loading/loadingState', false, { root: true })
-                reject(err)
-                // commit('setCommerceType', {})
-            })
-        })
-    },
-    getProductsByIdCommerce({ commit, dispatch }, id) {
-        return new Promise((resolve, reject) => {
-            dispatch('loading/loadingState', true, { root: true })
-            CommerceService.getProductsByIdCommerce(id).then(({ data }) => {
-                const company = data.payload
-                commit('setCommerce', company)
-                dispatch('loading/loadingState', false, { root: true })
-                resolve(data.payload)
-            }).catch(err => {
+
                 dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 // commit('setCommerceType', {})
@@ -69,32 +56,36 @@ const actions = {
         })
     },
 
-    createCommerce({ commit, dispatch }, body) {
+    createCommerceGroup({ commit, dispatch }, body) {
         return new Promise((resolve, reject) => {
             dispatch('loading/loadingState', true, { root: true })
-            CommerceService.create(body).then(({ data }) => {
-                const commerce = Object.assign({}, data.payload)
+            CommerceGroupService.create(body).then(({ data }) => {
+                const commerceGroup = Object.assign({}, data.payload)
 
-                commit('setCommerce', commerce)
                 dispatch('loading/loadingState', false, { root: true })
+                commit('setCommerceGroup', commerceGroup)
+
                 resolve(data.payload)
             }).catch(err => {
+
                 dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 // commit('setCommerceTypes', {})
             })
         })
     },
-    updateCommerce({ commit, dispatch }, body) {
+    updateCommerceGroup({ commit, dispatch }, body) {
         return new Promise((resolve, reject) => {
             dispatch('loading/loadingState', true, { root: true })
-            CommerceService.update(body).then(({ data }) => {
-                const commerce = Object.assign({}, data.payload)
+            CommerceGroupService.update(body).then(({ data }) => {
+                const commerceGroup = Object.assign({}, data.payload)
 
-                commit('setCommerce', commerce)
                 dispatch('loading/loadingState', false, { root: true })
+                commit('setCommerceGroup', commerceGroup)
+
                 resolve(data.payload)
             }).catch(err => {
+
                 dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 // commit('setCompany', {})
@@ -102,18 +93,20 @@ const actions = {
         })
     },
 
-    removeCommerce({ commit, dispatch, state }, id) {
+    removeCommerceGroup({ commit, dispatch, state }, id) {
         return new Promise((resolve, reject) => {
             dispatch('loading/loadingState', true, { root: true })
-            CommerceService.remove(id).then(({ data }) => {
-                const index = state.commerces.findIndex(x => x.id === id)
-                const commerce = Object.assign([], state.commerces)
-                commerce.splice(index, 1)
+            CommerceGroupService.remove(id).then(({ data }) => {
+                const index = state.commerceGroups.findIndex(x => x.id === id)
+                const commerceGroups = [...state.commerceGroups]
+                commerceGroups.splice(index, 1)
 
-                commit('setCommerces', commerce)
                 dispatch('loading/loadingState', false, { root: true })
+                commit('setCommerceGroups', commerceGroups)
+
                 resolve(data.payload)
             }).catch(err => {
+
                 dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 // commit('setCommerceTypess', {})
@@ -122,11 +115,11 @@ const actions = {
     }
 }
 const getters = {
-    getCommerces: state => {
-        return state.commerces
+    getCommerceGroups: state => {
+        return state.commerceGroups
     },
-    getCommerce: state => {
-        return state.commerce
+    getCommerceGroup: state => {
+        return state.commerceGroup
     },
 }
 

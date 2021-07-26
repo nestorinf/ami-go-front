@@ -16,13 +16,13 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'provider/register',
+            path: 'restaurant-group/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveCommerceType"
+          @remove-button="acceptRemoveRestaurantGroup"
         ></DataTable>
       </v-col>
     </v-card>
@@ -42,7 +42,7 @@ import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
-  name: "Provider",
+  name: "Restaurant",
   components: {
     DataTable,
     DialogConfirm,
@@ -54,76 +54,84 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Proveedor",
+        text: "Restaurante",
         disabled: false,
         to: "#",
       },
       {
-        text: "Proveedor",
+        text: "Agrupar Restaurantes",
         disabled: true,
       },
     ],
+
     messageDialog: "",
+
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Proveedor",
+    titleForm: "Agrupacion Restaurante",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
       {
-        text: "Tipo Proveedor",
-        align: "start",
-        sortable: false,
-        value: "provider_type",
-      },     
-      { text: "Numero Registro", value: "registerno" },
-      { text: "NIT", value: "nit" },
-       {
-        text: "Nombre del Proveedor",
+        text: "Grupo",
         value: "name",
       },
-      { text: "Email del Proveedor", value: "email" },
-      { text: "Persona Contacto Proveedor", value: "agent" },
-      { text: "Telefono del Proveedor", value: "phone" },
-      { text: "Breve Descripción", value: "description" },
+      {
+        text: "Restaurantes",
+        align: "start",
+        sortable: false,
+        value: "restaurants",
+      },
     ],
     items: [],
     idDelete: "",
   }),
 
   computed: {
-    ...mapGetters({ storeProvider: "provider/getProviders" }),
+    ...mapGetters({
+      restaurantGroups: "restaurantGroup/getRestaurantGroups",
+    }),
   },
   watch: {
-    storeProvider(data) {
-      if (data.length > 0) {
-        this.items = data;
-      }
+    restaurantGroups(data) {
+      const rows = [];
+      data.map((element) => {
+        rows.push({
+          id: element.id,
+          name: element.name,
+          restaurants: this.parseRestaurant(element.restaurants),
+        });
+      });
+      this.items = rows;
     },
   },
-
   methods: {
     ...mapActions({
-      getProvidersData: "provider/getProvidersData",
-      removeProvider: "provider/removeProvider",
+      getRestaurantGroupData: "restaurantGroup/getRestaurantGroupData",
+      removeRestaurantGroup: "restaurantGroup/removeRestaurantGroup",
     }),
     editButton({ id }) {
-      this.$router.push("provider/edit/" + id);
+      this.$router.push("restaurant-group/edit/" + id);
     },
-    acceptRemoveCommerceType(item) {
+    parseRestaurant(restaurant) {
+      return restaurant.map((element) => {
+        return element.restaurant.name + " - " + element.name;
+      });
+    },
+    acceptRemoveRestaurantGroup(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeProvider(this.idDelete);
+      this.removeRestaurantGroup(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
   },
 
   mounted() {
-    this.getProvidersData();
+    this.getRestaurantGroupData();
   },
 };
 </script>

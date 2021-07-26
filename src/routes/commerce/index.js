@@ -55,6 +55,28 @@ export default {
       component: () =>
         import("../../views/modules/commerce/commerceAddress/Register"),
     },
+
+    // route for commerce groups
+
+    {
+      name: "Commerce Group",
+      path: "commerce/commerce-group",
+      component: () =>
+        import("../../views/modules/commerce/commerceGroup"),
+    },
+    {
+      name: "Commerce Group Register",
+      path: "commerce/commerce-group/register",
+      component: () =>
+        import("../../views/modules/commerce/commerceGroup/Register"),
+    },
+    {
+      name: "Commerce Group Edit",
+      path: "commerce/commerce-group/edit/:id",
+      props: true,
+      component: () =>
+        import("../../views/modules/commerce/commerceGroup/Register"),
+    },
   ],
   menu: {
     group: "/commerce",
@@ -76,6 +98,11 @@ export default {
         title: "Dirección Comercio",
         icon: "mdi-comment-outline",
         to: "commerce-address",
+      },
+      {
+        title: "Agrupacion de Comercio",
+        icon: "mdi-comment-outline",
+        to: "commerce-group",
       },
     ],
   },
