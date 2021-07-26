@@ -111,10 +111,12 @@
 
         <v-row>
           <v-col cols="12" lg="12" class="mb-5">
-            <strong>Logo</strong>
+            <strong
+              >Logo y cover (primero selecciona el logo, luego el cover)</strong
+            >
             <UploadImages
               v-if="displayed"
-              :max="1"
+              :max="2"
               uploadMsg="Haz clic aquí o arrastra una imagen"
               fileError="Archivo no soportado"
               @changed="onFileSelected"
@@ -184,7 +186,7 @@ export default {
       municipalityList: [],
       errorsBags: [],
       displayed: true,
-      selectedLogo: [],
+      selectedImages: [],
       form: {
         id: "",
         name: "",
@@ -197,6 +199,7 @@ export default {
         phone_2: "",
         enabled: true,
         images_id: [],
+        cover_image: [],
       },
     };
   },
@@ -217,14 +220,14 @@ export default {
     }),
     onFileSelected(file) {
       console.log("event", file);
-      this.selectedLogo = file;
+      this.selectedImages = file;
     },
     // preparedDataFiles() {
     //   this.$refs.form.validate();
     //   if (this.$refs.form.validate()) {
-    //     if (this.selectedLogo.length) {
+    //     if (this.selectedImages.length) {
     //       const payload = new FormData();
-    //       this.selectedLogo.forEach((e) => {
+    //       this.selectedImages.forEach((e) => {
     //         payload.append("logo", e);
     //       });
     //       this.createImagenes(payload);
@@ -237,13 +240,18 @@ export default {
       this.createImage(payload)
         .then((result) => {
           if (result) {
-            console.log(result);
-            result.forEach((e) => {
-              this.form.logo = e.id;
-              this.form.images_id.push(e.id);
-            });
+            this.form.logo = result[0].id;
+            this.form.images_id.push(result[0].id);
+            if (result.length == 2) {
+              this.form.cover = result[1].id;
+              this.form.cover_image.push(result[1].id);
+            }
+            // result.forEach((e) => {
+            //   this.form.logo = e.id;
+            //   this.form.images_id.push(e.id);
+            // });
 
-            this.selectedLogo = [];
+            this.selectedImages = [];
 
             this.displayed = false;
             this.$nextTick(() => {
@@ -269,14 +277,15 @@ export default {
     },
     deleteImagen() {
       this.form.logo = null;
+      this.form.cover = null;
     },
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
         const payload = this.form;
-        if (this.selectedLogo.length) {
+        if (this.selectedImages.length) {
           const payload = new FormData();
-          this.selectedLogo.forEach((e) => {
+          this.selectedImages.forEach((e) => {
             payload.append("images[]", e);
           });
           this.createImagenes(payload);
