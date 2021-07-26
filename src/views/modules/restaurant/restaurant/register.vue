@@ -196,7 +196,7 @@ export default {
         cover: null,
         phone_2: "",
         enabled: true,
-        images_id:[]
+        images_id: [],
       },
     };
   },
@@ -251,6 +251,11 @@ export default {
             });
 
             // this.save();
+            if (this.id) {
+              this.update(this.form);
+            } else {
+              this.create(this.form);
+            }
 
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
@@ -275,11 +280,12 @@ export default {
             payload.append("images[]", e);
           });
           this.createImagenes(payload);
-        }
-        if (this.id) {
-          this.update(payload);
         } else {
-          this.create(payload);
+          if (this.id) {
+            this.update(payload);
+          } else {
+            this.create(payload);
+          }
         }
       }
     },
@@ -325,8 +331,17 @@ export default {
       });
       if (this.id) {
         this.getRestaurantById(this.id).then((result) => {
-          this.form = Object.assign({}, result);
-          this.form.images_id = ['images/1626988698.20622101_10210141043504370_5195984019231654835_n.jpg'];
+          console.log(result);
+          this.form = Object.assign(
+            {
+              images_id: result.logo,
+              imagenes: result.logo,
+            },
+            result
+          );
+          // this.form.images_id = [
+          //   {imagen: 'http://127.0.0.1:8088/1627314178.Zeincola.jpg'}
+          // ];
         });
       }
     },
