@@ -38,6 +38,24 @@ export default {
             component: () => import("../../views/modules/products/category/register")
         },
 
+        // routes for categories interna
+        {
+            name: 'Category intern',
+            path: "products/categories_intern",
+            component: () => import("../../views/modules/products/categoryInterna")
+        },
+        {
+            name: 'Category Register intern',
+            path: "products/categories_intern/register",
+            component: () => import("../../views/modules/products/categoryInterna/register")
+        },
+        {
+            name: 'Category Edit intern',
+            path: "products/categories_intern/edit/:id",
+            props: true,
+            component: () => import("../../views/modules/products/categoryInterna/register")
+        },
+
         
         // routes for Lotes
         {
@@ -69,6 +87,11 @@ export default {
                 title: "Categoria",
                 icon: "mdi-comment-outline",
                 to: "categories",
+            },
+            {
+                title: "Categoria Internas",
+                icon: "mdi-comment-outline",
+                to: "categories_intern",
             },
             {
                 title: "Producto",

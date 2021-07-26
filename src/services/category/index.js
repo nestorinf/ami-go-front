@@ -2,8 +2,17 @@ import HTTP from '../axios'
 
 class CategoryService {
     path = 'categories'
+    pathintern = 'categories_intern'
+    pathinternbycommerce = 'categories_intern_by_commerce'
     all() {
         return HTTP.get(`${this.path}`)
+    }
+    allIntern() {
+        return HTTP.get(`${this.pathintern}`)
+    }
+
+    allInternByCommerce(id) {
+        return HTTP.get(`${this.pathinternbycommerce}/` + id)
     }
 
     create(data) {
@@ -15,7 +24,7 @@ class CategoryService {
     }
 
     update(data) {
-        return HTTP.put(`${this.path}/` + data.id, data)
+        return HTTP.post(`${this.path}/` + data['id'], data)
     }
 
     remove(id) {
