@@ -37,6 +37,38 @@ const actions = {
             })
         })
     },
+    getCategoriesDataIntern({ commit, dispatch }) {
+        return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
+            CategoryService.allIntern().then(({ data }) => {
+                const category = data.payload
+
+                commit('setCategories', category)
+                dispatch('loading/loadingState', false, { root: true })
+                resolve(data.payload)
+            }).catch(err => {
+
+                reject(err)
+                commit('setCategories', [])
+            })
+        })
+    },
+    getCategoriesDataInternCommerce({ commit, dispatch }, commerce_id) {
+        return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
+            CategoryService.allInternByCommerce(commerce_id).then(({ data }) => {
+                const category = data.payload
+
+                commit('setCategories', category)
+                dispatch('loading/loadingState', false, { root: true })
+                resolve(data.payload)
+            }).catch(err => {
+
+                reject(err)
+                commit('setCategories', [])
+            })
+        })
+    },
 
     getCategoryByID({ commit, dispatch }, id) {
         return new Promise((resolve, reject) => {
