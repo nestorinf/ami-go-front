@@ -2,7 +2,7 @@
   <v-card class="mb-7">
     <v-card-text class="pa-5 border-bottom">
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-        Categoria
+        Categorias Internas
       </h3>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registran todos las categorias
@@ -11,6 +11,18 @@
     <v-card-text>
       <v-form ref="form" v-model="valid" lazy-validation>
         <v-row>
+          <v-col cols="12" lg="6">
+            <v-select
+              :items="commerces"
+              :loading="loadingCommerces"
+              filled
+              required
+              v-model="form.commerce_id"
+              label="Comercio"
+              :rules="rules.commerceRule"
+              background-color="transparent"
+            ></v-select>
+          </v-col>
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.name"
@@ -33,21 +45,10 @@
               :error-messages="errorsBags.description"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" lg="12">
-            <v-select
-              :loading="loadingCategories"
-              label="Categoría Padre"
-              :items="categoriesList"
-              v-model="form.parent_id"
-              filled
-              background-color="transparent"
-              :error-messages="errorsBags.parent_id"
-            ></v-select>
-          </v-col>
+          
           <v-col cols="12" lg="12">
             <UploadImages v-if="displayed" :max="50" @change="onFileSelected" />
           </v-col>
-           
           <ShowsImages :items="form.imagenes" v-if="id" @delete-imagen="deleteImagen"></ShowsImages>
         
           <v-col cols="12" lg="12">
@@ -70,7 +71,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/products/categories"
+          to="/products/categories_intern"
           dark
           >Cancelar</v-btn
         >
@@ -90,7 +91,7 @@ import UploadImages from "vue-upload-drop-images";
 import ShowsImages from "../../components/ShowsImages";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
-  name: "RegisterCategory",
+  name: "RegisterCategoryIntern",
   props: {
     id: String,
   },
@@ -102,6 +103,10 @@ export default {
 
   data() {
     return {
+      
+      loadingCommerces: false,
+      commerces: [],
+      
       displayed: true,
       selectedFile: [],
       textSnackBar: "",
@@ -109,12 +114,12 @@ export default {
       form: {
         name: "",
         description: "",
-        parent_id: "",
         enabled:false,
-        saved_imagen:true
+        interno:1,
+        imagenes:[],
+        saved_imagen:true,
+        commerce_id:'',
       },
-      loadingCategories: false,
-      categoriesList: [],
       errorsBags: [],
 
       rules: {
@@ -126,6 +131,7 @@ export default {
 
   mounted() {
     this.setData();
+    this.loadCommerces();
   }, 
   computed: {
     getCategories() {
@@ -137,8 +143,10 @@ export default {
       createCategory: "category/createCategory",
       category: "category/getCategoryByID",
       updateCategory: "category/updateCategory",
-      getCategoriesData: "category/getCategoriesData",
+      commerceData: "commerce/getCommercesData",
     }),
+
+    
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
@@ -147,7 +155,9 @@ export default {
           payload.append("name", this.form.name);
           payload.append("description", this.form.description);
           payload.append("enabled", this.form.enabled);
+          payload.append("interno", 1);
           payload.append("saved_imagen", this.form.saved_imagen);
+          payload.append("commerce_id", this.form.commerce_id);
           this.selectedFile.forEach((e) => {
             payload.append("images[]", e);
           });
@@ -167,19 +177,8 @@ export default {
         }
       }
     },
+ 
     setData() {
-      this.loadingCategories = true;
-      const rows = [];
-        this.getCategoriesData().then((result) => {
-        result.map((element) => {
-          rows.push({
-            value: element.id,
-            text: element.name,
-          });
-          this.categoriesList = rows;
-        });
-          this.loadingCategories = false;
-      });
       if (this.id) {
         this.category(this.id).then((result) => {
           this.form = Object.assign({}, result);
@@ -195,13 +194,12 @@ export default {
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
-
+            
             this.selectedFile = [];
             this.displayed = false;
             this.$nextTick(() => {
               this.displayed = true;
             });
-
             // this.$router.push("/products/categories");
           }
         })
@@ -231,7 +229,6 @@ export default {
             this.$nextTick(() => {
               this.displayed = true;
             });
-            
             // this.$router.push("/products/categories");
           }
         })
@@ -258,6 +255,30 @@ export default {
       });
       this.form.saved_imagen = !this.form.saved_imagen;
     },
+    loadCommerces() {
+      const rows = [];
+      this.loadingCommerces = true;
+      this.commerceData()
+        .then((result) => {
+          if (result) {
+            result.map((element) => {
+              if (element.commerce_type !== "Restaurantes") {
+                rows.push({
+                  value: element.id,
+                  text: element.name,
+                });
+              }
+              this.commerces = rows;
+            });
+          }
+          this.loadingCommerces = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingCommerces = false;
+        });
+    },
+
   },
 };
 </script>

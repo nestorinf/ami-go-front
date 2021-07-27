@@ -16,13 +16,13 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'provider/register',
+            path: 'categories_intern/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveCommerceType"
+          @remove-button="acceptRemoveCategory"
         ></DataTable>
       </v-col>
     </v-card>
@@ -42,7 +42,7 @@ import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
-  name: "Provider",
+  name: "CategoryIntern",
   components: {
     DataTable,
     DialogConfirm,
@@ -54,76 +54,78 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Proveedor",
+        text: "Producto",
         disabled: false,
         to: "#",
       },
       {
-        text: "Proveedor",
+        text: "Categorias Internas",
         disabled: true,
       },
     ],
     messageDialog: "",
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Proveedor",
+    titleForm: "Categorias Internas",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
       {
-        text: "Tipo Proveedor",
+        text: "Nombre",
         align: "start",
-        sortable: false,
-        value: "provider_type",
-      },     
-      { text: "Numero Registro", value: "registerno" },
-      { text: "NIT", value: "nit" },
-       {
-        text: "Nombre del Proveedor",
         value: "name",
       },
-      { text: "Email del Proveedor", value: "email" },
-      { text: "Persona Contacto Proveedor", value: "agent" },
-      { text: "Telefono del Proveedor", value: "phone" },
-      { text: "Breve Descripción", value: "description" },
+      {
+        text: "Descripción",
+        value: "description",
+      },
+      {
+        text: "Padre",
+        sortable: false,
+        value: "parent",
+      },
+      {
+        text: "Habilitado",
+        value: "enabled",
+      },
+
+      // { text: "Categoria Padre", value: "category_father" },
     ],
     items: [],
     idDelete: "",
   }),
-
   computed: {
-    ...mapGetters({ storeProvider: "provider/getProviders" }),
+    ...mapGetters({ storeCategories: "category/getCategories" }),
   },
   watch: {
-    storeProvider(data) {
+    storeCategories(data) {
+      this.items = [];
       if (data.length > 0) {
         this.items = data;
       }
     },
   },
-
   methods: {
     ...mapActions({
-      getProvidersData: "provider/getProvidersData",
-      removeProvider: "provider/removeProvider",
+      getCategoriesData: "category/getCategoriesDataIntern",
+      removeCategory: "category/removeCategory",
     }),
     editButton({ id }) {
-      this.$router.push("provider/edit/" + id);
+      this.$router.push("categories_intern/edit/" + id);
     },
-    acceptRemoveCommerceType(item) {
+    acceptRemoveCategory(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeProvider(this.idDelete);
+      this.removeCategory(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
   },
-
   mounted() {
-    this.getProvidersData();
+    this.getCategoriesData();
   },
 };
 </script>
