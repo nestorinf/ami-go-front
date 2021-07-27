@@ -123,10 +123,21 @@
             />
           </v-col>
 
-          <ShowsImages
-            :items="form.images_id"
+          <!-- <ShowsImages
+            :items="images"
             @delete-imagen="deleteImagen"
-          ></ShowsImages>
+          ></ShowsImages> -->
+
+          <v-col cols="12" lg="12" class="mb-5">
+            <div v-if="errorsBags.logo || errorsBags.cover">
+              <p class="error">{{ errorsBags.logo[0] }}</p>
+              <p class="error">{{ errorsBags.cover[0] }}</p>
+            </div>
+          </v-col>
+
+          <div v-for="image in images" :key="image.id" class="resource-image-box">
+            <img :src="image.imagen" alt="Imagen" class="resource-image">
+          </div>
         </v-row>
 
         <v-row>
@@ -162,7 +173,7 @@
 import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 import UploadImages from "vue-upload-drop-images";
-import ShowsImages from "../../components/ShowsImages";
+// import ShowsImages from "../../components/ShowsImages";
 export default {
   name: "RegisterRestaurant",
   props: {
@@ -171,7 +182,7 @@ export default {
   components: {
     SnackBar,
     UploadImages,
-    ShowsImages,
+    // ShowsImages,
   },
 
   data() {
@@ -187,6 +198,7 @@ export default {
       errorsBags: [],
       displayed: true,
       selectedImages: [],
+      images: [],
       form: {
         id: "",
         name: "",
@@ -219,7 +231,6 @@ export default {
       createImage: "image/createImage",
     }),
     onFileSelected(file) {
-      console.log("event", file);
       this.selectedImages = file;
     },
     // preparedDataFiles() {
@@ -340,14 +351,19 @@ export default {
       });
       if (this.id) {
         this.getRestaurantById(this.id).then((result) => {
-          console.log(result);
           this.form = Object.assign(
             {
               images_id: result.logo,
-              imagenes: result.logo,
+              cover_image: result.cover,
             },
             result
           );
+          this.form.logo = null;
+          this.form.cover = null;
+          this.images = [
+            result.logo[0],
+            result.cover[0]
+          ];
           // this.form.images_id = [
           //   {imagen: 'http://127.0.0.1:8088/1627314178.Zeincola.jpg'}
           // ];
@@ -403,5 +419,13 @@ export default {
 <style scoped>
 .error {
   color: #fff;
+}
+.resource-image-box {
+  display: flex;
+}
+.resource-image {
+  height: 8rem;
+  width: 8rem;
+  margin: 0 0.5rem;
 }
 </style>
