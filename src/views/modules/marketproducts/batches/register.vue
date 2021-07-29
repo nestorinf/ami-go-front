@@ -16,7 +16,7 @@
             <v-select
               @change="ProductsByIdCommerce"
               :loading="loadingCommerces"
-              label="Comercios"
+              label="Automercados"
               :items="commerces"
               v-model="commerce_id"
               filled
@@ -200,7 +200,7 @@
             <v-btn
               color="black"
               class="text-capitalize"
-              to="/products/batches"
+              to="/marketproducts/batches"
               dark
               >Cancelar</v-btn
             >
@@ -461,7 +461,7 @@ export default {
       const rows = [];
       this.commerces = [];
       this.loadingCommerces = true;
-      this.commerceData(0)
+      this.commerceData(1)
         .then((result) => {
           if (result) {
             result.map((element) => {

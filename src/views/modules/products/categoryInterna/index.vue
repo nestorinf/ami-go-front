@@ -125,7 +125,7 @@ export default {
     },
   },
   mounted() {
-    this.getCategoriesData();
+    this.getCategoriesData('COMMERCE');
   },
 };
 </script>

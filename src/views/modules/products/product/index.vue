@@ -134,7 +134,7 @@ export default {
   },
 
   mounted() {
-    this.getProductData();
+    this.getProductData(0);
   },
 };
 </script>

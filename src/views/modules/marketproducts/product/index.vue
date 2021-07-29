@@ -16,21 +16,21 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'commerce/register',
+            path: 'product/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveCommerce"
+          @remove-button="acceptRemove"
         ></DataTable>
       </v-col>
+      <DialogConfirm
+        ref="DialogConfirm"
+        @handler-dialog-confirm="removeButton"
+        :message="messageDialog"
+      ></DialogConfirm>
     </v-card>
-    <DialogConfirm
-      ref="DialogConfirm"
-      @handler-dialog-confirm="removeButton"
-      :message="messageDialog"
-    ></DialogConfirm>
   </v-container>
 </template>
 
@@ -40,9 +40,8 @@ import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
-
 export default {
-  name: "Commerce",
+  name: "Product",
   components: {
     DataTable,
     DialogConfirm,
@@ -54,75 +53,88 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Configuracion",
+        text: "Producto Automercado",
         disabled: false,
         to: "#",
       },
       {
-        text: "Comercio",
+        text: "Producto",
         disabled: true,
       },
     ],
 
-    messageDialog: "",
-
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Comercio",
+    titleForm: "Producto",
+    messageDialog: "",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
       {
-        text: "Tipo de Comercio",
-        value: "commerce_type",
-      },
-      {
-        text: "Nombre del Comercio",
+        text: "Nombre",
         align: "start",
         sortable: false,
         value: "name",
       },
-      { text: "Persona Contacto", value: "agent" },
-      { text: "Email Comercio", value: "email" },
-      { text: "Telefono", value: "phone" },
+      { text: "SKU", value: "sku" },
+      { text: "Descripcion", value: "description" },
+      { text: "Condiciones", value: "conditions" },
+      { text: "Categoria", value: "category" },
+      { text: "Proveedor", value: "provider" },
+      { text: "Habilitado", value: "enabled" },
     ],
     items: [],
-    idDelete: "",
   }),
-
   computed: {
-    ...mapGetters({ storeCommerce: "commerce/getCommerces" }),
+    ...mapGetters({ storeProducts: "product/getProducts" }),
   },
   watch: {
-    storeCommerce(data) {
-      this.items = [];
+    storeProducts(data) {
+      const rows = [];
+      this.items = rows;
       if (data.length > 0) {
-        this.items = data;
+        data.map((element) => {
+          rows.push({
+            id: element.id,
+            commerce: element.commerce.name,
+            name: element.name,
+            sku: element.sku,
+            enabled: element.enabled,
+            description: element.description || "",
+            conditions: element.conditions,
+            category: element.category.name ? element.category.name : "",
+            provider: element.provider ? element.category.name : "",
+          });
+        });
+        this.items = rows;
       }
+      console.log(data);
     },
   },
+
   methods: {
     ...mapActions({
-      getCommercesData: "commerce/getCommercesData",
-      removeCommerce: "commerce/removeCommerce",
+      getProductData: "product/getProductData",
+      removeProduct: "product/removeProduct",
     }),
+
     editButton({ id }) {
-      this.$router.push("commerce/edit/" + id);
+      this.$router.push("product/edit/" + id);
     },
-    acceptRemoveCommerce(item) {
+    acceptRemove(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeCommerce(this.idDelete);
+      this.removeProduct(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
   },
 
   mounted() {
-    this.getCommercesData(0);
+    this.getProductData(1);
   },
 };
 </script>
