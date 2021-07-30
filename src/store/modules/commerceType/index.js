@@ -1,4 +1,5 @@
 import CommerceTypeService from '@/services/commerceType'
+import AttachmentService from '@/services/attachment'
 
 const state = {
     commerceTypes: [],
@@ -44,7 +45,7 @@ const actions = {
             CommerceTypeService.getById(id).then(({ data }) => {
 
                 const commerceType = data.payload
-
+              
                 commit('setCommerceType', commerceType)
                 dispatch('loading/loadingState', false, { root: true })
                 resolve(data.payload)
@@ -58,6 +59,7 @@ const actions = {
 
     createCommerceType({ commit, dispatch }, body) {
         return new Promise((resolve, reject) => {
+            console.log(body)
             dispatch('loading/loadingState', true, { root: true })
             CommerceTypeService.create(body).then(({ data }) => {
                 const commerceType = Object.assign({}, data.payload)
@@ -75,6 +77,7 @@ const actions = {
     updateCommerceType({ commit, dispatch }, body) {
         return new Promise((resolve, reject) => {
             dispatch('loading/loadingState', true, { root: true })
+          
             CommerceTypeService.update(body).then(({ data }) => {
                 const commerceType = Object.assign({}, data.payload)
                 dispatch('loading/loadingState', false, { root: true })
@@ -105,6 +108,20 @@ const actions = {
                 dispatch('loading/loadingState', false, { root: true })
                 reject(err)
                 // commit('setCommerceTypess', {})
+            })
+        })
+    },
+
+    removeAttachment({ dispatch  }, id) {
+        return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
+            AttachmentService.remove(id).then(({ data }) => {
+                dispatch('loading/loadingState', false, { root: true })
+
+                resolve(data.payload)
+            }).catch(err => {
+                dispatch('loading/loadingState', false, { root: true })
+                reject(err)
             })
         })
     }

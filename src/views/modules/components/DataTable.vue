@@ -32,7 +32,7 @@
           ></ButtonCrudTable>
         </template>
         <template v-slot:[`item.enabled`]="{ item }">
-          {{ item.enabled ? 'Sí' : 'No'}}
+          {{ item.enabled ? "Sí" : "No" }}
         </template>
       </v-data-table>
     </v-card>
@@ -52,6 +52,9 @@ export default {
       title: String,
       path: String,
     },
+  },
+  mounted() {
+    console.log(this.items);
   },
   components: {
     ButtonRegister,
