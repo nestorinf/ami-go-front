@@ -83,7 +83,7 @@ export default {
         value: "name",
       },
       { text: "Descripcion", value: "description" },
-      { text: "Bloqueado", value: "is_lock" },
+      { text: "Bloqueado", value: "is_lock_text" },
     ],
     items: [],
     idDelete: "",
@@ -103,7 +103,8 @@ export default {
               slug: element.slug,
               name: element.name,
               description: element.description,
-              is_lock: element.is_lock ? "Sí" : "No",
+              is_lock: element.is_lock,
+              is_lock_text: element.is_lock ? "Si" : "No",
             }
             //  element.name;
           );
