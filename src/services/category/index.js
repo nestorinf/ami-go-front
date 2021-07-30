@@ -4,11 +4,13 @@ class CategoryService {
     path = 'categories'
     pathintern = 'categories_intern'
     pathinternbycommerce = 'categories_intern_by_commerce'
-    all() {
-        return HTTP.get(`${this.path}`)
+
+    all(type) {
+        return HTTP.get(`${this.path}`+'?type='+type)
     }
-    allIntern() {
-        return HTTP.get(`${this.pathintern}`)
+
+    allIntern(type) {
+        return HTTP.get(`${this.pathintern}`+'?type='+type)
     }
 
     allInternByCommerce(id) {

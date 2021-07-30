@@ -16,13 +16,13 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'commerce/register',
+            path: 'market-address/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveCommerce"
+          @remove-button="acceptRemoveCommerceAddress"
         ></DataTable>
       </v-col>
     </v-card>
@@ -54,12 +54,12 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Configuracion",
+        text: "Automercado",
         disabled: false,
         to: "#",
       },
       {
-        text: "Comercio",
+        text: "Dirección Automercado",
         disabled: true,
       },
     ],
@@ -68,61 +68,60 @@ export default {
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Comercio",
+    titleForm: "Dirección Automercado",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
       {
-        text: "Tipo de Comercio",
-        value: "commerce_type",
+        text: "Automercado",
+        value: "commerce",
       },
       {
-        text: "Nombre del Comercio",
+        text: "Dirección Automercado",
         align: "start",
         sortable: false,
         value: "name",
       },
-      { text: "Persona Contacto", value: "agent" },
-      { text: "Email Comercio", value: "email" },
-      { text: "Telefono", value: "phone" },
+      { text: "Latitud", value: "latitude" },
+      { text: "Longitud", value: "longitude" },
     ],
     items: [],
     idDelete: "",
   }),
 
   computed: {
-    ...mapGetters({ storeCommerce: "commerce/getCommerces" }),
+    ...mapGetters({ storeCommerceAddresses: "commerceAddress/getCommerceAddresses" }),
   },
   watch: {
-    storeCommerce(data) {
+    storeCommerceAddresses(data) {
       this.items = [];
-      if (data.length > 0) {
+      if (data.length > 0) {        
         this.items = data;
       }
     },
   },
   methods: {
     ...mapActions({
-      getCommercesData: "commerce/getCommercesData",
-      removeCommerce: "commerce/removeCommerce",
+      getCommerceAddressData: "commerceAddress/getCommerceAddressData",
+      removeCommerceAddress: "commerceAddress/removeCommerceAddress",
     }),
     editButton({ id }) {
-      this.$router.push("commerce/edit/" + id);
+      this.$router.push("market-address/edit/" + id);
     },
-    acceptRemoveCommerce(item) {
+    acceptRemoveCommerceAddress(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeCommerce(this.idDelete);
+      this.removeCommerceAddress(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
   },
 
   mounted() {
-    this.getCommercesData(0);
+    this.getCommerceAddressData(1);
   },
 };
 </script>

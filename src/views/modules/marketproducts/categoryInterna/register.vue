@@ -18,7 +18,7 @@
               filled
               required
               v-model="form.commerce_id"
-              label="Comercio"
+              label="Automercado"
               :rules="rules.commerceRule"
               background-color="transparent"
             ></v-select>
@@ -71,7 +71,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/products/categories_intern"
+          to="/marketproducts/categories_intern"
           dark
           >Cancelar</v-btn
         >
@@ -119,7 +119,7 @@ export default {
         imagenes:[],
         saved_imagen:true,
         commerce_id:'',
-        view_type:'COMMERCE'
+        view_type:'MARKET'
       },
       errorsBags: [],
 
@@ -260,7 +260,7 @@ export default {
     loadCommerces() {
       const rows = [];
       this.loadingCommerces = true;
-      this.commerceData(0)
+      this.commerceData(1)
         .then((result) => {
           if (result) {
             result.map((element) => {

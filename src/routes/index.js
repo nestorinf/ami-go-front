@@ -6,6 +6,8 @@ import food from './food'
 import user from './user'
 
 import commerce from './commerce'
+import market from './market'
+import marketproduct from './marketproduct'
 import restaurant from './restaurant'
 // import payment from './payment'
 import location from './location'
@@ -24,6 +26,8 @@ export default {
     configuration,
     location,
     commerce,
+    market,
+    marketproduct,
     restaurant,
     provider,
     promotion,
