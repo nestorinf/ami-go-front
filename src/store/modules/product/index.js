@@ -18,10 +18,11 @@ const mutations = {
 };
 
 const actions = {
-    getProductData({ commit, dispatch }) {
+    getProductData({ commit, dispatch }, type) {
         return new Promise((resolve, reject) => {
+            var set_type = (type==undefined)?0:type;
             dispatch("loading/loadingState", true, { root: true });
-            ProductService.all()
+            ProductService.all(set_type)
                 .then(({ data }) => {
                     const products = data.payload;
 

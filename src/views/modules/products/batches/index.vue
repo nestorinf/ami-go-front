@@ -169,7 +169,7 @@ export default {
     },
   },
   mounted() {
-    this.getProductsBatchesData();
+    this.getProductsBatchesData(0);
   },
 };
 </script>

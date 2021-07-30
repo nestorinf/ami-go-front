@@ -19,7 +19,7 @@
               filled
               required
               v-model="form.commerce_id"
-              label="Comercio"
+              label="Automercado"
               :rules="rules.commerceRule"
               background-color="transparent"
             ></v-select>
@@ -32,7 +32,7 @@
               :rules="rules.categoryRule"
               v-model="form.category_id"
               filled
-              label="Categoria Producto"
+              label="Categoria Producto Automercado"
               background-color="transparent"
             ></v-select>
           </v-col>
@@ -125,7 +125,7 @@
               filled
               multiple
               chips
-              label="Categorias Internas Producto"
+              label="Categorias Internas Producto Automercado"
               background-color="transparent"
             ></v-select>
           </v-col>
@@ -325,7 +325,7 @@ export default {
     loadCommerces() {
       const rows = [];
       this.loadingCommerces = true;
-      this.commerceData(0)
+      this.commerceData(1)
         .then((result) => {
           if (result) {
             result.map((element) => {
@@ -349,7 +349,7 @@ export default {
     loadCategories() {
       const rows = [];
       this.loadingCategories = true;
-      this.categoryData('COMMERCE')
+      this.categoryData('MARKET')
         .then((result) => {
           if (result) {
             result.map((element) => {

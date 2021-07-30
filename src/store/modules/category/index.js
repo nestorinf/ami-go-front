@@ -21,10 +21,10 @@ const mutations = {
 
 
 const actions = {
-    getCategoriesData({ commit, dispatch }) {
+    getCategoriesData({ commit, dispatch }, type) {
         return new Promise((resolve, reject) => {
             dispatch('loading/loadingState', true, { root: true })
-            CategoryService.all().then(({ data }) => {
+            CategoryService.all(type).then(({ data }) => {
                 const category = data.payload
 
                 commit('setCategories', category)
@@ -37,10 +37,10 @@ const actions = {
             })
         })
     },
-    getCategoriesDataIntern({ commit, dispatch }) {
+    getCategoriesDataIntern({ commit, dispatch }, type) {
         return new Promise((resolve, reject) => {
             dispatch('loading/loadingState', true, { root: true })
-            CategoryService.allIntern().then(({ data }) => {
+            CategoryService.allIntern(type).then(({ data }) => {
                 const category = data.payload
 
                 commit('setCategories', category)
