@@ -36,6 +36,24 @@ const actions = {
         });
     });
   },
+  getReferenceDataTypeSizes({ commit, dispatch }) {
+    return new Promise((resolve, reject) => {
+      dispatch("loading/loadingState", true, { root: true });
+      ReferenceService.allTypeSizes()
+        .then(({ data }) => {
+          const reference = data.payload;
+
+          commit("setReferences", reference);
+          dispatch("loading/loadingState", false, { root: true });
+          resolve(data.payload);
+        })
+        .catch((err) => {
+          reject(err);
+          dispatch("loading/loadingState", false, { root: true });
+          commit("setReferences", []);
+        });
+    });
+  },
 
   getReferenceById({ commit, dispatch }, id) {
     return new Promise((resolve, reject) => {

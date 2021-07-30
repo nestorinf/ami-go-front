@@ -6,6 +6,10 @@ class ReferenceService {
     return HTTP.get(`${this.path}`);
   }
 
+  allTypeSizes() {
+    return HTTP.get(`${this.path}`+'_type_sizes');
+  }
+
   create(data) {
     return HTTP.post(`${this.path}`, data);
   }
