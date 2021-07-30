@@ -86,7 +86,7 @@ export default {
         text: "Nombre",
         value: "name",
       },
-      { text: "GeoCerca", value: "geofence" },
+      // { text: "GeoCerca", value: "geofence" },
     ],
     items: [],
     idDelete: "",
@@ -106,7 +106,7 @@ export default {
   methods: {
     ...mapActions({
       getGeofenceData: "geofence/getGeofenceData",
-      removeGeofences: "geofence/removeGeofence",
+      removeGeofence: "geofence/removeGeofence",
     }),
     editButton({ id }) {
       this.$router.push("geofence/edit/" + id);

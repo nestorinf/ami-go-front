@@ -15,7 +15,7 @@ const mutations = {
 };
 
 const actions = {
-  getGeofencesData({ commit, dispatch }) {
+  getGeofenceData({ commit, dispatch }) {
     return new Promise((resolve, reject) => {
       dispatch("loading/loadingState", true, { root: true });
       GeofenceService.all()

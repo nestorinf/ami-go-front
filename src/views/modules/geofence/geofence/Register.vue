@@ -51,7 +51,8 @@
                 <v-col cols="12" lg="12">
                     <GoogleMapGeoFence
                     v-if="loadingChild"
-                    :title="'Titulo Marcador'"/> 
+                    :title="'Titulo Marcador'"
+                    @geofences="geofences"/> 
                 </v-col>
                 <!-- <v-col cols="12" lg="12">
                     <GoogleMap
@@ -119,8 +120,7 @@ export default {
         department_id: null,
         municipality_id: null,
         name: "",
-        latitude: 0,
-        longitude: 0,
+        geofence: []
       },
 
       rules: {
@@ -145,10 +145,10 @@ export default {
       getDepartmentsData: "department/getDepartmentsData",
       getMunicipalitiesData: "municipality/getMunicipalitiesData",
     }),
-    // coordinates(coordinate){
-    //   this.form.latitude = coordinate.lat
-    //   this.form.longitude = coordinate.lng
-    // },
+    geofences(geofences){
+      console.log('hhhh',geofences)
+      this.form.geofence = geofences[0]
+    },
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {

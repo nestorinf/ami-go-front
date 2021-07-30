@@ -5,10 +5,13 @@
         <vuetify-google-autocomplete
           id="map"
           placeholder="Ingrese una Direccion"
-          :country="''+this.center.country+''">
+          @place_changed='setPlace'
+          :country="''+this.center.country+''"
+          v-on:placechanged="getAddressData">
       </vuetify-google-autocomplete>
       <v-btn
           color="success"
+          @click="addMarker"
           class="text-capitalize mr-2"
           >Agregar</v-btn
         >
@@ -23,7 +26,7 @@
          :paths="paths"
           :editable="true"
           :draggable="true"
-          @paths_changed="updateEdited($event)"
+          @paths_changed="updateGeofence($event)"
         >
       </gmapPolygon>
       <!-- <GmapMarker
@@ -55,14 +58,7 @@ export default {
       polygonGeojson: "",
       mvcPaths: null,
       // center: { lat: 1.39, lng: 103.81 },
-      paths: [
-        [
-          { lat: 1.38, lng: 103.8 },
-          { lat: 1.38, lng: 103.81 },
-          { lat: 1.39, lng: 103.81 },
-          { lat: 1.39, lng: 103.8 },
-        ],
-      ],
+      paths: [],
     }
     
   },
@@ -92,12 +88,18 @@ export default {
     ...mapActions({
       getCountryData: "country/getCountryData",
     }),  
-    
-    updateEdited: function (mvcPaths) {
-      this.mvcPaths = mvcPaths;
-      const prueba = this.polygonPaths;
 
-      console.log(prueba);
+    getAddressData: function (addressData) {
+                this.address = addressData;
+            },
+    setPlace(place) {
+      this.currentPlace = place;
+    },
+    
+    updateGeofence: function (mvcPaths) {
+      this.mvcPaths = mvcPaths;
+      const geofences = this.polygonPaths;
+      this.$emit("geofences", geofences)
     },
 
     readGeojson: function ($event) {
@@ -117,6 +119,42 @@ export default {
         this.errorMessage = err.message;
       }
     },
+
+   generateRandomPoints(center, radius, count) {
+        const points = [];
+        for (let i=0; i<count; i++) {
+          points.push(this.generateRandomPoint(center, radius, i));
+        }
+        return points;
+    },
+
+    generateRandomPoint(center, radius, position) {
+      const LongTest = [
+        {u: 0.27945079641863235, v:0.6381595871038035},
+        {u: 0.6179831600169181,  v:0.3893627369672137},
+        {u: 0.26757332398611244, v:0.04421426938525319}
+      ]
+
+      let x0 = center.lng;
+      let y0 = center.lat;
+      let rd = radius/111300;
+
+      //var u = Math.random();
+      //var v = Math.random();
+      let u = LongTest[position].u
+      let v = LongTest[position].v
+
+      let w = rd * Math.sqrt(u);
+      let t = 2 * Math.PI * v;
+      let x = w * Math.cos(t);
+      let y = w * Math.sin(t);
+
+      let xp = x/Math.cos(y0);
+      // Resulting point.
+      return {'lat': y+y0, 'lng': xp+x0};
+    },
+
+
     
     
     
@@ -135,21 +173,23 @@ export default {
     // this.markers.push({ position: coordinate });
     // this.$emit("coordinates", coordinate)
     // },
-    // addMarker() {
-    // this.markers = []
-    //   if (this.address) {
-    //     const coordinate = {
-    //       lat: this.address.latitude,
-    //       lng: this.address.longitude,
-    //     };        
-    //     this.markers.push({ position: coordinate });
-    //     this.places.push(this.currentPlace);
-    //     this.$emit("coordinates", coordinate)
-    //     this.center = coordinate;
-    //     this.currentPlace = null;
-    //   }
+    addMarker() {
+      console.log('entro')
+    this.paths = []
+      if (this.address) {
+        const coordinate = {
+          lat: this.address.latitude,
+          lng: this.address.longitude,
+        };        
+        this.paths = this.generateRandomPoints(coordinate, 1500, 3);
+        this.places.push(this.currentPlace);
+        console.log(this.paths)
+        // this.$emit("geofences",  this.paths)
+        this.center = coordinate;
+        this.currentPlace = null;
+      }
       
-    // },
+     },
     Coordinates() {
       // this.markers = []        
       //     const coordinateedit = {
@@ -165,7 +205,17 @@ export default {
         lat: parseFloat(country[0].latitude), 
         lng: parseFloat(country[0].longitude),
         country: country[0].code,
-      }        
+      }    
+      
+      this.paths = this.generateRandomPoints(this.center, 1500, 3);
+
+
+      // this.paths.push({ lat: 13.7013266, lng: -89.226622})
+      // this.paths.push({ lat: 13.70432661, lng: -89.229622})
+      // this.paths.push({ lat: 13.708827555540417, lng: -89.22478551318359})
+      // this.paths.push({ lat: 13.701741606901281, lng: -89.22175554492188})
+
+      
       }))
     }
 
