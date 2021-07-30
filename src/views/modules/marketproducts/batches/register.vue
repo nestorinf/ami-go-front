@@ -16,7 +16,7 @@
             <v-select
               @change="ProductsByIdCommerce"
               :loading="loadingCommerces"
-              label="Comercios"
+              label="Automercados"
               :items="commerces"
               v-model="commerce_id"
               filled
@@ -25,7 +25,6 @@
               :error-messages="errorsBags.product_id"
             ></v-select>
           </v-col>
-          
           <v-col cols="12" lg="12">
             <v-select
               @change="setPrecios"
@@ -151,8 +150,16 @@
               background-color="transparent"
               :error-messages="errorsBags.colour_id"
             ></v-select>
-          </v-col>      
-          <v-col cols="12" lg="12">
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-checkbox
+              v-model="form.accept_size"
+              required
+              label="¿Es de Talla?"
+              :error-messages="errorsBags.enabled"
+            ></v-checkbox>
+          </v-col>          
+          <v-col cols="12" lg="12" v-if="form.accept_size">
             <v-select
               :loading="loadingSize"
               label="Talla"
@@ -193,7 +200,7 @@
             <v-btn
               color="black"
               class="text-capitalize"
-              to="/products/batches"
+              to="/marketproducts/batches"
               dark
               >Cancelar</v-btn
             >
@@ -233,6 +240,7 @@ export default {
       form: {
         id: "",
         product_id: "",
+        accept_size: false,
         size_id: null,
         name: "",
         description: "",
@@ -303,12 +311,10 @@ export default {
       var _this = this;
       var product_id = this.form.product_id;
       var listProducts = this.listProducts;
-      
       listProducts.map((element) => {
         if(element.id==product_id){
           _this.form.unit_price = element.price;
           _this.form.regular_price = element.price;
-          _this.loadSize(element.type_size_slug);
         }
       });
     },
@@ -316,6 +322,7 @@ export default {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
         const payload = this.form;
+        console.log('payload',payload);
         if (this.id) {
           this.update(payload);
         } else {
@@ -324,19 +331,18 @@ export default {
       }
     },
     setData() {
-       
+      
+      this.loadSize();
       this.loadColour();
       this.loadCommerces();
         
       if (this.id) {
         this.ProductBatches(this.id).then((result) => {
-
           this.commerce_id = result.commerce_id;
           this.form = Object.assign({}, result);
+          console.log(this.form);    
           
-          this.ProductsByIdCommerce(); 
-
-          this.loadSize(result.type_size_slug);     
+          this.ProductsByIdCommerce();      
 
         });
 
@@ -347,6 +353,8 @@ export default {
       this.createProductBatches(payload)
         .then((result) => {
           if (result) {
+            console.log('result_reg',result)
+            this.form = {};
             this.$refs.form.reset();
             this.form.images_id = [];
             this.$refs.snackBarRef.changeStatusSnackbar(true);
@@ -390,6 +398,7 @@ export default {
     },
     
     onFileSelected(event) {
+      console.log('event',event);
       this.selectedFile = event;
     },
     
@@ -452,7 +461,7 @@ export default {
       const rows = [];
       this.commerces = [];
       this.loadingCommerces = true;
-      this.commerceData(0)
+      this.commerceData(1)
         .then((result) => {
           if (result) {
             result.map((element) => {
@@ -472,15 +481,12 @@ export default {
           this.loadingCommerces = false;
         });
     },
-
     ProductsByIdCommerce() {
+      console.log('asdasda')
       const rows = [];
       this.loadingProduct = true;
       this.getProductsByIdCommerce(this.commerce_id)
         .then((result) => {
-          
-          this.listProducts = result.products;
-
           if (result) {
             result.products.map((element) => {
               rows.push({
@@ -497,11 +503,13 @@ export default {
           this.loadingUom = false;
         });
     },
-    loadSize(referenceId) {
+    loadSize() {
       const rows = [];
       this.loadingSize = true;
+      const referenceId = 'SIZE_PRODUCT';
       this.sizeData(referenceId)
         .then((result) => {
+          console.log(result);
           if (result) {
             result.map((element) => {
               rows.push({
@@ -535,6 +543,29 @@ export default {
             });
           }
           this.loadingColour = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingUom = false;
+        });
+    },
+    loadProducts() {
+      const rows = [];
+      this.loadingProduct = true;
+      this.getProductsByIdCommerce(this.form.product_id)
+        .then((result) => {
+          console.log(result);
+          if (result) {
+            this.listProducts = result;
+            result.map((element) => {
+              rows.push({
+                value: element.id,
+                text: element.name,
+              });
+              this.producList = rows;
+            });
+          }
+          this.loadingProduct = false;
         })
         .catch((err) => {
           console.log(err);

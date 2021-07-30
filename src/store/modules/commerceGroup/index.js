@@ -18,10 +18,11 @@ const mutations = {
 
 
 const actions = {
-    getCommerceGroupData({ commit, dispatch }) {
+    getCommerceGroupData({ commit, dispatch }, type) {
         return new Promise((resolve, reject) => {
+            var set_type = (type==undefined)?'COMMERCE':'MARKET';
             dispatch('loading/loadingState', true, { root: true })
-            CommerceGroupService.all().then(({ data }) => {
+            CommerceGroupService.all(set_type).then(({ data }) => {
                 const commerceGroups = data.payload
 
                 dispatch('loading/loadingState', false, { root: true })

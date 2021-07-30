@@ -16,7 +16,7 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'commerce/register',
+            path: 'market/register',
           }"
           :headers="headers"
           :items="items"
@@ -54,12 +54,12 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Configuracion",
+        text: "Automercados",
         disabled: false,
         to: "#",
       },
       {
-        text: "Comercio",
+        text: "Automercados",
         disabled: true,
       },
     ],
@@ -68,24 +68,20 @@ export default {
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Comercio",
+    titleForm: "Automercados",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
       {
-        text: "Tipo de Comercio",
-        value: "commerce_type",
-      },
-      {
-        text: "Nombre del Comercio",
+        text: "Nombre del Automercado",
         align: "start",
         sortable: false,
         value: "name",
       },
       { text: "Persona Contacto", value: "agent" },
-      { text: "Email Comercio", value: "email" },
+      { text: "Email Automercado", value: "email" },
       { text: "Telefono", value: "phone" },
     ],
     items: [],
@@ -109,7 +105,7 @@ export default {
       removeCommerce: "commerce/removeCommerce",
     }),
     editButton({ id }) {
-      this.$router.push("commerce/edit/" + id);
+      this.$router.push("market/edit/" + id);
     },
     acceptRemoveCommerce(item) {
       this.idDelete = item.id;
@@ -122,7 +118,7 @@ export default {
   },
 
   mounted() {
-    this.getCommercesData(0);
+    this.getCommercesData(1);
   },
 };
 </script>
