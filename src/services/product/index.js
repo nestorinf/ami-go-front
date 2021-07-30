@@ -2,8 +2,9 @@ import HTTP from '../axios'
 
 class ProductService {
     path = 'products'
-    all() {
-        return HTTP.get(`${this.path}`)
+
+    all(type) {
+        return HTTP.get(`${this.path}`+'?type='+type)
     }
 
     create(data) {

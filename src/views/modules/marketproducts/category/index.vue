@@ -16,13 +16,13 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'commerce/register',
+            path: 'categories/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveCommerce"
+          @remove-button="acceptRemoveCategory"
         ></DataTable>
       </v-col>
     </v-card>
@@ -42,7 +42,7 @@ import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
-  name: "Commerce",
+  name: "Category",
   components: {
     DataTable,
     DialogConfirm,
@@ -54,49 +54,53 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Configuracion",
+        text: "Producto Automercado",
         disabled: false,
         to: "#",
       },
       {
-        text: "Comercio",
+        text: "Categoria",
         disabled: true,
       },
     ],
-
     messageDialog: "",
-
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Comercio",
+    titleForm: "Categoria",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
       {
-        text: "Tipo de Comercio",
-        value: "commerce_type",
-      },
-      {
-        text: "Nombre del Comercio",
+        text: "Nombre",
         align: "start",
-        sortable: false,
         value: "name",
       },
-      { text: "Persona Contacto", value: "agent" },
-      { text: "Email Comercio", value: "email" },
-      { text: "Telefono", value: "phone" },
+      {
+        text: "Descripción",
+        value: "description",
+      },
+      {
+        text: "Padre",
+        sortable: false,
+        value: "parent",
+      },
+      {
+        text: "Habilitado",
+        value: "enabled",
+      },
+
+      // { text: "Categoria Padre", value: "category_father" },
     ],
     items: [],
     idDelete: "",
   }),
-
   computed: {
-    ...mapGetters({ storeCommerce: "commerce/getCommerces" }),
+    ...mapGetters({ storeCategories: "category/getCategories" }),
   },
   watch: {
-    storeCommerce(data) {
+    storeCategories(data) {
       this.items = [];
       if (data.length > 0) {
         this.items = data;
@@ -105,24 +109,23 @@ export default {
   },
   methods: {
     ...mapActions({
-      getCommercesData: "commerce/getCommercesData",
-      removeCommerce: "commerce/removeCommerce",
+      getCategoriesData: "category/getCategoriesData",
+      removeCategory: "category/removeCategory",
     }),
     editButton({ id }) {
-      this.$router.push("commerce/edit/" + id);
+      this.$router.push("categories/edit/" + id);
     },
-    acceptRemoveCommerce(item) {
+    acceptRemoveCategory(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeCommerce(this.idDelete);
+      this.removeCategory(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
   },
-
   mounted() {
-    this.getCommercesData(0);
+    this.getCategoriesData('MARKET');
   },
 };
 </script>

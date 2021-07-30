@@ -19,7 +19,7 @@
               filled
               required
               v-model="form.commerce_id"
-              label="Comercio"
+              label="Automercado"
               :rules="rules.commerceRule"
               background-color="transparent"
             ></v-select>
@@ -32,7 +32,7 @@
               :rules="rules.categoryRule"
               v-model="form.category_id"
               filled
-              label="Categoria Producto"
+              label="Categoria Producto Automercado"
               background-color="transparent"
             ></v-select>
           </v-col>
@@ -125,19 +125,7 @@
               filled
               multiple
               chips
-              label="Categorias Internas Producto"
-              background-color="transparent"
-            ></v-select>
-          </v-col>
-          <v-col cols="12" lg="12">
-            <v-select
-              :loading="loadingTypeSizes"
-              :items="TypeSizes"
-              required
-              :rules="rules.TypeSizesRule"
-              v-model="form.type_size_slug"
-              filled
-              label="Categorias Internas Producto"
+              label="Categorias Internas Producto Automercado"
               background-color="transparent"
             ></v-select>
           </v-col>
@@ -199,7 +187,6 @@ export default {
     categories: [],
     categoriesIntern: [],
     providers: [],
-    TypeSizes: [],
     textSnackBar: "",
     uom: [],
     loadingCommerces: false,
@@ -207,7 +194,6 @@ export default {
     loadingCategoriesIntern: false,
     loadingProviders: false,
     loadingUom: false,
-    loadingTypeSizes: false,
 
     form: {
       name: "",
@@ -224,7 +210,6 @@ export default {
       category_id: "",
       provider_id: "",
       category_intern_ids: [],
-      type_size_slug: "",
     },
 
     rules: {
@@ -234,7 +219,6 @@ export default {
       priceRule: [(v) => !!v || "este campo es obligatorio"],
       uomRule: [(v) => !!v || "este campo es obligatorio"],
       categoryInternRule: [(v) => !!v || "este campo es obligatorio"],
-      TypeSizesRule: [(v) => !!v || "este campo es obligatorio"],
     },
   }),
 
@@ -251,7 +235,6 @@ export default {
       providerData: "provider/getProvidersData",
       productById: "product/getProductById",
       uomData: "referenceList/getReferenceListByReferenceSlugData",
-      getReferenceDataTypeSizes: "reference/getReferenceDataTypeSizes",
     }),
 
     save() {
@@ -310,9 +293,6 @@ export default {
       // load unit of measures (uom)
       this.loadUom();
 
-      // load types sizes
-      this.loadTypeSizes();
-
       // get data by id
 
       if (this.id) {
@@ -331,7 +311,6 @@ export default {
             enabled: result.enabled,
             on_stock: result.on_stock,
             category_intern_ids: result.category_intern_ids,
-            type_size_slug: result.type_size_slug,
           };
 
           this.form = Object.assign({}, parseData);
@@ -346,7 +325,7 @@ export default {
     loadCommerces() {
       const rows = [];
       this.loadingCommerces = true;
-      this.commerceData(0)
+      this.commerceData(1)
         .then((result) => {
           if (result) {
             result.map((element) => {
@@ -370,7 +349,7 @@ export default {
     loadCategories() {
       const rows = [];
       this.loadingCategories = true;
-      this.categoryData('COMMERCE')
+      this.categoryData('MARKET')
         .then((result) => {
           if (result) {
             result.map((element) => {
@@ -388,7 +367,6 @@ export default {
           this.loadingCategories = false;
         });
     },
-
     loadCategoriesIntern() {
       const rows = [];
       this.loadingCategoriesIntern = true;
@@ -454,28 +432,6 @@ export default {
         .catch((err) => {
           console.log(err);
           this.loadingUom = false;
-        });
-    },
-
-    loadTypeSizes() {
-      const rows = [];
-      this.loadingTypeSizes = true;
-      this.getReferenceDataTypeSizes()
-        .then((result) => {
-          if (result) {
-            result.map((element) => {
-              rows.push({
-                value: element.slug,
-                text: element.name,
-              });
-              this.TypeSizes = rows;
-            });
-          }
-          this.loadingTypeSizes = false;
-        })
-        .catch((err) => {
-          console.log(err);
-          this.loadingTypeSizes = false;
         });
     },
   },

@@ -16,13 +16,13 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'categories/register',
+            path: 'batches/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveCategory"
+          @remove-button="acceptRemoveProductBatches"
         ></DataTable>
       </v-col>
     </v-card>
@@ -31,6 +31,11 @@
       @handler-dialog-confirm="removeButton"
       :message="messageDialog"
     ></DialogConfirm>
+    <SnackBar
+      :text="textSnackBar"
+      ref="snackBarRef"
+      :snackbar="true"
+    ></SnackBar>
   </v-container>
 </template>
 
@@ -40,12 +45,14 @@ import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
+import SnackBar from "@/views/modules/components/SnackBar";
 
 export default {
-  name: "Category",
+  name: "ProductsBatches",
   components: {
     DataTable,
     DialogConfirm,
+    SnackBar,
   },
 
   data: () => ({
@@ -54,23 +61,34 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Producto",
+        text: "Producto Automercado",
         disabled: false,
         to: "#",
       },
       {
-        text: "Categoria",
+        text: "Lotes",
         disabled: true,
       },
     ],
     messageDialog: "",
+    textSnackBar: "",
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Categoria",
+    titleForm: "Lotes",
     headers: [
       {
         text: "Accion",
         value: "action",
+      },
+      {
+        text: "Automercado",
+        align: "start",
+        value: "commerce",
+      },
+      {
+        text: "Producto",
+        align: "start",
+        value: "product",
       },
       {
         text: "Nombre",
@@ -78,54 +96,80 @@ export default {
         value: "name",
       },
       {
-        text: "Descripción",
-        value: "description",
+        text: "Stock",
+        value: "stock",
       },
       {
-        text: "Padre",
-        sortable: false,
-        value: "parent",
+        text: "Stock minimo",
+        value: "stock_min",
       },
       {
-        text: "Habilitado",
-        value: "enabled",
+        text: "Estatus",
+        value: "estatus",
       },
-
-      // { text: "Categoria Padre", value: "category_father" },
+      {
+        text: "Precio Unitario",
+        value: "unit_price",
+      },
+      {
+        text: "Precio Regular",
+        value: "regular_price",
+      },
+      {
+        text: "Fecha de expiración",
+        value: "expired_date",
+      }
     ],
     items: [],
     idDelete: "",
   }),
   computed: {
-    ...mapGetters({ storeCategories: "category/getCategories" }),
+    ...mapGetters({ storeProductsBatches: "productBatches/getProductsBatches" }),
   },
   watch: {
-    storeCategories(data) {
+    storeProductsBatches(data) {
       this.items = [];
       if (data.length > 0) {
         this.items = data;
+        console.log(this.items);
       }
     },
   },
-  methods: {
+  methods: { 
     ...mapActions({
-      getCategoriesData: "category/getCategoriesData",
-      removeCategory: "category/removeCategory",
+      getProductsBatchesData: "productBatches/getProductsBatchesData",
+      removeProductBatches: "productBatches/removeProductBatches",
     }),
     editButton({ id }) {
-      this.$router.push("categories/edit/" + id);
+      this.$router.push("batches/edit/" + id);
     },
-    acceptRemoveCategory(item) {
+    acceptRemoveProductBatches(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
-    removeButton() {
-      this.removeCategory(this.idDelete);
-      this.$refs.DialogConfirm.changeStateDialog(false);
+    removeButton() {      
+       this.removeProductBatches(this.idDelete)
+        .then((result) => {
+          if (result) {
+            this.$refs.snackBarRef.changeStatusSnackbar(true);
+            this.textSnackBar = "Eliminado existosamente!";
+          }
+        }).catch((err) => {
+          if (err.response) {
+            this.errorsBags = err.response.data.errors;
+            setTimeout(() => {
+              this.errorsBags = [];
+            }, 4000);
+          }
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = "Disculpe, ha ocurrido un error";
+        });
+
+      this.$refs.DialogConfirm.changeStateDialog(false); 
     },
   },
   mounted() {
-    this.getCategoriesData('COMMERCE');
+    this.getProductsBatchesData(1);
   },
 };
 </script>

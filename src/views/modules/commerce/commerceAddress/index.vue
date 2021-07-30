@@ -121,7 +121,7 @@ export default {
   },
 
   mounted() {
-    this.getCommerceAddressData();
+    this.getCommerceAddressData(0);
   },
 };
 </script>
