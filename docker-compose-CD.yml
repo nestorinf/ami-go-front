@@ -13,8 +13,8 @@ services:
       #- "443"
     #ports:
      # - "8081:80"
-    volumes:
-        - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    # volumes:
+        # - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
     #   - /usr/src/node_modules # esto no me sobreescribe
     environment:
       - VIRTUAL_HOST=amigo.front.local
