@@ -8,7 +8,12 @@ class CommerceService {
     }
 
     create(data) {
-        return HTTP.post(`${this.path}`, data)
+        return HTTP.post(`${this.path}`, data, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                'Accept': 'application/json'
+            }
+        })
     }
 
     getById(id) {
@@ -19,8 +24,13 @@ class CommerceService {
         return HTTP.get(`${this.path+'_products'}/` + id)
     }
 
-    update(data) {
-        return HTTP.put(`${this.path}/` + data.id, data)
+    update({payload,id}) {
+        return HTTP.post(`${this.path}/` + id, payload, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                'Accept': 'application/json'
+            }
+        })
     }
 
     remove(id) {
