@@ -52,7 +52,8 @@
                     <GoogleMapGeoFence
                     v-if="loadingChild"
                     :title="'Titulo Marcador'"
-                    @geofences="geofences"/> 
+                    @geofences="geofences"
+                    :editCoordinates="editCoordinates"/>
                 </v-col>
                 <!-- <v-col cols="12" lg="12">
                     <GoogleMap
@@ -105,7 +106,7 @@ export default {
   data() {
     return {
       textSnackBar: "",
-      titleForm: "Dirección Comercio",
+      titleForm: "GeoCercas",
       valid: true,
       errorsBags: [],
       loadingDepartments: false,
@@ -113,7 +114,7 @@ export default {
       loadingChild: false,
       departmentList: [],
       municipalityList: [],
-      editCoordinates:{},
+      editCoordinates:[],
       center:{},
       form: {
         id: "",
@@ -146,8 +147,7 @@ export default {
       getMunicipalitiesData: "municipality/getMunicipalitiesData",
     }),
     geofences(geofences){
-      console.log('hhhh',geofences)
-      this.form.geofence = geofences[0]
+      this.form.geofence = geofences
     },
     save() {
       this.$refs.form.validate();
@@ -210,12 +210,9 @@ export default {
             name: result.name,
             department_id: result.department_id,
             municipality_id: result.municipality_id,
-            geofence: result.geofence
+            // geofence: result.geofence
           };
-          this.editCoordinates = {
-            lat:result.latitude,
-            lng:result.longitude
-          }
+          this.editCoordinates = result.geofence
         });
         
       }          

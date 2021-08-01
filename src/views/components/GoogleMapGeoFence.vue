@@ -5,7 +5,6 @@
         <vuetify-google-autocomplete
           id="map"
           placeholder="Ingrese una Direccion"
-          @place_changed='setPlace'
           :country="''+this.center.country+''"
           v-on:placechanged="getAddressData">
       </vuetify-google-autocomplete>
@@ -13,13 +12,14 @@
           color="success"
           @click="addMarker"
           class="text-capitalize mr-2"
-          >Agregar</v-btn
+          :disabled="disabledButton">
+          Agregar</v-btn
         >
     </div>
     <br>
     <GmapMap
       :center='this.center'
-      :zoom='13'
+      :zoom='this.center.zoom'
       style='width:100%;  height: 400px;'
     >
      <gmapPolygon
@@ -29,14 +29,6 @@
           @paths_changed="updateGeofence($event)"
         >
       </gmapPolygon>
-      <!-- <GmapMarker
-        :draggable="true"
-        :key="index"        
-        v-for="(m, index) in markers"
-        :position="m.position"
-        @click="center=m.position"
-        @dragend="updateCoordinates"
-      /> -->
     </GmapMap>
    </v-col>
 </template>
@@ -46,19 +38,21 @@ import {mapGetters, mapActions } from "vuex";
 export default {
   name: 'GoogleMapGeoFence',  
   props:{
-  //  editCoordinates: Object,
+    editCoordinates: Array,
   }, 
+  
   data() { 
     return {
       center: { lat:0.00, lng: 0.00 },
       currentPlace: null, 
       markers: [],
       places: [],
-      address: '',
+      address: {},
       polygonGeojson: "",
       mvcPaths: null,
       // center: { lat: 1.39, lng: 103.81 },
       paths: [],
+      disabledButton: true
     }
     
   },
@@ -89,38 +83,72 @@ export default {
       getCountryData: "country/getCountryData",
     }),  
 
-    getAddressData: function (addressData) {
-                this.address = addressData;
-            },
-    setPlace(place) {
-      this.currentPlace = place;
-    },
-    
-    updateGeofence: function (mvcPaths) {
-      this.mvcPaths = mvcPaths;
-      const geofences = this.polygonPaths;
-      this.$emit("geofences", geofences)
+    getAddressData(addressData) {
+        this.address = addressData;
+        this.disabledButton = false
+    },    
+
+    updateGeofence(mvcPaths) {
+        this.mvcPaths = mvcPaths;
+        const geofences = this.polygonPaths[0];
+        this.$emit("geofences", geofences)
     },
 
-    readGeojson: function ($event) {
-      try {
-        this.polygonGeojson = $event.target.value;
-
-        var v = JSON.parse($event.target.value);
-
-        this.paths = v.coordinates.map((linearRing) =>
-          linearRing
-            .slice(0, linearRing.length - 1)
-            .map(([lng, lat]) => ({ lat, lng }))
-        );
-
-        this.errorMessage = null;
-      } catch (err) {
-        this.errorMessage = err.message;
+    // readGeojson: function ($event) {
+    //   try {
+    //     this.polygonGeojson = $event.target.value;
+    //     var v = JSON.parse($event.target.value);
+    //     this.paths = v.coordinates.map((linearRing) =>
+    //       linearRing
+    //         .slice(0, linearRing.length - 1)
+    //         .map(([lng, lat]) => ({ lat, lng }))
+    //     );
+    //     this.errorMessage = null;
+    //   } catch (err) {
+    //     this.errorMessage = err.message;
+    //   }
+    // },
+    addMarker() {
+    this.paths = []
+      if (Object.keys(this.address).length != 0) {
+        const coordinate = {
+          lat: this.address.latitude,
+          lng: this.address.longitude,
+          country: this.center.country,
+          zoom: 14
+        };   
+        this.center = coordinate;     
+        this.paths = this.generateRandomPoints(coordinate, 1500, 3);
+        this.$emit("geofences",  this.paths)
+       
       }
+      
+     },
+    Coordinates() {
+      this.paths = []        
+      this.getCountryData().then((result => {
+        const country = result.filter(country =>  country.is_default === 1  );    
+       if(this.editCoordinates.length ) {
+          this.center = {
+            lat: this.editCoordinates[0].lat, 
+            lng: this.editCoordinates[0].lng,
+            country: country[0].code,
+            zoom: 14,
+         }  
+          this.paths = this.editCoordinates
+          this.$emit("geofences", this.paths)
+      } else {
+         this.center = {
+            lat: parseFloat(country[0].latitude), 
+            lng: parseFloat(country[0].longitude),
+            country: country[0].code,
+            zoom: 13,
+         }  
+          this.paths = this.generateRandomPoints(this.center, 1500, 3);
+      }      
+      }))
     },
-
-   generateRandomPoints(center, radius, count) {
+    generateRandomPoints(center, radius, count) {
         const points = [];
         for (let i=0; i<count; i++) {
           points.push(this.generateRandomPoint(center, radius, i));
@@ -129,7 +157,7 @@ export default {
     },
 
     generateRandomPoint(center, radius, position) {
-      const LongTest = [
+      const LongApprox = [
         {u: 0.27945079641863235, v:0.6381595871038035},
         {u: 0.6179831600169181,  v:0.3893627369672137},
         {u: 0.26757332398611244, v:0.04421426938525319}
@@ -141,8 +169,8 @@ export default {
 
       //var u = Math.random();
       //var v = Math.random();
-      let u = LongTest[position].u
-      let v = LongTest[position].v
+      let u = LongApprox[position].u
+      let v = LongApprox[position].v
 
       let w = rd * Math.sqrt(u);
       let t = 2 * Math.PI * v;
@@ -152,74 +180,7 @@ export default {
       let xp = x/Math.cos(y0);
       // Resulting point.
       return {'lat': y+y0, 'lng': xp+x0};
-    },
-
-
-    
-    
-    
-    // getAddressData: function (addressData) {
-    //             this.address = addressData;
-    //         },
-    // setPlace(place) {
-    //   this.currentPlace = place;
-    // },
-    // updateCoordinates(location) {
-    // this.markers = []
-    // const coordinate = {
-    //     lat: location.latLng.lat(),
-    //     lng: location.latLng.lng(),
-    // }
-    // this.markers.push({ position: coordinate });
-    // this.$emit("coordinates", coordinate)
-    // },
-    addMarker() {
-      console.log('entro')
-    this.paths = []
-      if (this.address) {
-        const coordinate = {
-          lat: this.address.latitude,
-          lng: this.address.longitude,
-        };        
-        this.paths = this.generateRandomPoints(coordinate, 1500, 3);
-        this.places.push(this.currentPlace);
-        console.log(this.paths)
-        // this.$emit("geofences",  this.paths)
-        this.center = coordinate;
-        this.currentPlace = null;
-      }
-      
-     },
-    Coordinates() {
-      // this.markers = []        
-      //     const coordinateedit = {
-      //       lat: parseFloat(this.editCoordinates.lat),
-      //       lng: parseFloat(this.editCoordinates.lng),
-      //     }
-      // this.markers.push({ position: coordinateedit });
-      
-      this.getCountryData().then((result => {
-        const country = result.filter(country =>  country.is_default === 1  );
-        
-        this.center = {
-        lat: parseFloat(country[0].latitude), 
-        lng: parseFloat(country[0].longitude),
-        country: country[0].code,
-      }    
-      
-      this.paths = this.generateRandomPoints(this.center, 1500, 3);
-
-
-      // this.paths.push({ lat: 13.7013266, lng: -89.226622})
-      // this.paths.push({ lat: 13.70432661, lng: -89.229622})
-      // this.paths.push({ lat: 13.708827555540417, lng: -89.22478551318359})
-      // this.paths.push({ lat: 13.701741606901281, lng: -89.22175554492188})
-
-      
-      }))
-    }
-
-    
+    },     
     //geolocate: function() {
     //  navigator.geolocation.getCurrentPosition(position => {
     //    this.center = {

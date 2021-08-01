@@ -44,7 +44,7 @@ export default {
   }, 
   data() { 
     return {
-       center: { lat:0.00, lng: 0.00 },
+      center: { lat:0.00, lng: 0.00 },
       currentPlace: null, 
       markers: [],
       places: [],
@@ -84,6 +84,7 @@ export default {
         const coordinate = {
           lat: this.address.latitude,
           lng: this.address.longitude,
+          country: this.center.country,
         };        
         this.markers.push({ position: coordinate });
         this.places.push(this.currentPlace);
