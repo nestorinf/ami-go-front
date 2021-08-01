@@ -18,10 +18,10 @@ const mutations = {
 };
 
 const actions = {
-  getCommerceAddressData({ commit, dispatch }) {
+  getCommerceAddressData({ commit, dispatch }, type) {
     return new Promise((resolve, reject) => {
       dispatch("loading/loadingState", true, { root: true });
-      CommerceAddressService.all()
+      CommerceAddressService.all(type)
         .then(({ data }) => {
           const commerceAddress = data.payload;
 

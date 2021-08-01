@@ -111,7 +111,8 @@ export default {
         description: "",
         parent_id: "",
         enabled:false,
-        saved_imagen:true
+        saved_imagen:true,
+        view_type:'COMMERCE'
       },
       loadingCategories: false,
       categoriesList: [],
@@ -148,6 +149,7 @@ export default {
           payload.append("description", this.form.description);
           payload.append("enabled", this.form.enabled);
           payload.append("saved_imagen", this.form.saved_imagen);
+          payload.append("view_type", this.form.view_type);
           this.selectedFile.forEach((e) => {
             payload.append("images[]", e);
           });
@@ -170,7 +172,7 @@ export default {
     setData() {
       this.loadingCategories = true;
       const rows = [];
-        this.getCategoriesData().then((result) => {
+        this.getCategoriesData('COMMERCE').then((result) => {
         result.map((element) => {
           rows.push({
             value: element.id,

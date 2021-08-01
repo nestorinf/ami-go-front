@@ -8,6 +8,8 @@ import user from "./user";
 import commerce from "./commerce";
 import geofence from "./geofence";
 import restaurant from "./restaurant";
+import market from "./market";
+import marketproduct from "./marketproduct";
 // import payment from './payment'
 import location from "./location";
 import driver from "./driver";
@@ -25,6 +27,8 @@ export default {
   location,
   geofence,
   commerce,
+  market,
+  marketproduct,
   restaurant,
   provider,
   promotion,

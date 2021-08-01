@@ -2,9 +2,11 @@ import HTTP from "../axios";
 
 class CommerceAddressService {
   path = "commerce-addresses";
-  all() {
-    return HTTP.get(`${this.path}`);
+  
+  all(type) {
+      return HTTP.get(`${this.path}`+'?type='+type)
   }
+
 
   create(data) {
     return HTTP.post(`${this.path}`, data);

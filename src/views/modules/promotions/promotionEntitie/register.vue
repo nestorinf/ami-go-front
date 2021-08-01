@@ -228,7 +228,7 @@ export default {
     
     ProductsByIdCommerce() {
       const rows = [];
-      this.getProductsByIdCommerce(this.form.commerces_id)
+      this.getProductsByIdCommerce(this.form.commerce_id)
         .then((result) => {
           if (result) {
             this.DataCommerces = result;

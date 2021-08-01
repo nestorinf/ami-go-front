@@ -119,6 +119,7 @@ export default {
         imagenes:[],
         saved_imagen:true,
         commerce_id:'',
+        view_type:'COMMERCE'
       },
       errorsBags: [],
 
@@ -158,6 +159,7 @@ export default {
           payload.append("interno", 1);
           payload.append("saved_imagen", this.form.saved_imagen);
           payload.append("commerce_id", this.form.commerce_id);
+          payload.append("view_type", this.form.view_type);
           this.selectedFile.forEach((e) => {
             payload.append("images[]", e);
           });
@@ -258,7 +260,7 @@ export default {
     loadCommerces() {
       const rows = [];
       this.loadingCommerces = true;
-      this.commerceData()
+      this.commerceData(0)
         .then((result) => {
           if (result) {
             result.map((element) => {
