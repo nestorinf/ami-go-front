@@ -11,7 +11,6 @@ RUN npm run build
 FROM nginx:1.21.1-alpine as production-stage
 RUN apk update && apk upgrade && apk add bash
 WORKDIR /var/www
-COPY ["./docker/nginx/conf.d/*.conf", "/etc/nginx/conf.d/"]
 COPY --from=build-stage /usr/src/dist /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
