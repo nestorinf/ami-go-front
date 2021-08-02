@@ -16,13 +16,13 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'reference/register',
+            path: 'geofence/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveReference"
+          @remove-button="acceptRemoveGeofence"
         ></DataTable>
       </v-col>
     </v-card>
@@ -40,8 +40,9 @@ import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
+
 export default {
-  name: "Company",
+  name: "Geofence",
   components: {
     DataTable,
     DialogConfirm,
@@ -53,89 +54,75 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Configuracion",
+        text: "GeoCerca",
         disabled: false,
         to: "#",
       },
       {
-        text: "Referencia",
+        text: "GeoCerca",
         disabled: true,
       },
     ],
+
     messageDialog: "",
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Referencia",
+    titleForm: "GeoCerca",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
       {
-        text: "Slug",
-        value: "slug",
+        text: "Departamento",
+        value: "department",
+      },
+      {
+        text: "Municipio",
+        value: "municipality",
       },
       {
         text: "Nombre",
-        align: "start",
-        sortable: false,
         value: "name",
       },
-      { text: "Descripcion", value: "description" },
-      { text: "Bloqueado", value: "is_lock_text" },
+      // { text: "GeoCerca", value: "geofence" },
     ],
     items: [],
     idDelete: "",
   }),
 
   computed: {
-    ...mapGetters({ storeReferences: "reference/getReferences" }),
+    ...mapGetters({ storeGeofences: "geofence/getGeofences" }),
   },
   watch: {
-    storeReferences(data) {
-      if (data.length > 0) {
-        this.items = [];
-        data.map((element) => {
-          this.items.push(
-            {
-              id: element.id,
-              slug: element.slug,
-              name: element.name,
-              description: element.description,
-              is_lock: element.is_lock,
-              is_lock_text: element.is_lock ? "Si" : "No",
-            }
-            //  element.name;
-          );
-
-          // this.items = data;
-          // this.items[0].description = data.description;
-          // this.items[0].is_lock = data.is_lock ? 'Sí' : 'No';
-        });
+    storeGeofences(data) {
+      this.items = [];
+      if (data.length > 0) {        
+        this.items = data;
       }
     },
   },
   methods: {
     ...mapActions({
-      getReferenceData: "reference/getReferenceData",
-      removeReference: "reference/removeReference",
+      getGeofenceData: "geofence/getGeofenceData",
+      removeGeofence: "geofence/removeGeofence",
     }),
     editButton({ id }) {
-      this.$router.push("reference/edit/" + id);
+      this.$router.push("geofence/edit/" + id);
     },
-    acceptRemoveReference(item) {
+    acceptRemoveGeofence(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeReference(this.idDelete);
+      this.removeGeofence(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
   },
 
   mounted() {
-    this.getReferenceData();
+    this.getGeofenceData();
   },
 };
 </script>

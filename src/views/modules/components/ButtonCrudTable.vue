@@ -1,7 +1,7 @@
 <template >
   <div>
     <v-icon small @click="edit(item)" class="mr-2">mdi-pencil</v-icon>
-    <v-icon small @click="remove(item)">mdi-delete</v-icon>
+    <v-icon v-if="!item.is_lock" small @click="remove(item)">mdi-delete</v-icon>
   </div>
 </template>
 
