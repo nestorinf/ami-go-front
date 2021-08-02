@@ -134,10 +134,9 @@
               :loading="loadingTypeSizes"
               :items="TypeSizes"
               required
-              :rules="rules.TypeSizesRule"
               v-model="form.type_size_slug"
               filled
-              label="Categorias Internas Producto"
+              label="Tallas del Producto (Dejar en blanco sino aplica...)"
               background-color="transparent"
             ></v-select>
           </v-col>
@@ -234,7 +233,6 @@ export default {
       priceRule: [(v) => !!v || "este campo es obligatorio"],
       uomRule: [(v) => !!v || "este campo es obligatorio"],
       categoryInternRule: [(v) => !!v || "este campo es obligatorio"],
-      TypeSizesRule: [(v) => !!v || "este campo es obligatorio"],
     },
   }),
 
@@ -269,8 +267,7 @@ export default {
     create(payload) {
       this.createProduct(payload)
         .then((result) => {
-          if (result) {
-            this.form = {};
+          if (result) { 
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";

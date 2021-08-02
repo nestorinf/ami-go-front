@@ -54,12 +54,12 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Automercado",
+        text: "Super mercado",
         disabled: false,
         to: "#",
       },
       {
-        text: "Dirección Automercado",
+        text: "Dirección Super mercado",
         disabled: true,
       },
     ],
@@ -68,18 +68,18 @@ export default {
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Dirección Automercado",
+    titleForm: "Dirección Super mercado",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
       {
-        text: "Automercado",
+        text: "Super mercado",
         value: "commerce",
       },
       {
-        text: "Dirección Automercado",
+        text: "Dirección Super mercado",
         align: "start",
         sortable: false,
         value: "name",
