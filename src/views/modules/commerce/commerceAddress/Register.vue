@@ -191,7 +191,6 @@ export default {
       this.createCommerceAddress(payload)
         .then((result) => {
           if (result) {
-            this.form = {};
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";

@@ -61,21 +61,21 @@ export default {
   ],
   menu: {
     group: "/market",
-    title: "Automercados",
+    title: "Super mercados",
     icon: "mdi-store",
     children: [
       {
-        title: "Automercados",
+        title: "Super mercados",
         icon: "mdi-comment-outline",
         to: "market",
       },
       {
-        title: "Dirección Automercados",
+        title: "Dirección Super mercados",
         icon: "mdi-comment-outline",
         to: "market-address",
       },
       {
-        title: "Agrupacion de Automercados",
+        title: "Agrupacion de Super mercados",
         icon: "mdi-comment-outline",
         to: "market-group",
       },

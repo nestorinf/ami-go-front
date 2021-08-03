@@ -73,6 +73,13 @@ export default {
             path: "products/batches/edit/:id",
             props: true,
             component: () => import("../../views/modules/products/batches/register")
+        },
+
+        {
+            name: 'products Batches Detail',
+            path: "products/batchesDetail/detail/:id",
+            props: true,
+            component: () => import("../../views/modules/products/batchesDetail/index")
         }
     ],
 

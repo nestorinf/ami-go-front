@@ -18,7 +18,7 @@
               filled
               required
               v-model="form.commerce_id"
-              label="Automercado"
+              label="Super mercado"
               :rules="rules.commerceRule"
               background-color="transparent"
             ></v-select>
