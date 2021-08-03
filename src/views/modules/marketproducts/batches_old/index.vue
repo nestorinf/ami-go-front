@@ -21,7 +21,6 @@
           :headers="headers"
           :items="items"
           :loading="true"
-          @detail-button="detailButton"
           @edit-button="editButton"
           @remove-button="acceptRemoveProductBatches"
         ></DataTable>
@@ -41,9 +40,9 @@
 </template>
 
 <script>
-import DataTable from "./components/DataTable";
-import ButtonRegister from "./components/ButtonRegister";
-import ButtonCrudTable from "./components/ButtonCrudTable";
+import DataTable from "../../components/DataTable";
+import ButtonRegister from "../../components/ButtonRegister";
+import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
@@ -97,6 +96,14 @@ export default {
         value: "name",
       },
       {
+        text: "Stock",
+        value: "stock",
+      },
+      {
+        text: "Stock minimo",
+        value: "stock_min",
+      },
+      {
         text: "Estatus",
         value: "estatus",
       },
@@ -135,9 +142,6 @@ export default {
     }),
     editButton({ id }) {
       this.$router.push("batches/edit/" + id);
-    },
-    detailButton({ id }) {
-      this.$router.push("batchesDetail/detail/" + id);
     },
     acceptRemoveProductBatches(item) {
       this.idDelete = item.id;

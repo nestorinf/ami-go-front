@@ -12,7 +12,7 @@ export default {
             path: "marketproducts/product/register",
             component: () => import("../../views/modules/marketproducts/product/register")
         },
-        {
+        { 
             name: 'Product Market Edit',
             path: "marketproducts/product/edit/:id",
             props: true,
@@ -73,6 +73,12 @@ export default {
             path: "marketproducts/batches/edit/:id",
             props: true,
             component: () => import("../../views/modules/marketproducts/batches/register")
+        },
+        {
+            name: 'products Market Batches Detail',
+            path: "marketproducts/batchesDetail/detail/:id",
+            props: true,
+            component: () => import("../../views/modules/marketproducts/batchesDetail/index")
         }
     ],
 
@@ -80,7 +86,7 @@ export default {
 
     menu: {
         group: '/marketproducts',
-        title: 'Productos Automercado',
+        title: 'Productos Super mercado',
         icon: 'mdi-basket',
         children: [
             {

@@ -19,7 +19,7 @@
               filled
               required
               v-model="form.commerce_id"
-              label="Automercado"
+              label="Super mercado"
               :rules="rules.commerceRule"
               background-color="transparent"
             ></v-select>
@@ -32,7 +32,7 @@
               :rules="rules.categoryRule"
               v-model="form.category_id"
               filled
-              label="Categoria Producto Automercado"
+              label="Categoria Producto Super mercado"
               background-color="transparent"
             ></v-select>
           </v-col>
@@ -125,7 +125,18 @@
               filled
               multiple
               chips
-              label="Categorias Internas Producto Automercado"
+              label="Categorias Internas Producto Super mercado"
+              background-color="transparent"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" lg="12">
+            <v-select
+              :loading="loadingTypeSizes"
+              :items="TypeSizes"
+              required
+              v-model="form.type_size_slug"
+              filled
+              label="Tallas del Producto (Dejar en blanco sino aplica...)"
               background-color="transparent"
             ></v-select>
           </v-col>
@@ -187,6 +198,7 @@ export default {
     categories: [],
     categoriesIntern: [],
     providers: [],
+    TypeSizes: [],
     textSnackBar: "",
     uom: [],
     loadingCommerces: false,
@@ -194,6 +206,7 @@ export default {
     loadingCategoriesIntern: false,
     loadingProviders: false,
     loadingUom: false,
+    loadingTypeSizes: false,
 
     form: {
       name: "",
@@ -210,6 +223,7 @@ export default {
       category_id: "",
       provider_id: "",
       category_intern_ids: [],
+      type_size_slug: "",
     },
 
     rules: {
@@ -235,6 +249,7 @@ export default {
       providerData: "provider/getProvidersData",
       productById: "product/getProductById",
       uomData: "referenceList/getReferenceListByReferenceSlugData",
+      getReferenceDataTypeSizes: "reference/getReferenceDataTypeSizes",
     }),
 
     save() {
@@ -253,7 +268,6 @@ export default {
       this.createProduct(payload)
         .then((result) => {
           if (result) {
-            this.form = {};
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
@@ -292,6 +306,9 @@ export default {
 
       // load unit of measures (uom)
       this.loadUom();
+
+      // load types sizes
+      this.loadTypeSizes();
 
       // get data by id
 
@@ -432,6 +449,27 @@ export default {
         .catch((err) => {
           console.log(err);
           this.loadingUom = false;
+        });
+    },
+    loadTypeSizes() {
+      const rows = [];
+      this.loadingTypeSizes = true;
+      this.getReferenceDataTypeSizes()
+        .then((result) => {
+          if (result) {
+            result.map((element) => {
+              rows.push({
+                value: element.slug,
+                text: element.name,
+              });
+              this.TypeSizes = rows;
+            });
+          }
+          this.loadingTypeSizes = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingTypeSizes = false;
         });
     },
   },

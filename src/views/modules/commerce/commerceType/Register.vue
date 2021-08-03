@@ -209,7 +209,7 @@ export default {
     create(payload) {
       this.createCommerceType(payload)
         .then((result) => {
-          if (result) {
+          if (result) { 
             this.$refs.form.reset();
             this.$refs.VueUploadImages.Imgs = [];
 

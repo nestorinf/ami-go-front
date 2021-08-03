@@ -54,12 +54,12 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Automercados",
+        text: "Super mercados",
         disabled: false,
         to: "#",
       },
       {
-        text: "Agrupar Automercados",
+        text: "Agrupar Super mercados",
         disabled: true,
       },
     ],
@@ -68,7 +68,7 @@ export default {
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Agrupacion Automercados",
+    titleForm: "Agrupacion Super mercados",
     headers: [
       {
         text: "Accion",
@@ -79,7 +79,7 @@ export default {
         value: "name",
       },
       {
-        text: "Automercados",
+        text: "Super mercados",
         align: "start",
         sortable: false,
         value: "commerces",

@@ -2,10 +2,10 @@
   <v-card class="mb-7">
       <v-card-text class="pa-5 border-bottom">
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-        Dirección Automercado
+        Dirección Super mercado
       </h3>
       <h6 class="subtitle-2 font-weight-light">
-        En este formulario se registran todas las direcciones de automercado
+        En este formulario se registran todas las direcciones de Super mercado
       </h6>
     </v-card-text>    
       <v-card-text>
@@ -14,7 +14,7 @@
                 <v-col cols="12" lg="12">
                     <v-select
                     :loading="loadingCommerces"
-                    label="Automercados"
+                    label="Super mercados"
                     :items="commerceList"
                     v-model="form.commerce_id"
                     filled
@@ -93,7 +93,7 @@ export default {
   data() {
     return {
       textSnackBar: "",
-      titleForm: "Dirección Automercado",
+      titleForm: "Dirección Super mercado",
       valid: true,
       errorsBags: [],
       loadingCommerces: false,
@@ -191,7 +191,6 @@ export default {
       this.createCommerceAddress(payload)
         .then((result) => {
           if (result) {
-            this.form = {};
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";

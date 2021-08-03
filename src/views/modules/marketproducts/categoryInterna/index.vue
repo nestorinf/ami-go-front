@@ -54,7 +54,7 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Producto Automercado",
+        text: "Producto Super mercado",
         disabled: false,
         to: "#",
       },
