@@ -13,6 +13,7 @@
         <v-row>
           <v-col cols="12" lg="6">
             <v-select
+              @change="loadCategoriesIntern"
               :items="commerces"
               :loading="loadingCommerces"
               filled
@@ -113,6 +114,32 @@
               background-color="transparent"
             ></v-select>
           </v-col>
+          
+          <v-col cols="12" lg="12">
+            <v-select
+              :loading="loadingCategoriesIntern"
+              :items="categoriesIntern"
+              required
+              :rules="rules.categoryInternRule"
+              v-model="form.category_intern_ids"
+              filled
+              multiple
+              chips
+              label="Categorias Internas Producto"
+              background-color="transparent"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" lg="12">
+            <v-select
+              :loading="loadingTypeSizes"
+              :items="TypeSizes"
+              required
+              v-model="form.type_size_slug"
+              filled
+              label="Tallas del Producto (Dejar en blanco sino aplica...)"
+              background-color="transparent"
+            ></v-select>
+          </v-col>
         </v-row>
 
         <v-row>
@@ -169,13 +196,17 @@ export default {
     valid: true,
     commerces: [],
     categories: [],
+    categoriesIntern: [],
     providers: [],
+    TypeSizes: [],
     textSnackBar: "",
     uom: [],
     loadingCommerces: false,
     loadingCategories: false,
+    loadingCategoriesIntern: false,
     loadingProviders: false,
     loadingUom: false,
+    loadingTypeSizes: false,
 
     form: {
       name: "",
@@ -191,6 +222,8 @@ export default {
       uom_id: "",
       category_id: "",
       provider_id: "",
+      category_intern_ids: [],
+      type_size_slug: "",
     },
 
     rules: {
@@ -199,6 +232,7 @@ export default {
       nameRule: [(v) => !!v || "este campo es obligatorio"],
       priceRule: [(v) => !!v || "este campo es obligatorio"],
       uomRule: [(v) => !!v || "este campo es obligatorio"],
+      categoryInternRule: [(v) => !!v || "este campo es obligatorio"],
     },
   }),
 
@@ -211,9 +245,11 @@ export default {
       updateProduct: "product/updateProduct",
       commerceData: "commerce/getCommercesData",
       categoryData: "category/getCategoriesData",
+      getCategoriesDataInternCommerce: "category/getCategoriesDataInternCommerce",
       providerData: "provider/getProvidersData",
       productById: "product/getProductById",
       uomData: "referenceList/getReferenceListByReferenceSlugData",
+      getReferenceDataTypeSizes: "reference/getReferenceDataTypeSizes",
     }),
 
     save() {
@@ -231,8 +267,7 @@ export default {
     create(payload) {
       this.createProduct(payload)
         .then((result) => {
-          if (result) {
-            this.form = {};
+          if (result) { 
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
@@ -272,6 +307,9 @@ export default {
       // load unit of measures (uom)
       this.loadUom();
 
+      // load types sizes
+      this.loadTypeSizes();
+
       // get data by id
 
       if (this.id) {
@@ -285,21 +323,27 @@ export default {
             weight: result.weight,
             uom_id: result.uom.id,
             category_id: result.category.id,
-            provider_id: result.provider.id,
+            provider_id: '',
             commerce_id: result.commerce.id,
             enabled: result.enabled,
             on_stock: result.on_stock,
+            category_intern_ids: result.category_intern_ids,
+            type_size_slug: result.type_size_slug,
           };
 
           this.form = Object.assign({}, parseData);
+          
+          this.loadCategoriesIntern();
+
         });
+        
       }
     },
 
     loadCommerces() {
       const rows = [];
       this.loadingCommerces = true;
-      this.commerceData()
+      this.commerceData(0)
         .then((result) => {
           if (result) {
             result.map((element) => {
@@ -323,7 +367,7 @@ export default {
     loadCategories() {
       const rows = [];
       this.loadingCategories = true;
-      this.categoryData()
+      this.categoryData('COMMERCE')
         .then((result) => {
           if (result) {
             result.map((element) => {
@@ -335,6 +379,29 @@ export default {
             });
           }
           this.loadingCategories = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingCategories = false;
+        });
+    },
+
+    loadCategoriesIntern() {
+      const rows = [];
+      this.loadingCategoriesIntern = true;
+      this.getCategoriesDataInternCommerce(this.form.commerce_id)
+        .then((result) => {
+          if (result) {
+            console.log(result)
+            result.map((element) => {
+              rows.push({
+                value: element.id,
+                text: element.name,
+              });
+              this.categoriesIntern = rows;
+            });
+          }
+          this.loadingCategoriesIntern = false;
         })
         .catch((err) => {
           console.log(err);
@@ -384,6 +451,28 @@ export default {
         .catch((err) => {
           console.log(err);
           this.loadingUom = false;
+        });
+    },
+
+    loadTypeSizes() {
+      const rows = [];
+      this.loadingTypeSizes = true;
+      this.getReferenceDataTypeSizes()
+        .then((result) => {
+          if (result) {
+            result.map((element) => {
+              rows.push({
+                value: element.slug,
+                text: element.name,
+              });
+              this.TypeSizes = rows;
+            });
+          }
+          this.loadingTypeSizes = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingTypeSizes = false;
         });
     },
   },

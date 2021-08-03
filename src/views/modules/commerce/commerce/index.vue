@@ -122,7 +122,7 @@ export default {
   },
 
   mounted() {
-    this.getCommercesData();
+    this.getCommercesData(0);
   },
 };
 </script>

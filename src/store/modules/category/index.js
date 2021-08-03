@@ -21,10 +21,42 @@ const mutations = {
 
 
 const actions = {
-    getCategoriesData({ commit, dispatch }) {
+    getCategoriesData({ commit, dispatch }, type) {
         return new Promise((resolve, reject) => {
             dispatch('loading/loadingState', true, { root: true })
-            CategoryService.all().then(({ data }) => {
+            CategoryService.all(type).then(({ data }) => {
+                const category = data.payload
+
+                commit('setCategories', category)
+                dispatch('loading/loadingState', false, { root: true })
+                resolve(data.payload)
+            }).catch(err => {
+
+                reject(err)
+                commit('setCategories', [])
+            })
+        })
+    },
+    getCategoriesDataIntern({ commit, dispatch }, type) {
+        return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
+            CategoryService.allIntern(type).then(({ data }) => {
+                const category = data.payload
+
+                commit('setCategories', category)
+                dispatch('loading/loadingState', false, { root: true })
+                resolve(data.payload)
+            }).catch(err => {
+
+                reject(err)
+                commit('setCategories', [])
+            })
+        })
+    },
+    getCategoriesDataInternCommerce({ commit, dispatch }, commerce_id) {
+        return new Promise((resolve, reject) => {
+            dispatch('loading/loadingState', true, { root: true })
+            CategoryService.allInternByCommerce(commerce_id).then(({ data }) => {
                 const category = data.payload
 
                 commit('setCategories', category)

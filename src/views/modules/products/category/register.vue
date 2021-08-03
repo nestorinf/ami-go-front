@@ -44,7 +44,13 @@
               :error-messages="errorsBags.parent_id"
             ></v-select>
           </v-col>
-          <v-col cols="12" lg="6">
+          <v-col cols="12" lg="12">
+            <UploadImages v-if="displayed" :max="50" @change="onFileSelected" />
+          </v-col>
+           
+          <ShowsImages :items="form.imagenes" v-if="id" @delete-imagen="deleteImagen"></ShowsImages>
+        
+          <v-col cols="12" lg="12">
             <v-checkbox
               v-model="form.enabled"
               required
@@ -80,6 +86,8 @@
 
 <script>
 import { mapActions } from "vuex";
+import UploadImages from "vue-upload-drop-images";
+import ShowsImages from "../../components/ShowsImages";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
   name: "RegisterCategory",
@@ -87,18 +95,24 @@ export default {
     id: String,
   },
   components: {
+    UploadImages,
+    ShowsImages,
     SnackBar,
   },
 
   data() {
     return {
+      displayed: true,
+      selectedFile: [],
       textSnackBar: "",
       valid: true,
       form: {
         name: "",
         description: "",
         parent_id: "",
-        enabled:false
+        enabled:false,
+        saved_imagen:true,
+        view_type:'COMMERCE'
       },
       loadingCategories: false,
       categoriesList: [],
@@ -113,7 +127,7 @@ export default {
 
   mounted() {
     this.setData();
-  },
+  }, 
   computed: {
     getCategories() {
       return this.$store.state.category.categories;
@@ -129,18 +143,36 @@ export default {
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
-        const payload = this.form;
-        if (this.id) {
-          this.update(payload);
-        } else {
-          this.create(payload);
+        if (this.selectedFile.length) {
+          const payload = new FormData();
+          payload.append("name", this.form.name);
+          payload.append("description", this.form.description);
+          payload.append("enabled", this.form.enabled);
+          payload.append("saved_imagen", this.form.saved_imagen);
+          payload.append("view_type", this.form.view_type);
+          this.selectedFile.forEach((e) => {
+            payload.append("images[]", e);
+          });
+          if (this.id) {
+            payload.append("id", this.id);
+            this.update(payload);
+          } else {
+            this.create(payload);
+          }
+        }else{
+          const payload = this.form;
+          if (this.id) {
+            this.update(payload);
+          } else {
+            this.create(payload);
+          }
         }
       }
     },
     setData() {
       this.loadingCategories = true;
       const rows = [];
-        this.getCategoriesData().then((result) => {
+        this.getCategoriesData('COMMERCE').then((result) => {
         result.map((element) => {
           rows.push({
             value: element.id,
@@ -161,10 +193,17 @@ export default {
       this.createCategory(payload)
         .then((result) => {
           if (result) {
-            this.form = {};
+            // this.form = {};
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
+
+            this.selectedFile = [];
+            this.displayed = false;
+            this.$nextTick(() => {
+              this.displayed = true;
+            });
+
             // this.$router.push("/products/categories");
           }
         })
@@ -185,8 +224,16 @@ export default {
       this.updateCategory(payload)
         .then((result) => {
           if (result) {
+            this.form = Object.assign({}, result);
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
+            
+            this.selectedFile = [];
+            this.displayed = false;
+            this.$nextTick(() => {
+              this.displayed = true;
+            });
+            
             // this.$router.push("/products/categories");
           }
         })
@@ -201,6 +248,17 @@ export default {
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });
+    },
+    onFileSelected(event) {
+      this.selectedFile = event;
+    },
+    deleteImagen(item) { 
+      this.form.imagenes.forEach((e) => {
+        if(e.id == item){
+          e.delete = !e.delete;
+        }
+      });
+      this.form.saved_imagen = !this.form.saved_imagen;
     },
   },
 };
