@@ -17,6 +17,11 @@ export default {
       props: true,
       component: () => import("../../views/modules/geofence/geofence/Register"),
     },
+    {
+      name: "Geofence General",
+      path: "geofence/geofence-general",
+      component: () => import("../../views/modules/geofence/geofenceGeneral"),
+    },
   ],
   menu: {
     group: "/geofence",
@@ -27,6 +32,11 @@ export default {
         title: "GeoCerca",
         icon: "mdi-comment-outline",
         to: "geofence",
+      },
+      {
+        title: "GeoCerca General",
+        icon: "mdi-comment-outline",
+        to: "geofence-general",
       },
     ],
   },
