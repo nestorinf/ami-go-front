@@ -2,10 +2,10 @@
   <v-card class="mb-7">
     <v-card-text class="pa-5 border-bottom">
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-        Agrupar Automercados
+        Agrupar Super mercados
       </h3>
       <h6 class="subtitle-2 font-weight-light">
-        En este formulario se registran todas las agrupaciones de automercados
+        En este formulario se registran todas las agrupaciones de Super mercados
       </h6>
     </v-card-text>
     <v-card-text>
@@ -28,7 +28,7 @@
               dense
               chips
               small-chips
-              label="Automercados"
+              label="Super mercados"
               multiple
               solo
               required
@@ -85,7 +85,7 @@ export default {
   data() {
     return {
       textSnackBar: "",
-      titleForm: "Agrupar Automercados",
+      titleForm: "Agrupar Super mercados",
       valid: true,
       errorsBags: [],
       loadingCommerces: false,

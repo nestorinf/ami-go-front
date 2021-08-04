@@ -167,8 +167,7 @@ export default {
     create(payload) {
       this.createCommerceGroup(payload)
         .then((result) => {
-          if (result) {
-            this.form = {};
+          if (result) { 
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";

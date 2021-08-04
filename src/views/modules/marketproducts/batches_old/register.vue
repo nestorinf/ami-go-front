@@ -16,7 +16,7 @@
             <v-select
               @change="ProductsByIdCommerce"
               :loading="loadingCommerces"
-              label="Comercios"
+              label="Super mercados"
               :items="commerces"
               v-model="commerce_id"
               filled
@@ -25,7 +25,6 @@
               :error-messages="errorsBags.product_id"
             ></v-select>
           </v-col>
-          
           <v-col cols="12" lg="12">
             <v-select
               @change="setPrecios"
@@ -60,6 +59,32 @@
               required
               background-color="transparent"
               :error-messages="errorsBags.description"
+            ></v-text-field>
+          </v-col>
+          
+          <v-col cols="12" lg="6">
+            <v-text-field
+              v-model="form.stock"
+              label="Cantidad en existencia"
+              type="number"
+              min="0.1"
+              filled
+              required
+              :rules="rules.stockRule"
+              background-color="transparent"
+              :error-messages="errorsBags.stock"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-text-field
+              v-model="form.stock_min"
+              label="Cantidad minima"
+              type="number"
+              filled
+              required
+              :rules="rules.stock_minRule"
+              background-color="transparent"
+              :error-messages="errorsBags.stock_min"
             ></v-text-field>
           </v-col>
           <v-col cols="12" lg="6">
@@ -113,18 +138,60 @@
         ></v-date-picker>
       </v-menu>
           </v-col>
-    
+          <v-col cols="12" lg="12">
+            <v-select
+              :loading="loadingColour"
+              label="Color"
+              :items="colourList"
+              v-model="form.colour_id"
+              filled
+              multiple
+              chips
+              background-color="transparent"
+              :error-messages="errorsBags.colour_id"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-checkbox
+              v-model="form.accept_size"
+              required
+              label="¿Es de Talla?"
+              :error-messages="errorsBags.enabled"
+            ></v-checkbox>
+          </v-col>          
+          <v-col cols="12" lg="12" v-if="form.accept_size">
+            <v-select
+              :loading="loadingSize"
+              label="Talla"
+              :items="sizeList"
+              v-model="form.size_id"
+              filled
+              multiple
+              chips
+              background-color="transparent"
+              :error-messages="errorsBags.size_id"
+            ></v-select>
+          </v-col>
           <v-col cols="12" lg="12" class="pb-10">
             <v-switch v-model="form.status" inset label="Habilitado" hide-details></v-switch> 
           </v-col>
           
         </v-row>
 
+        <v-row>
+          <v-col cols="12" lg="12">
+            <UploadImages v-if="displayed" :max="50" @change="onFileSelected" />
+          </v-col>
+        </v-row>
+        
+        <ShowsImages :items="form.imagenes" v-if="id" @delete-imagen="deleteImagen"></ShowsImages>
+        
+      
         <v-row class="pt-10">
           <v-col cols="12" lg="12">
             <v-btn
               color="success"
-              @click="save"
+              @click="preparedDataFiles"
               :disabled="!valid"
               submit
               class="text-capitalize mr-2"
@@ -133,7 +200,7 @@
             <v-btn
               color="black"
               class="text-capitalize"
-              to="/products/batches"
+              to="/marketproducts/batches"
               dark
               >Cancelar</v-btn
             >
@@ -151,6 +218,8 @@
 
 <script>
 import { mapActions } from "vuex";
+import UploadImages from "vue-upload-drop-images";
+import ShowsImages from "../../components/ShowsImages";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
   name: "RegisterCategory",
@@ -158,6 +227,8 @@ export default {
     id: String,
   },
   components: {
+    UploadImages,
+    ShowsImages,
     SnackBar,
   },
  
@@ -169,6 +240,7 @@ export default {
       form: {
         id: "",
         product_id: "",
+        accept_size: false,
         size_id: null,
         name: "",
         description: "",
@@ -182,19 +254,30 @@ export default {
         images_id:[]
       },
 
+      sizeList: [],
+      loadingSize: false,
+
       listProducts: [],
       producList: [],
       loadingProduct: false,
+
+      colourList: [],
+      loadingColour: false,
       
       errorsBags: [],
 
       rules: {
         product_idRule: [(v) => !!v || "el campo es obligatorio"],
         nameRule: [(v) => !!v || "el campo es obligatorio"],
+        stockRule: [(v) => !!v || "el campo es obligatorio"],
+        stock_minRule: [(v) => !!v || "el campo es obligatorio"],
         unit_priceRule: [(v) => !!v || "el campo es obligatorio"],
         regular_priceRule: [(v) => !!v || "el campo es obligatorio"],
       },
-
+      
+      displayed: true,
+      selectedFile: [],
+      
       commerce_id: '',
       commerces: [],
       loadingCommerces: false,
@@ -215,9 +298,12 @@ export default {
       ProductBatches: "productBatches/getProductBatchesById",
       updateProductBatches: "productBatches/updateProductBatches",
 
+      sizeData: "referenceList/getReferenceListByReferenceSlugData",
+      coloursData: "referenceList/getReferenceListByReferenceSlugData",
       productData: "product/getProductData",
       
       getProductsByIdCommerce: "commerce/getProductsByIdCommerce",
+      createImage: "image/createImage",
       commerceData: "commerce/getCommercesData",
 
     }),
@@ -225,10 +311,8 @@ export default {
       var _this = this;
       var product_id = this.form.product_id;
       var listProducts = this.listProducts;
-      
       listProducts.map((element) => {
         if(element.id==product_id){
-          _this.form.name = element.name;
           _this.form.unit_price = element.price;
           _this.form.regular_price = element.price;
         }
@@ -238,6 +322,7 @@ export default {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
         const payload = this.form;
+        console.log('payload',payload);
         if (this.id) {
           this.update(payload);
         } else {
@@ -246,16 +331,18 @@ export default {
       }
     },
     setData() {
-       
+      
+      this.loadSize();
+      this.loadColour();
       this.loadCommerces();
         
       if (this.id) {
         this.ProductBatches(this.id).then((result) => {
-
           this.commerce_id = result.commerce_id;
           this.form = Object.assign({}, result);
+          console.log(this.form);    
           
-          this.ProductsByIdCommerce();   
+          this.ProductsByIdCommerce();      
 
         });
 
@@ -266,10 +353,13 @@ export default {
       this.createProductBatches(payload)
         .then((result) => {
           if (result) {
+            console.log('result_reg',result)
+            this.form = {};
             this.$refs.form.reset();
+            this.form.images_id = [];
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
-            this.$router.push("/marketproducts/batchesDetail/detail/"+result.id);
+            // this.$router.push("/products/categories");
           }
         })
         .catch((err) => {
@@ -307,6 +397,66 @@ export default {
         });
     },
     
+    onFileSelected(event) {
+      console.log('event',event);
+      this.selectedFile = event;
+    },
+    
+    preparedDataFiles() {
+      
+      this.$refs.form.validate();
+      if (this.$refs.form.validate()) {
+        if (this.selectedFile.length) {
+          const payload = new FormData();
+          this.selectedFile.forEach((e) => {
+            payload.append("images[]", e);
+          });
+          this.createImagenes(payload);
+        }else{
+          this.save();
+        }
+      }
+    },
+               
+    createImagenes(payload) {
+      this.createImage(payload)
+        .then((result) => {
+          if (result) {
+
+            result.forEach((e) => {
+              this.form.images_id.push(e.id);
+            });
+
+            this.selectedFile = [];
+             
+            this.displayed = false;
+            this.$nextTick(() => {
+              this.displayed = true;
+            });
+            
+            this.save();
+
+
+            this.$refs.snackBarRef.changeStatusSnackbar(true);
+            this.textSnackBar = "Guardado existosamente!";
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = "Disculpe, ha ocurrido un error";
+        });
+    },
+
+    deleteImagen(item) { 
+      this.form.imagenes.forEach((e) => {
+        if(e.id == item){
+          e.delete = !e.delete;
+        }
+      });
+    },
+
+
     loadCommerces() {
       const rows = [];
       this.commerces = [];
@@ -331,15 +481,12 @@ export default {
           this.loadingCommerces = false;
         });
     },
-
     ProductsByIdCommerce() {
+      console.log('asdasda')
       const rows = [];
       this.loadingProduct = true;
       this.getProductsByIdCommerce(this.commerce_id)
         .then((result) => {
-          
-          this.listProducts = result.products;
-
           if (result) {
             result.products.map((element) => {
               rows.push({
@@ -356,6 +503,76 @@ export default {
           this.loadingUom = false;
         });
     },
+    loadSize() {
+      const rows = [];
+      this.loadingSize = true;
+      const referenceId = 'SIZE_PRODUCT';
+      this.sizeData(referenceId)
+        .then((result) => {
+          console.log(result);
+          if (result) {
+            result.map((element) => {
+              rows.push({
+                value: element.id,
+                text: element.value,
+              });
+              this.sizeList = rows;
+            });
+          }
+          this.loadingSize = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingUom = false;
+        });
+    },
+    loadColour() {
+      const rows = [];
+      this.loadingColour = true;
+      const referenceId = 'COLOURS';
+      this.coloursData(referenceId)
+        .then((result) => {
+          console.log(result);
+          if (result) {
+            result.map((element) => {
+              rows.push({
+                value: element.id,
+                text: element.value,
+              });
+              this.colourList = rows;
+            });
+          }
+          this.loadingColour = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingUom = false;
+        });
+    },
+    loadProducts() {
+      const rows = [];
+      this.loadingProduct = true;
+      this.getProductsByIdCommerce(this.form.product_id)
+        .then((result) => {
+          console.log(result);
+          if (result) {
+            this.listProducts = result;
+            result.map((element) => {
+              rows.push({
+                value: element.id,
+                text: element.name,
+              });
+              this.producList = rows;
+            });
+          }
+          this.loadingProduct = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingUom = false;
+        });
+    },
+    
   },
 };
 </script>

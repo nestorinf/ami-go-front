@@ -54,12 +54,12 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Automercados",
+        text: "Super mercados",
         disabled: false,
         to: "#",
       },
       {
-        text: "Automercados",
+        text: "Super mercados",
         disabled: true,
       },
     ],
@@ -68,20 +68,20 @@ export default {
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Automercados",
+    titleForm: "Super mercados",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
       {
-        text: "Nombre del Automercado",
+        text: "Nombre del Super mercado",
         align: "start",
         sortable: false,
         value: "name",
       },
       { text: "Persona Contacto", value: "agent" },
-      { text: "Email Automercado", value: "email" },
+      { text: "Email Super mercado", value: "email" },
       { text: "Telefono", value: "phone" },
     ],
     items: [],
