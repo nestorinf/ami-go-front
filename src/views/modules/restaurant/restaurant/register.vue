@@ -239,6 +239,7 @@ export default {
       getDepartmentsData: "department/getDepartmentsData",
       getMunicipalitiesData: "municipality/getMunicipalitiesData",
       createImage: "image/createImage",
+      removeAttachment: "commerceType/removeAttachment",
     }),
     save() {
       if (this.$refs.form.validate()) {

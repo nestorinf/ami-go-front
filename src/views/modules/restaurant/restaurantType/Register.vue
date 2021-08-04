@@ -126,12 +126,13 @@ export default {
       createRestaurantType: "restaurantType/createRestaurantType",
       restaurantType: "restaurantType/getRestaurantTypeById",
       updateRestaurantType: "restaurantType/updateRestaurantType",
+      removeAttachment: "commerceType/removeAttachment",
     }),
     save() {
       if (this.$refs.form.validate()) {
         const formData = new FormData();
 
-        formData.append("id", this.id);
+        formData.append("id", this.form.id);
         formData.append("name", this.form.name);
         formData.append("description", this.form.description);
 
@@ -165,6 +166,7 @@ export default {
           this.form = Object.assign({
             images: []
           }, result);
+          this.imagesList = Object.assign([], this.attachments(result.attachment));
         });
       }
     },
@@ -208,8 +210,9 @@ export default {
         });
     },
 
-    update(payload) {
-      this.updateRestaurantType(payload)
+    update(payload, id) {
+
+      this.updateRestaurantType({ payload, id })
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
@@ -230,6 +233,7 @@ export default {
   },
   watch: {
     storeAttachement(data) {
+      console.log(data);
       if (data.attachment.length > 0) {
         this.imagesList = Object.assign([], this.attachments(data.attachment));
       }
