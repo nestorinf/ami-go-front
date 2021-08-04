@@ -110,34 +110,40 @@
         </v-row>
 
         <v-row>
-          <v-col cols="12" lg="12" class="mb-5">
-            <strong
-              >Logo y cover (primero selecciona el logo, luego el cover)</strong
-            >
+          <v-col cols="6" lg="6">
+            <label for="logo">Logo</label>
+            <ShowsImages
+              :items="imagesListLogo"
+              v-if="true"
+              @delete-imagen="deleteImagenLogo"
+            ></ShowsImages>
             <UploadImages
-              v-if="displayed"
-              :max="2"
-              uploadMsg="Haz clic aquí o arrastra una imagen"
-              fileError="Archivo no soportado"
-              @changed="onFileSelected"
+              style="height: auto"
+              ref="VueUploadImageLogo"
+              v-model="form.logo"
+              v-if="displayedLogo"
+              :max="1"
+              @changed="handleImageLogo"
             />
           </v-col>
 
-          <!-- <ShowsImages
-            :items="images"
-            @delete-imagen="deleteImagen"
-          ></ShowsImages> -->
+          <v-col cols="6" lg="6">
+            <label for="cover">Cover</label>
+            <ShowsImages
+              :items="imagesListCover"
+              v-if="true"
+              @delete-imagen="deleteImagenCover"
+            ></ShowsImages>
 
-          <v-col cols="12" lg="12" class="mb-5">
-            <div v-if="errorsBags.logo || errorsBags.cover">
-              <p class="error">{{ errorsBags.logo[0] }}</p>
-              <p class="error">{{ errorsBags.cover[0] }}</p>
-            </div>
+            <UploadImages
+              style="height: auto"
+              ref="VueUploadImagesCover"
+              v-model="form.cover"
+              v-if="displayedCover"
+              :max="1"
+              @changed="handleImageCover"
+            />
           </v-col>
-
-          <div v-for="image in images" :key="image.id" class="resource-image-box">
-            <img :src="image.imagen" alt="Imagen" class="resource-image">
-          </div>
         </v-row>
 
         <v-row>
@@ -170,10 +176,10 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 import UploadImages from "vue-upload-drop-images";
-// import ShowsImages from "../../components/ShowsImages";
+import ShowsImages from "../../components/ShowsImages";
 export default {
   name: "RegisterRestaurant",
   props: {
@@ -182,9 +188,13 @@ export default {
   components: {
     SnackBar,
     UploadImages,
-    // ShowsImages,
+    ShowsImages,
   },
-
+  computed: {
+    ...mapGetters({
+      getRestaurant: "restaurant/getRestaurant",
+    }),
+  },
   data() {
     return {
       textSnackBar: "",
@@ -196,9 +206,10 @@ export default {
       departmentList: [],
       municipalityList: [],
       errorsBags: [],
-      displayed: true,
-      selectedImages: [],
-      images: [],
+      imagesListLogo: [],
+      imagesListCover: [],
+      displayedLogo: true,
+      displayedCover: true,
       form: {
         id: "",
         name: "",
@@ -206,12 +217,11 @@ export default {
         department_id: "",
         municipality_id: "",
         description: "",
-        logo: null,
-        cover: null,
+        phone: "",
         phone_2: "",
         enabled: true,
-        images_id: [],
-        cover_image: [],
+        logo: [],
+        cover: [],
       },
     };
   },
@@ -230,82 +240,35 @@ export default {
       getMunicipalitiesData: "municipality/getMunicipalitiesData",
       createImage: "image/createImage",
     }),
-    onFileSelected(file) {
-      this.selectedImages = file;
-    },
-    // preparedDataFiles() {
-    //   this.$refs.form.validate();
-    //   if (this.$refs.form.validate()) {
-    //     if (this.selectedImages.length) {
-    //       const payload = new FormData();
-    //       this.selectedImages.forEach((e) => {
-    //         payload.append("logo", e);
-    //       });
-    //       this.createImagenes(payload);
-    //     } else {
-    //       this.save();
-    //     }
-    //   }
-    // },
-    createImagenes(payload) {
-      this.createImage(payload)
-        .then((result) => {
-          if (result) {
-            this.form.logo = result[0].id;
-            this.form.images_id.push(result[0].id);
-            if (result.length == 2) {
-              this.form.cover = result[1].id;
-              this.form.cover_image.push(result[1].id);
-            }
-            // result.forEach((e) => {
-            //   this.form.logo = e.id;
-            //   this.form.images_id.push(e.id);
-            // });
-
-            this.selectedImages = [];
-
-            this.displayed = false;
-            this.$nextTick(() => {
-              this.displayed = true;
-            });
-
-            // this.save();
-            if (this.id) {
-              this.update(this.form);
-            } else {
-              this.create(this.form);
-            }
-
-            this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Guardado existosamente!";
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = "Disculpe, ha ocurrido un error";
-        });
-    },
-    deleteImagen() {
-      this.form.logo = null;
-      this.form.cover = null;
-    },
     save() {
-      this.$refs.form.validate();
       if (this.$refs.form.validate()) {
-        const payload = this.form;
-        if (this.selectedImages.length) {
-          const payload = new FormData();
-          this.selectedImages.forEach((e) => {
-            payload.append("images[]", e);
-          });
-          this.createImagenes(payload);
+        const formData = new FormData();
+
+        formData.append("id", this.id);
+
+        formData.append("restaurant_type_id", this.form.restaurant_type_id);
+        formData.append("name", this.form.name);
+        formData.append("department_id", this.form.department_id);
+        formData.append("municipality_id", this.form.municipality_id);
+        formData.append("description", this.form.description);
+        formData.append("phone", this.form.phone);
+        formData.append("phone_2", this.form.phone_2);
+        formData.append("enabled", this.form.enabled);
+
+        for (let i = 0; i < this.form.logo.length; i++) {
+          let file = this.form.logo[i];
+          formData.append("logo[" + i + "]", file);
+        }
+        for (let e = 0; e < this.form.cover.length; e++) {
+          let file = this.form.cover[e];
+          formData.append("cover[" + e + "]", file);
+        }
+
+        if (this.id) {
+          formData.append("_method", "PUT");
+          this.update(formData, this.id);
         } else {
-          if (this.id) {
-            this.update(payload);
-          } else {
-            this.create(payload);
-          }
+          this.create(formData);
         }
       }
     },
@@ -353,24 +316,29 @@ export default {
         this.getRestaurantById(this.id).then((result) => {
           this.form = Object.assign(
             {
-              images_id: result.logo,
-              cover_image: result.cover,
+              logo: [],
+              cover: [],
             },
             result
           );
-          this.form.logo = null;
-          this.form.cover = null;
-          this.images = [
-            result.logo[0],
-            result.cover[0]
-          ];
-          // this.form.images_id = [
-          //   {imagen: 'http://127.0.0.1:8088/1627314178.Zeincola.jpg'}
-          // ];
         });
       }
     },
+    attachments(attachmentData) {
+      const attachmentsRows = [];
+      if (this.id) {
+        attachmentData.map((element) => {
+          if (element) {
+            attachmentsRows.push({
+              id: element.id,
+              imagen: element.url,
+            });
+          }
+        });
+      }
 
+      return attachmentsRows;
+    },
     create(payload) {
       this.createRestaurant(payload)
         .then((result) => {
@@ -411,6 +379,46 @@ export default {
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });
+    },
+    handleImageLogo(event) {
+      this.form.logo = event;
+    },
+    handleImageCover(event) {
+      this.form.cover = event;
+    },
+
+    deleteImagenLogo(id) {
+      const index = this.imagesListLogo.findIndex((x) => x.id === id);
+      const attachments = [...this.imagesListLogo];
+      attachments.splice(index, 1);
+
+      this.removeAttachment(id).then((response) => {
+        if (response) {
+          this.imagesListLogo = attachments;
+        }
+      });
+    },
+    deleteImagenCover(id) {
+      const index = this.imagesListCover.findIndex((x) => x.id === id);
+      const attachments = [...this.imagesListCover];
+      attachments.splice(index, 1);
+
+      this.removeAttachment(id).then((response) => {
+        if (response) {
+          this.imagesListCover = attachments;
+        }
+      });
+    },
+  },
+  watch: {
+    getRestaurant(data) {
+      data.attachment.map((element) => {
+        if (element.column == "logo") {
+          this.imagesListLogo = this.attachments([element]);
+        } else {
+          this.imagesListCover = this.attachments([element]);
+        }
+      });
     },
   },
 };
