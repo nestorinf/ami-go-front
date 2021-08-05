@@ -80,7 +80,27 @@ export default {
             path: "products/batchesDetail/detail/:id",
             props: true,
             component: () => import("../../views/modules/products/batchesDetail/index")
-        }
+        },
+
+        // routes for product classifications
+
+
+         {
+            name: 'Product Classification',
+            path: "products/classification",
+            component: () => import("../../views/modules/products/classification")
+        },
+        {
+            name: 'Product Classification Register',
+            path: "products/classification/register",
+            component: () => import("../../views/modules/products/classification/Register")
+        },
+        {
+            name: 'Product Classification Edit',
+            path: "products/classification/edit/:id",
+            props: true,
+            component: () => import("../../views/modules/products/classification/Register")
+        },
     ],
 
 
@@ -94,6 +114,11 @@ export default {
                 title: "Categoria",
                 icon: "mdi-comment-outline",
                 to: "categories",
+            },
+            {
+                title: "Clasificación",
+                icon: "mdi-comment-outline",
+                to: "classification",
             },
             {
                 title: "Categoria Internas",
