@@ -89,7 +89,6 @@ export default {
   components: {
     SnackBar,
   },
-
   data() {
     return {
       textSnackBar: "",
@@ -100,7 +99,7 @@ export default {
         slug: "",
         name: "",
         description: "",
-        is_lock: false,
+        is_lock: 0,
       },
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
@@ -147,8 +146,9 @@ export default {
       this.createReference(payload)
         .then((result) => {
           if (result) {
-            this.form = {};
+            // this.form = {};
             this.$refs.form.reset();
+
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
           }
