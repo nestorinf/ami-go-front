@@ -113,7 +113,7 @@ export default {
         code: "",
         latitude: "",
         longitude: "",
-        is_default: false,
+        is_default: 0,
       },
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
@@ -160,9 +160,16 @@ export default {
     create(payload) {
       this.createCountry(payload)
         .then((result) => {
-          if (result) {
-            this.form = {};
+          if (result) {            
             this.$refs.form.reset();
+            this.form = {
+                      id: "",
+                      name: "",
+                      code: "",
+                      latitude: "",
+                      longitude: "",
+                      is_default: 0,
+                    },
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
           }
