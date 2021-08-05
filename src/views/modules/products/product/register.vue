@@ -492,6 +492,7 @@ export default {
     },
 
     setData() {
+      
       // load categories
       this.loadCategories();
 
