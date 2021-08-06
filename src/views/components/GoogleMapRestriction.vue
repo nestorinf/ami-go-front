@@ -45,10 +45,10 @@ export default {
   data() { 
     return {
       options: {
-        strokeColor: "#2ECDFA",
+        strokeColor: "#F0453A",
         // strokeOpacity: 0.5,
         // strokeWeight: 1,
-        fillColor: "#2ECDFA",
+        fillColor: "#F0453A",
         // fillOpacity: 0.20,
       },
       center: { lat:0.00, lng: 0.00 },

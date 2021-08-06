@@ -17,6 +17,25 @@ export default {
       props: true,
       component: () => import("../../views/modules/geofence/geofence/Register"),
     },
+    // routes for  restrictions
+    {
+      name: "Restriction",
+      path: "geofence/restriction",
+      component: () => import("../../views/modules/geofence/restriction"),
+    },
+    {
+      name: "Restriction Register",
+      path: "geofence/restriction/register",
+      component: () =>
+        import("../../views/modules/geofence/restriction/Register"),
+    },
+    {
+      name: "Restriction Edit",
+      path: "geofence/restriction/edit/:id",
+      props: true,
+      component: () =>
+        import("../../views/modules/geofence/restriction/Register"),
+    },
     {
       name: "Geofence General",
       path: "geofence/geofence-general",
@@ -29,12 +48,17 @@ export default {
     icon: "mdi-google-maps",
     children: [
       {
-        title: "GeoCerca",
+        title: "Coberturas",
         icon: "mdi-comment-outline",
         to: "geofence",
       },
       {
-        title: "GeoCerca General",
+        title: "Restricciones",
+        icon: "mdi-comment-outline",
+        to: "restriction",
+      },
+      {
+        title: "General",
         icon: "mdi-comment-outline",
         to: "geofence-general",
       },

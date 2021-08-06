@@ -7,11 +7,23 @@
     >
      <gmapPolygon
           :key="index"
-          v-for="(m, index) in paths"          
+          v-for="(m, index) in pathsCoverages"          
           :paths="m.value"
           :editable="false"
           :draggable="false"
-          :title="'Titulo Marcadorhhhhh'"
+          :title="'Titulo Marcador'"
+          :options = optionsCoberages
+        >
+      </gmapPolygon>
+
+      <gmapPolygon
+          :key="index + 100"
+          v-for="(m, index) in pathsRestrictions"          
+          :paths="m.value"
+          :editable="false"
+          :draggable="false"
+          :title="'Titulo Marcador'"
+          :options = optionsRestrictions
         >
       </gmapPolygon>
     </GmapMap>
@@ -28,15 +40,26 @@ export default {
   
   data() { 
     return {
+      optionsCoberages: {
+        strokeColor: "#2ECDFA",
+        // strokeOpacity: 0.5,
+        // strokeWeight: 1,
+        fillColor: "#2ECDFA",
+        // fillOpacity: 0.20,
+      },
+      optionsRestrictions: {
+        strokeColor: "#F0453A",
+        // strokeOpacity: 0.5,
+        // strokeWeight: 1,
+        fillColor: "#F0453A",
+        // fillOpacity: 0.20,
+      },
       center: { lat:0.00, lng: 0.00 },
-      currentPlace: null, 
-      markers: [],
-      places: [],
-      address: {},
       polygonGeojson: "",
       mvcPaths: null,
       // center: { lat: 1.39, lng: 103.81 },
-      paths: [],
+      pathsCoverages: [],
+      pathsRestrictions: [],
       disabledButton: true
     }
     
@@ -63,10 +86,13 @@ export default {
             country: country[0].code,
             zoom: 13,
          }   
-         console.log('geofencesList',this.geofencesList) 
        if(this.geofencesList.length ) {
            
-          this.paths = this.geofencesList
+          this.pathsCoverages = this.geofencesList, 
+
+          this.pathsRestrictions.push({
+              value: [{"lat": 13.705062770630516, "lng": -89.24611161379748}, {"lat": 13.70961342227527, "lng": -89.24949904510143}, {"lat": 13.707741359763569, "lng": -89.23425966410696}],
+            });
       }      
       }))
     },    

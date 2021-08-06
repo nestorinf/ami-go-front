@@ -16,7 +16,7 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'geofence/register',
+            path: 'restriction/register',
           }"
           :headers="headers"
           :items="items"
@@ -59,7 +59,7 @@ export default {
         to: "#",
       },
       {
-        text: "Cobertura",
+        text: "Restricción",
         disabled: true,
       },
     ],
@@ -68,7 +68,7 @@ export default {
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Cobertura",
+    titleForm: "Restricción",
     headers: [
       {
         text: "Accion",

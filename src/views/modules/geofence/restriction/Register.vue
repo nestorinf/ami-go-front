@@ -2,10 +2,10 @@
   <v-card class="mb-7">
       <v-card-text class="pa-5 border-bottom">
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-        Cobertura
+        Restricciones
       </h3>
       <h6 class="subtitle-2 font-weight-light">
-        En este formulario se registra la zona de cobertura
+        En este formulario se registran todas las restricciones sobre una cobertura
       </h6>
     </v-card-text>    
       <v-card-text>
@@ -49,7 +49,7 @@
                     ></v-text-field>
                 </v-col>
                 <v-col cols="12" lg="12">
-                    <GoogleMapGeoFence
+                    <GoogleMapRestriction
                     v-if="loadingChild"
                     :title="'Titulo Marcador'"
                     @geofences="geofences"
@@ -91,7 +91,7 @@
 
 <script>
 import SnackBar from "@/views/modules/components/SnackBar";
-import GoogleMapGeoFence from "../../../components/GoogleMapGeoFence";
+import GoogleMapRestriction from "../../../components/GoogleMapRestriction";
 import { mapActions,mapGetters } from "vuex";
 export default {
   name: "RegisterGeofence",
@@ -100,7 +100,7 @@ export default {
   },
   components: {
     SnackBar,
-    GoogleMapGeoFence,
+    GoogleMapRestriction,
   },
 
   data() {
