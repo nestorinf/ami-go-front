@@ -61,14 +61,22 @@ export default {
   },
   computed: {
    ...mapGetters({ storeCountries: "country/getCountries" }),
+    
+    },
+  methods: {
+    ...mapActions({
+      getCountryData: "country/getCountryData",
+    }),  
 
     polygonPaths: function () {
       if (!this.mvcPaths) return null;
 
       let paths = [];
       for (let i = 0; i < this.mvcPaths.getLength(); i++) {
+        console.log('paths',paths )
         let path = [];
         for (let j = 0; j < this.mvcPaths.getAt(i).getLength(); j++) {
+          console.log('path',path )
           let point = this.mvcPaths.getAt(i).getAt(j);
           path.push({ lat: point.lat(), lng: point.lng() });
         }
@@ -77,20 +85,17 @@ export default {
 
       return paths;
     },
-    },
-  methods: {
-    ...mapActions({
-      getCountryData: "country/getCountryData",
-    }),  
 
     getAddressData(addressData) {
         this.address = addressData;
         this.disabledButton = false
     },    
 
-    updateGeofence(mvcPaths) {
+    updateGeofence(mvcPaths) {      
+      console.log('entro')
         this.mvcPaths = mvcPaths;
-        const geofences = this.polygonPaths[0];
+        let geofences = this.polygonPaths()[0];
+        console.log(this.mvcPaths)
         this.$emit("geofences", geofences)
     },
 

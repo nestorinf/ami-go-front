@@ -2,10 +2,10 @@
   <v-card class="mb-7">
     <v-card-text class="pa-5 border-bottom">
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-        País
+        Clasificación
       </h3>
       <h6 class="subtitle-2 font-weight-light">
-        En este formulario se registran todos los países
+        En este formulario se registran todos las Clasificaciones
       </h6>
     </v-card-text>
     <v-card-text>
@@ -14,7 +14,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Nombre"
+              label="Clasificación"
               filled
               required
               :rules="rules.nameRule"
@@ -22,47 +22,19 @@
               :error-messages="errorsBags.name"
             ></v-text-field>
           </v-col>
+
           <v-col cols="12" lg="6">
-            <v-text-field
-              v-model="form.code"
-              label="Código"
+            <v-select
+              :loading="loadingReferenceSize"
+              label="Referencia"
+              :items="referenceSize"
+              v-model="form.reference_id"
               filled
+              :rules="rules.referenceSizeRule"
               required
-              :rules="rules.codeRule"
               background-color="transparent"
-              :error-messages="errorsBags.code"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" lg="6">
-            <v-text-field
-              v-model="form.latitude"
-              label="Latitud"
-              filled
-              required
-              :rules="rules.latitudeRule"
-              background-color="transparent"
-              :error-messages="errorsBags.latitude"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" lg="6">
-            <v-text-field
-              v-model="form.longitude"
-              label="Longitud"
-              filled
-              required
-              :rules="rules.longitudeRule"
-              background-color="transparent"
-              :error-messages="errorsBags.longitude"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" lg="6">
-            <v-checkbox
-              v-model="form.is_default"
-              filled
-              required
-              label="Predeterminado"
-              :error-messages="errorsBags.is_default"
-            ></v-checkbox>
+              :error-messages="errorsBags.reference_id"
+            ></v-select>
           </v-col>
         </v-row>
         <v-btn
@@ -76,7 +48,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/location/country"
+          to="/products/classification"
           dark
           >Cancelar</v-btn
         >
@@ -92,9 +64,10 @@
 
 <script>
 import { mapActions } from "vuex";
+
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
-  name: "RegisterCountry",
+  name: "RegisterCategory",
   props: {
     id: String,
   },
@@ -104,22 +77,20 @@ export default {
 
   data() {
     return {
+      referenceSize: [],
       textSnackBar: "",
       valid: true,
-      errorsBags: [],
       form: {
-        id: "",
         name: "",
-        code: "",
-        latitude: "",
-        longitude: "",
-        is_default: 0,
+        reference_id: "",
       },
+      loadingReferenceSize: false,
+      categoriesList: [],
+      errorsBags: [],
+
       rules: {
-        nameRule: [(v) => !!v || "este campo es obligatorio"],
-        codeRule: [(v) => !!v || "este campo es obligatorio"],
-        latitudeRule: [(v) => !!v || "este campo es obligatorio"],
-        longitudeRule: [(v) => !!v || "este campo es obligatorio"],
+        nameRule: [(v) => !!v || "la clasificacion es obligatorio"],
+        referenceSizeRule: [(v) => !!v || "la referencia es obligatorio"],
       },
     };
   },
@@ -128,20 +99,23 @@ export default {
     this.setData();
   },
   computed: {
-    getCountries() {
-      return this.$store.state.country.countries;
+    getCategories() {
+      return this.$store.state.category.categories;
     },
   },
   methods: {
     ...mapActions({
-      createCountry: "country/createCountry",
-      country: "country/getCountryById",
-      updateCountry: "country/updateCountry",
+      createProductClassification: "productClassification/createClassification",
+      getClassificationById: "productClassification/getClassificationById",
+      updateProductClassification: "productClassification/updateClassification",
+
+      getReferenceSize: "productClassification/getReferenceSize",
     }),
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
         const payload = this.form;
+
         if (this.id) {
           this.update(payload);
         } else {
@@ -149,29 +123,46 @@ export default {
         }
       }
     },
+
     setData() {
+      this.loadingReferenceSize = true;
+
+      this.getReferenceSize().then((result) => {
+        const rows = [];
+        result.map((element) => {
+          rows.push({
+            value: element.id,
+            text: element.name,
+            slug: element.slug,
+          });
+        });
+        this.referenceSize = rows;
+        this.loadingReferenceSize = false;
+      });
+
       if (this.id) {
-        this.country(this.id).then((result) => {
+        this.getClassificationById(this.id).then((result) => {
           this.form = Object.assign({}, result);
         });
       }
     },
 
     create(payload) {
-      this.createCountry(payload)
+      this.createProductClassification(payload)
         .then((result) => {
-          if (result) {            
+          if (result) {
+            // this.form = {};
             this.$refs.form.reset();
-            this.form = {
-                      id: "",
-                      name: "",
-                      code: "",
-                      latitude: "",
-                      longitude: "",
-                      is_default: 0,
-                    },
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
+
+            this.selectedFile = [];
+            this.displayed = false;
+            this.$nextTick(() => {
+              this.displayed = true;
+            });
+
+            // this.$router.push("/products/categories");
           }
         })
         .catch((err) => {
@@ -181,17 +172,27 @@ export default {
               this.errorsBags = [];
             }, 4000);
           }
+          console.log(err);
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });
     },
 
     update(payload) {
-      this.updateCountry(payload)
+      this.updateProductClassification(payload)
         .then((result) => {
           if (result) {
+            this.form = Object.assign({}, result);
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
+
+            this.selectedFile = [];
+            this.displayed = false;
+            this.$nextTick(() => {
+              this.displayed = true;
+            });
+
+            // this.$router.push("/products/categories");
           }
         })
         .catch((err) => {
@@ -201,6 +202,7 @@ export default {
               this.errorsBags = [];
             }, 4000);
           }
+          console.log(err);
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });
