@@ -128,6 +128,24 @@
               :error-messages="errorsBags.is_stock"
             ></v-checkbox>
           </v-col>
+
+          <v-col cols="8">
+            <ShowsImages
+              :items="imagesList"
+              v-if="true"
+              @delete-imagen="deleteImagen"
+            ></ShowsImages>
+          </v-col>
+
+          <v-col cols="12" lg="12" class="mb-3">
+            <UploadImages
+              ref="VueUploadImages"
+              v-model="form.images"
+              v-if="true"
+              :max="1"
+              @changed="handleImages"
+            />
+          </v-col>
         </v-row>
         <v-btn
           color="success"
@@ -151,6 +169,8 @@
 </template>
 
 <script>
+import ShowsImages from "../../components/ShowsImages";
+import UploadImages from "vue-upload-drop-images";
 import { mapActions, mapGetters } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
@@ -160,6 +180,8 @@ export default {
   },
   components: {
     SnackBar,
+    UploadImages,
+    ShowsImages,
   },
 
   data() {
@@ -172,6 +194,7 @@ export default {
       foodCategoryList: [],
       errorsBags: [],
       uomList: [],
+      imagesList: [],
       form: {
         id: "",
         description: "",
@@ -185,6 +208,7 @@ export default {
         weight: "",
         with_features: "",
         is_stock: "",
+        images: [],
       },
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
@@ -201,6 +225,7 @@ export default {
   computed: {
     ...mapGetters({
       getUoms: "food/getUoms",
+      storeAttachement: "food/getFood"
     }),
     getFoods() {
       return this.$store.state.food.foods;
@@ -213,17 +238,48 @@ export default {
       updateFood: "food/updateFood",
       getRestaurantsData: "restaurant/getRestaurantsData",
       getFoodCategoryData: "foodCategory/getFoodCategoryData",
+      removeAttachment: "commerceType/removeAttachment",
     }),
     save() {
-      this.$refs.form.validate();
       if (this.$refs.form.validate()) {
-        const payload = this.form;
+        const formData = new FormData();
+
+        formData.append("id", this.form.id);
+        formData.append("description", this.form.description);
+        formData.append("food_category_id", this.form.food_category_id);
+        formData.append("ingredients", this.form.ingredients);
+        formData.append("name", this.form.name);
+        formData.append("price", this.form.price);
+        formData.append("restaurant_id", this.form.restaurant_id);
+        formData.append("tax", this.form.tax);
+        formData.append("uom", this.form.uom);
+        formData.append("weight", this.form.weight);
+        formData.append("with_features", this.form.with_features);
+        formData.append("is_stock", this.form.is_stock);
+
+        for (var i = 0; i < this.form.images.length; i++) {
+          let file = this.form.images[i];
+          formData.append("images[" + i + "]", file);
+        }
+
         if (this.id) {
-          this.update(payload);
+          formData.append("_method", "PUT");
+          this.update(formData, this.id);
         } else {
-          this.create(payload);
+          this.create(formData);
         }
       }
+    },
+    deleteImagen(id) {
+      const index = this.imagesList.findIndex((x) => x.id === id);
+      const attachments = [...this.imagesList];
+      attachments.splice(index, 1);
+
+      this.removeAttachment(id).then((response) => {
+        if (response) {
+          this.imagesList = attachments;
+        }
+      });
     },
     setData() {
       this.loadingRestaurant = true;
@@ -254,11 +310,32 @@ export default {
       this.uomList = this.getUoms;
       if (this.id) {
         this.food(this.id).then((result) => {
-          this.form = Object.assign({}, result);
+          this.form = Object.assign({
+            images: []
+          }, result);
+          this.imagesList = Object.assign([], this.attachments(result.attachment));
+
         });
       }
     },
+    attachments(attachmentData) {
+      const attachmentsRows = [];
+      if (this.id) {
+        attachmentData.map((element) => {
+          if (element) {
+            attachmentsRows.push({
+              id: element.id,
+              imagen: element.url,
+            });
+          }
+        });
+      }
 
+      return attachmentsRows;
+    },
+    handleImages(event) {
+      this.form.images = event;
+    },
     create(payload) {
       this.createFood(payload)
         .then((result) => {
@@ -299,6 +376,15 @@ export default {
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });
+    },
+
+    watch: {
+      storeAttachement(data) {
+        console.log(data);
+        if (data.attachment.length > 0) {
+          this.imagesList = Object.assign([], this.attachments(data.attachment));
+        }
+      },
     },
   },
 };
