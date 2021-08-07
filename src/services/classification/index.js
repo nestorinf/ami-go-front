@@ -2,8 +2,8 @@ import HTTP from "../axios";
 
 class ProductClassificationService {
   path = "product-classifications";
-  all() {
-    return HTTP.get(`${this.path}`);
+  all(type_commerce) {
+    return HTTP.get(`${this.path}`+'?type='+type_commerce)
   }
    allReferenceSize() {
     return HTTP.get(`${this.path}/reference-list-size`);
