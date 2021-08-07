@@ -83,7 +83,7 @@ export default {
       form: {
         name: "",
         reference_id: "",
-        commerce_type: 0,
+        commerce_type: 1,
       },
       loadingReferenceSize: false,
       categoriesList: [],

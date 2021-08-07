@@ -130,6 +130,17 @@
               background-color="transparent"
             ></v-select>
           </v-col>
+          <v-col cols="12" lg="12">
+            <v-select
+              :loading="loadingClassification"
+              :items="classificationList"
+              v-model="form.product_classification_id"
+              filled
+              :disabled="listDetail.length>0"
+              label="Clasificación de Producto"
+              background-color="transparent"
+            ></v-select>
+          </v-col>
         </v-row>
 
         <v-row>
@@ -163,7 +174,7 @@
     </v-card-text>
 
     <v-card class="mb-7">  
-      <v-form ref="form_detail" v-model="valid" lazy-validation>
+      
       <v-card-text class="pa-5 border-bottom">
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
           Lote del Producto
@@ -219,6 +230,7 @@
           {{ titleForm }}
         </h3>
       </v-card-text>
+      <v-form ref="form_detail" v-model="valid" lazy-validation>
           <v-row  class="px-7 pt-7">
             <v-col cols="12" lg="3">
               <v-text-field
@@ -248,7 +260,7 @@
             <v-col cols="12" lg="4">
               <v-select
                 :loading="loadingSize"
-                label="Talla"
+                :label="!productClassificationId?'Debes Seleccionar la clasificación del producto...':productClassificationId.text"
                 :items="sizeList"
                 v-model="form_detail.size_id"
                 filled
@@ -269,6 +281,8 @@
                 </v-btn> 
             </v-col>
           </v-row>
+          
+    </v-form>
           <v-row class="px-7">
       <v-col cols="12" lg="12" sm="12">
 
@@ -282,7 +296,6 @@
       </v-col></v-row>
     </v-card>
 
-    </v-form>
     
     </v-card>
     <SnackBar
@@ -355,12 +368,13 @@ export default {
     categoriesIntern: [],
     providers: [],
     uom: [],
+    classificationList: [],
     loadingCommerces: false,
     loadingCategories: false,
     loadingCategoriesIntern: false,
     loadingProviders: false,
     loadingUom: false,
-
+    loadingClassification: false,
     form: {
       name: "",
       sku: "",
@@ -415,14 +429,15 @@ export default {
       uomData: "referenceList/getReferenceListByReferenceSlugData",
       sizeData: "referenceList/getReferenceListByReferenceSlugData",
       coloursData: "referenceList/getReferenceListByReferenceSlugData",
+      getClassifications: "productClassification/getClassificationData",
     }),
     AddProductDetail(){
       this.form.product_batches_detail.push({
       stock : this.form_detail.stock,
       size_id: this.form_detail.size_id,
       colour_id: this.form_detail.colour_id
-      });      
-      // this.$refs.form_detail.reset();
+      });
+      this.$refs.form_detail.reset();
     },
     save() {
       this.$refs.form.validate();
@@ -506,7 +521,8 @@ export default {
       this.loadUom();
 
       this.loadColour();
-      this.loadSize('SIZE_PRODUCT');
+
+      this.loadClassification();
 
 
       // get data by id
@@ -540,6 +556,8 @@ export default {
           this.form = Object.assign({}, parseData);
           
           this.loadCategoriesIntern();
+          
+          // this.changeClassification();
 
         });
         
@@ -684,7 +702,42 @@ export default {
         });
     },
     
+    loadClassification() {
+
+      const rows = [];
+      this.loadingClassification = true;
+      this.getClassifications(0)
+        .then((result) => {
+          if (result) {
+            result.map((element) => {
+              rows.push({
+                value: element.id,
+                reference_slug: element.reference_slug,
+                text: element.name,
+              });
+              this.classificationList = rows;
+            });
+          }
+          this.loadingClassification = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingUom = false;
+        });
+
+    },
+    
+    // changeClassification() {
+    //   const id_class = this.form.product_classification_id;
+    //   const index_class = this.classificationList.findIndex((x) => x.value === id_class);          
+    //   const classif = this.classificationList[index_class];
+      
+    //   console.log('referenceId',classif)
+    //   this.loadSize(classif['reference_slug']);
+    // },
+
     loadSize(referenceId) {
+      console.log(referenceId)
       const rows = [];
       this.loadingSize = true;
       this.sizeData(referenceId)
@@ -763,7 +816,32 @@ export default {
 
     },
   },
+  watch: {
+    productClassificationId(){
+      if(this.productClassificationId){
+        this.loadSize(this.productClassificationId['reference_slug']);
+      }
+    }
+  },
   computed: {
+    productClassificationId(){
+
+      const id_class = this.form.product_classification_id;
+      const classificationList = this.classificationList;
+
+      console.log('id_class',id_class)
+      console.log('classificationList',classificationList)
+      if(id_class!='' && classificationList.length>0){
+        
+        console.log('mmmmmm')
+        const index_class = classificationList.findIndex((x) => x.value === id_class);          
+        const classif = this.classificationList[index_class];
+        
+        return classif;
+      }else{
+        return false
+      }
+    },
     listDetail(){
       var data = this.form.product_batches_detail;
       var colourList = this.colourList;
