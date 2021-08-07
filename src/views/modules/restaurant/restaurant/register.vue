@@ -362,8 +362,8 @@ export default {
         });
     },
 
-    update(payload) {
-      this.updateRestaurant(payload)
+    update(payload, id) {
+      this.updateRestaurant({ payload, id })
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
