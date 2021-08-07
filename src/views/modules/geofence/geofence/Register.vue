@@ -147,6 +147,7 @@ export default {
       getMunicipalitiesData: "municipality/getMunicipalitiesData",
     }),
     geofences(geofences){
+      console.log('geofences',geofences)
       this.form.geofence = geofences
     },
     save() {
@@ -210,7 +211,7 @@ export default {
             name: result.name,
             department_id: result.department_id,
             municipality_id: result.municipality_id,
-            // geofence: result.geofence
+            geofence: result.geofence
           };
           this.editCoordinates = result.geofence
         });

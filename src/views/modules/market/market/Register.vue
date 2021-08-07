@@ -6,7 +6,7 @@
           {{ titleForm }}
         </h3>
         <h6 class="subtitle-2 font-weight-light">
-          En este formulario se registran todas los Super mercados
+          En este formulario se registran todas los comercios
         </h6>
       </v-card-text>
       <v-card-text>
@@ -14,7 +14,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Nombre del Super mercado"
+              label="Nombre del comercio"
               required
               filled
               :rules="rules.nameRule"
@@ -25,7 +25,7 @@
             <v-text-field
               type="email"
               v-model="form.email"
-              label="Email Super mercado"
+              label="Email Comercio"
               required
               filled
               :rules="rules.emailRule"
@@ -53,21 +53,62 @@
             ></v-text-field>
           </v-col>
         </v-row>
-        <v-btn
-          color="success"
-          @click="save"
-          :disabled="!valid"
-          submit
-          class="text-capitalize mr-2"
-          >Guardar</v-btn
-        >
-        <v-btn
-          color="black"
-          class="text-capitalize"
-          to="/market/market"
-          dark
-          >Cancelar</v-btn
-        >
+        <v-row>
+          <v-col cols="6" lg="6">
+            <label for="logo">Logo</label>
+            <ShowsImages
+              :items="imagesListLogo"
+              v-if="true"
+              @delete-imagen="deleteImagenLogo"
+            ></ShowsImages>
+            <UploadImages
+              style="height: auto"
+              ref="VueUploadImageLogo"
+              v-model="form.logo"
+              v-if="displayedLogo"
+              :max="1"
+              @changed="handleImageLogo"
+            />
+          </v-col>
+
+          <v-col cols="6" lg="6">
+            <label for="cover">Cover</label>
+            <ShowsImages
+              :items="imagesListCover"
+              v-if="true"
+              @delete-imagen="deleteImagenCover"
+            ></ShowsImages>
+
+            <UploadImages
+              style="height: auto"
+              ref="VueUploadImagesCover"
+              v-model="form.cover"
+              v-if="displayedCover"
+              :max="1"
+              @changed="handleImageCover"
+            />
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col cols="12">
+            <v-btn
+              color="success"
+              @click="save"
+              :disabled="!valid"
+              submit
+              class="text-capitalize mr-2"
+              >Guardar</v-btn
+            >
+            <v-btn
+              color="black"
+              class="text-capitalize"
+              to="/commerce/commerce"
+              dark
+              >Cancelar</v-btn
+            >
+          </v-col>
+        </v-row>
       </v-card-text>
     </v-form>
     <SnackBar
@@ -79,7 +120,9 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
+import ShowsImages from "../../components/ShowsImages";
+import UploadImages from "vue-upload-drop-images";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
   name: "RegisterCommerce",
@@ -88,13 +131,19 @@ export default {
   },
   components: {
     SnackBar,
+    UploadImages,
+    ShowsImages,
   },
 
   data() {
     return {
       textSnackBar: "",
-      titleForm: "Super mercado",
+      titleForm: "Comercio",
       valid: true,
+      imagesListLogo: [],
+      imagesListCover: [],
+      displayedLogo: true,
+      displayedCover: true,
       form: {
         id: "",
         commerce_type_id: 1,
@@ -102,10 +151,13 @@ export default {
         agent: "",
         email: "",
         phone: "",
+        logo: [],
+        cover: [],
       },
 
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
+        commerceTypeRule: [(v) => !!v || "este campo es obligatorio"],
         agentRule: [(v) => !!v || "este campo es obligatorio"],
         phoneRule: [(v) => !!v || "este campo es obligatorio"],
         emailRule: [
@@ -123,6 +175,24 @@ export default {
     this.setData();
   },
   computed: {
+    ...mapGetters({
+      storeCommerceTypes: "commerceType/getCommerceTypes",
+      storeCommerce: "commerce/getCommerce",
+    }),
+  },
+
+  watch: {
+    storeCommerce(data) {
+      data.attachment.map((element) => {
+        if (element.column == "logo") {
+          this.imagesListLogo = this.attachments([element]);
+        } else {
+          this.imagesListCover = this.attachments([element]);
+        }
+      });
+
+      console.log(this.imagesListLogo);
+    },
   },
 
   methods: {
@@ -130,19 +200,40 @@ export default {
       createCommerce: "commerce/createCommerce",
       getCommerceById: "commerce/getCommerceById",
       updateCommerce: "commerce/updateCommerce",
+      removeAttachment: "attachment/removeAttachment",
     }),
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
-        const payload = this.form;
+        const formData = new FormData();
+
+        formData.append("id", this.id);
+
+        formData.append("commerce_type_id", this.form.commerce_type_id);
+        formData.append("name", this.form.name);
+        formData.append("agent", this.form.agent);
+        formData.append("email", this.form.email);
+        formData.append("phone", this.form.phone);
+
+        for (let i = 0; i < this.form.logo.length; i++) {
+          let file = this.form.logo[i];
+          formData.append("logo[" + i + "]", file);
+        }
+        for (let e = 0; e < this.form.cover.length; e++) {
+          let file = this.form.cover[e];
+          formData.append("cover[" + e + "]", file);
+        }
+
         if (this.id) {
-          this.update(payload);
+          formData.append("_method", "PUT");
+          this.update(formData, this.id);
         } else {
-          this.create(payload);
+          this.create(formData);
         }
       }
     },
-    setData() {    
+    setData() {
+     
       if (this.id) {
         this.getCommerceById(this.id).then((result) => {
           this.form = {
@@ -152,16 +243,36 @@ export default {
             email: result.email,
             phone: result.phone,
             commerce_type_id: result.commerce_type_id,
+            logo: [],
+            cover: [],
           };
         });
       }
     },
 
+    attachments(attachmentData) {
+      const attachmentsRows = [];
+      if (this.id) {
+        attachmentData.map((element) => {
+          if (element) {
+            attachmentsRows.push({
+              id: element.id,
+              imagen: element.url,
+            });
+          }
+        });
+      }
+
+      return attachmentsRows;
+    },
+
     create(payload) {
       this.createCommerce(payload)
         .then((result) => {
-          if (result) {
+          if (result) { 
             this.$refs.form.reset();
+            this.$refs.VueUploadImagesCover.Imgs = [];
+            this.$refs.VueUploadImageLogo.Imgs = [];
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
           }
@@ -173,10 +284,12 @@ export default {
         });
     },
 
-    update(payload) {
-      this.updateCommerce(payload)
+    update(payload, id) {
+      this.updateCommerce({ payload, id })
         .then((result) => {
           if (result) {
+            this.$refs.VueUploadImagesCover.Imgs = [];
+            this.$refs.VueUploadImageLogo.Imgs = [];
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
           }
@@ -186,6 +299,36 @@ export default {
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });
+    },
+
+    handleImageLogo(event) {
+      this.form.logo = event;
+    },
+    handleImageCover(event) {
+      this.form.cover = event;
+    },
+
+    deleteImagenLogo(id) {
+      const index = this.imagesListLogo.findIndex((x) => x.id === id);
+      const attachments = [...this.imagesListLogo];
+      attachments.splice(index, 1);
+
+      this.removeAttachment(id).then((response) => {
+        if (response) {
+          this.imagesListLogo = attachments;
+        }
+      });
+    },
+    deleteImagenCover(id) {
+      const index = this.imagesListCover.findIndex((x) => x.id === id);
+      const attachments = [...this.imagesListCover];
+      attachments.splice(index, 1);
+
+      this.removeAttachment(id).then((response) => {
+        if (response) {
+          this.imagesListCover = attachments;
+        }
+      });
     },
   },
 };
