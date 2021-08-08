@@ -13,70 +13,70 @@
         </h3>
       </v-card-text>
 
-    <v-card-text>
-      <v-form ref="form" v-model="valid" lazy-validation>
-        <v-row>
-          
-          <v-col cols="12" lg="4">
-            <v-text-field
-              v-model="form.stock"
-              label="Cantidad en existencia"
-              type="number"
-              min="0.1"
-              filled
-              required
-              :rules="rules.stockRule"
-              background-color="transparent"
-              :error-messages="errorsBags.stock"
-            ></v-text-field>
-          </v-col>      
-          <v-col cols="12" lg="4">
-            <v-select
-              :loading="loadingColour"
-              label="Color"
-              :items="colourList"
-              v-model="form.colour_id"
-              filled
-              background-color="transparent"
-              :error-messages="errorsBags.colour_id"
-            ></v-select>
-          </v-col>
-          <v-col cols="12" lg="4" v-if="formlote.type_size_slug">
-            <v-select
-              :loading="loadingSize"
-              label="Talla"
-              :items="sizeList"
-              v-model="form.size_id"
-              filled
-              :rules="rules.size_idRule"
-              background-color="transparent"
-              :error-messages="errorsBags.size_id"
-            ></v-select>
-          </v-col>
-        </v-row>
+      <v-card-text>
+        <v-form ref="form" v-model="valid" lazy-validation>
+          <v-row>
+            
+            <v-col cols="12" lg="4">
+              <v-text-field
+                v-model="form.stock"
+                label="Cantidad en existencia"
+                type="number"
+                min="0.1"
+                filled
+                required
+                :rules="rules.stockRule"
+                background-color="transparent"
+                :error-messages="errorsBags.stock"
+              ></v-text-field>
+            </v-col>      
+            <v-col cols="12" lg="4">
+              <v-select
+                :loading="loadingColour"
+                label="Color"
+                :items="colourList"
+                v-model="form.colour_id"
+                filled
+                background-color="transparent"
+                :error-messages="errorsBags.colour_id"
+              ></v-select>
+            </v-col>
+            <v-col cols="12" lg="4" v-if="formlote.type_size_slug">
+              <v-select
+                :loading="loadingSize"
+                :label="titlesizeList"
+                :items="sizeList"
+                v-model="form.size_id"
+                filled
+                :rules="rules.size_idRule"
+                background-color="transparent"
+                :error-messages="errorsBags.size_id"
+              ></v-select>
+            </v-col>
+          </v-row>
 
-        <v-row class="pt-10">
-          <v-col cols="12" lg="12">
-            <v-btn
-              color="success"
-              @click="save"
-              :disabled="!valid"
-              submit
-              class="text-capitalize mr-2"
-              >Añadir</v-btn
-            >
-            <v-btn
-              color="black"
-              class="text-capitalize"
-              @click="$refs.form.reset()"
-              dark
-              >Limpiar</v-btn
-            >
-          </v-col>
-        </v-row>
-      </v-form>
-      
-    </v-card-text>
+          <v-row class="pt-10">
+            <v-col cols="12" lg="12">
+              <v-btn
+                color="success"
+                @click="save"
+                :disabled="!valid"
+                submit
+                class="text-capitalize mr-2"
+                >Añadir</v-btn
+              >
+              <v-btn
+                color="black"
+                class="text-capitalize"
+                @click="$refs.form.reset()"
+                dark
+                >Limpiar</v-btn
+              >
+            </v-col>
+          </v-row>
+        </v-form>
+        
+      </v-card-text>
     </v-card>
     <v-card class="mb-7">
       <v-card-text class="pa-5 border-bottom">
@@ -181,6 +181,7 @@ export default {
       errorsBags: [],
 
       
+      titlesizeList: '',
       sizeList: [],
       loadingSize: false,
       colourList: [],
@@ -244,6 +245,7 @@ export default {
       if (this.id) {
         this.ProductBatches(this.id).then((result) => {
           console.log('result',result)
+          this.titlesizeList = result.name_size_slug;
           this.form.product_batche_id = result.id;
           this.formlote = Object.assign({}, result);
           

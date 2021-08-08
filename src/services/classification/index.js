@@ -1,18 +1,16 @@
 import HTTP from "../axios";
 
-class ReferenceService {
-  path = "references";
-  all() {
-    return HTTP.get(`${this.path}`);
+class ProductClassificationService {
+  path = "product-classifications";
+  all(type_commerce) {
+    return HTTP.get(`${this.path}`+'?type='+type_commerce)
   }
-
-  allTypeSizes() {
-    return HTTP.get(`${this.path}`+'_type_sizes');
+   allReferenceSize() {
+    return HTTP.get(`${this.path}/reference-list-size`);
   }
   create(data) {
     return HTTP.post(`${this.path}`, data);
   }
-
   getById(id) {
     return HTTP.get(`${this.path}/` + id);
   }
@@ -24,8 +22,5 @@ class ReferenceService {
   remove(id) {
     return HTTP.delete(`${this.path}/` + id);
   }
-
-
-
 }
-export default new ReferenceService();
+export default new ProductClassificationService();
