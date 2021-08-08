@@ -15,9 +15,9 @@
           :options = optionsCoberages
         >
       </gmapPolygon>
-
+     
       <gmapPolygon
-          :key="index + 100"
+          :key="index + 1000"
           v-for="(m, index) in pathsRestrictions"          
           :paths="m.value"
           :editable="false"
@@ -25,7 +25,8 @@
           :title="'Titulo Marcador'"
           :options = optionsRestrictions
         >
-      </gmapPolygon>
+      </gmapPolygon>      
+      
     </GmapMap>
    </v-col>
 </template>
@@ -35,7 +36,8 @@ import {mapGetters, mapActions } from "vuex";
 export default {
   name: 'GoogleMapGeoFenceGeneral',  
   props:{
-    geofencesList: Array,
+    geofenceList: Array,
+    geofenceRestrictionList: Array
   }, 
   
   data() { 
@@ -43,14 +45,14 @@ export default {
       optionsCoberages: {
         strokeColor: "#2ECDFA",
         // strokeOpacity: 0.5,
-        // strokeWeight: 1,
+        strokeWeight: 1.5,
         fillColor: "#2ECDFA",
         // fillOpacity: 0.20,
       },
       optionsRestrictions: {
         strokeColor: "#F0453A",
         // strokeOpacity: 0.5,
-        // strokeWeight: 1,
+        strokeWeight: 1.5,
         fillColor: "#F0453A",
         // fillOpacity: 0.20,
       },
@@ -86,13 +88,12 @@ export default {
             country: country[0].code,
             zoom: 13,
          }   
-       if(this.geofencesList.length ) {
-           
-          this.pathsCoverages = this.geofencesList, 
 
-          this.pathsRestrictions.push({
-              value: [{"lat": 13.705062770630516, "lng": -89.24611161379748}, {"lat": 13.70961342227527, "lng": -89.24949904510143}, {"lat": 13.707741359763569, "lng": -89.23425966410696}],
-            });
+      if(this.geofenceList.length ) {           
+          this.pathsCoverages = this.geofenceList         
+      }      
+      if(this.geofenceRestrictionList.length ) {           
+          this.pathsRestrictions = this.geofenceRestrictionList         
       }      
       }))
     },    

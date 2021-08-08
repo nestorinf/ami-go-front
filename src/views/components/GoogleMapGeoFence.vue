@@ -27,7 +27,7 @@
           :editable="true"
           :draggable="true"
           @paths_changed="updateGeofence($event)"
-          :options = this.options
+          :options = this.optionsCoberages
         >
       </gmapPolygon>
     </GmapMap>
@@ -44,10 +44,10 @@ export default {
   
   data() { 
     return {
-      options: {
+      optionsCoberages: {
         strokeColor: "#2ECDFA",
         // strokeOpacity: 0.5,
-        // strokeWeight: 1,
+        strokeWeight: 1.5,
         fillColor: "#2ECDFA",
         // fillOpacity: 0.20,
       },

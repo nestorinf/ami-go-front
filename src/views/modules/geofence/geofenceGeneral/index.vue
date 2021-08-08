@@ -15,7 +15,8 @@
                     <GoogleMapGeoFenceGeneral
                     v-if="loadingChild"
                     :title="'Titulo Marcador'"
-                    :geofencesList="geofencesList"/>
+                    :geofenceList="geofenceList"
+                    :geofenceRestrictionList="geofenceRestrictionList"/>
                 </v-col>
               </v-row>
         <v-btn
@@ -57,33 +58,50 @@ export default {
       valid: true,
       errorsBags: [],
       loadingChild: false,
-      geofencesList:[],
+      geofenceList:[],
+      geofenceRestrictionList:[],
     };
   },
   mounted() {
     this.setData();
   },
   computed: {
-    ...mapGetters({ storeGeofences: "geofence/getGeofences" }),
+    ...mapGetters({ 
+      storeGeofences: "geofence/getGeofences", 
+      storeGeofenceRestrictions: "geofenceRestriction/getGeofenceRestrictions" 
+    }),
   },
   methods: {
     ...mapActions({
       getGeofenceData: "geofence/getGeofenceData",
+      getGeofenceRestrictionData: "geofenceRestriction/getGeofenceRestrictionData",
     }),
     setData() {
-     this.geofencesList = []      
+     this.geofenceList = []      
       this.getGeofenceData().then((result) => {
         this.loadingChild = true;        
         if(result) {  
           result.map((element) => {   
-            this.geofencesList.push({
+            this.geofenceList.push({
               value: element.geofence,
             });
           });  
          }  
       }).catch((err) => {
         console.log(err)
-        this.loadingDepartments = false; 
+      });         
+     this.geofenceRestrictionsList = []      
+      this.getGeofenceRestrictionData().then((result) => {
+        this.loadingChild = true;        
+        if(result) {  
+          result.map((element) => {   
+            this.geofenceRestrictionList.push({
+              value: element.restriction,
+            });
+          });  
+         }  
+      }).catch((err) => {
+        console.log(err)
       });         
     },   
   },

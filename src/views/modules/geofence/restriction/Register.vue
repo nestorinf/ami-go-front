@@ -12,7 +12,7 @@
         <v-form ref="form" v-model="valid" lazy-validation>
             <v-row>   
                 <v-col cols="12" lg="6">
-                    <v-select
+                    <v-select                    
                     :loading="loadingDepartments"
                     label="Departamento"
                     :items="departmentList"
@@ -38,6 +38,20 @@
                     ></v-select>
                 </v-col>
                 <v-col cols="12" lg="12">
+                    <v-select
+                     @change="Geofence"
+                    :loading="loadingGeofences"
+                    label="Zona de Cobertura"
+                    :items="geofenceList"
+                    v-model="form.geofence_id"
+                    filled
+                    required
+                    :rules="rules.geofenceRule"
+                    background-color="transparent"
+                    :error-messages="errorsBags.geofence"
+                    ></v-select>
+                </v-col>
+                <v-col cols="12" lg="12">
                     <v-text-field
                     v-model="form.name"
                     label="Nombre"
@@ -52,8 +66,10 @@
                     <GoogleMapRestriction
                     v-if="loadingChild"
                     :title="'Titulo Marcador'"
-                    @geofences="geofences"
-                    :editCoordinates="editCoordinates"/>
+                    @restrictions="restrictions"
+                    :editRestrictions="editRestrictions"
+                    :geofence="geofence"
+                    :reset="reset"/>
                 </v-col>
                 <!-- <v-col cols="12" lg="12">
                     <GoogleMap
@@ -74,7 +90,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/geofence/geofence"
+          to="/geofence/restriction"
           dark
           >Cancelar</v-btn
         >
@@ -94,7 +110,7 @@ import SnackBar from "@/views/modules/components/SnackBar";
 import GoogleMapRestriction from "../../../components/GoogleMapRestriction";
 import { mapActions,mapGetters } from "vuex";
 export default {
-  name: "RegisterGeofence",
+  name: "RegisterGeofenceRestriction",
   props: {
     id: String,
   },
@@ -106,28 +122,34 @@ export default {
   data() {
     return {
       textSnackBar: "",
-      titleForm: "GeoCercas",
+      titleForm: "Restricciones",
       valid: true,
       errorsBags: [],
       loadingDepartments: false,
       loadingMunicipalities: false,
+      loadingGeofences: false,
       loadingChild: false,
       departmentList: [],
       municipalityList: [],
-      editCoordinates:[],
+      geofenceList: [],
+      editRestrictions:[],
+      geofence:[],
       center:{},
+      reset:false,
       form: {
         id: "",
         department_id: null,
         municipality_id: null,
+        geofence_id: null,
         name: "",
-        geofence: []
+        restriction: []
       },
 
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
         departmentRule: [(v) => !!v || "este campo es obligatorio"],
-        municipalityRule: [(v) => !!v || "este campo es obligatorio"]
+        municipalityRule: [(v) => !!v || "este campo es obligatorio"],
+        restrictionRule: [(v) => !!v || "este campo es obligatorio"]
       },
     };
   },
@@ -136,24 +158,33 @@ export default {
     this.setData();
   },
   computed: {
-    ...mapGetters({ storeGeofences: "geofence/getGeofences" }),
+    ...mapGetters({ storeGeofenceRestrictions: "geofenceRestriction/getGeofenceRestrictions" }),
   },
   methods: {
     ...mapActions({
-      createGeofence: "geofence/createGeofence",
-      getGeofenceById: "geofence/getGeofenceById",
-      updateGeofence: "geofence/updateGeofence",
+      createGeofenceRestriction: "geofenceRestriction/createGeofenceRestriction",
+      getGeofenceRestrictionById: "geofenceRestriction/getGeofenceRestrictionById",
+      updateGeofenceRestriction: "geofenceRestriction/updateGeofenceRestriction",
       getDepartmentsData: "department/getDepartmentsData",
       getMunicipalitiesData: "municipality/getMunicipalitiesData",
+      getGeofenceData: "geofence/getGeofenceData",
     }),
-    geofences(geofences){
-      this.form.geofence = geofences
+
+    Geofence() {
+      this.geofence = []
+      const pathgeofence = this.geofenceList.filter(geofence =>  geofence.value === this.form.geofence_id);
+      this.geofence.push({
+      value:pathgeofence[0].geofence
+      })
+    },
+
+    restrictions(restrictions){
+      this.form.restriction = restrictions
     },
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
         const payload = this.form;
-        console.log(payload)
         if (this.id) {
           this.update(payload);
         } else {
@@ -164,8 +195,10 @@ export default {
     setData() {
       this.loadingDepartments = true;       
       this.loadingMunicipalities = true;       
+      this.loadingGeofences = true;       
       const departments = [];
       const municipalities = [];      
+      const geofences = [];      
       this.getDepartmentsData().then((result) => {
         this.loadingChild = true;        
         if(result) {   
@@ -202,30 +235,58 @@ export default {
         console.log(err)
         this.loadingMunicipalities = false; 
       });
+      this.getGeofenceData().then((result) => {
+        this.loadingChild = true;        
+        if(result) {   
+          result.map((element) => {
+            geofences.push({
+              value: element.id,
+              text: element.name,
+              geofence: element.geofence,
+            });
+            this.geofenceList = geofences;
+            
+          });
+
+        }
+        this.loadingGeofences = false;
+      }).catch((err) => {
+        console.log(err)
+        this.loadingGeofences = false; 
+      });
       if (this.id) {
-        this.getGeofenceById(this.id).then((result) => {
+        this.getGeofenceRestrictionById(this.id).then((result) => {
            this.loadingChild = true;
           this.form = {
             id: result.id,
             name: result.name,
             department_id: result.department_id,
             municipality_id: result.municipality_id,
-            geofence: result.geofence
+            geofence_id: result.geofence_id,
+            restriction: result.restriction
           };
-          this.editCoordinates = result.geofence
+          this.geofence = []
+            const pathgeofence = this.geofenceList.filter(geofence =>  geofence.value === this.form.geofence_id);
+            this.geofence.push({
+            value:pathgeofence[0].geofence
+          })
+          this.editRestrictions.push({
+            value: result.restriction
+          }) 
         });
         
       }          
     },
 
     create(payload) {
-      this.createGeofence(payload)
+      this.createGeofenceRestriction(payload)
         .then((result) => {
           if (result) {
-            this.form = {};
+            this.form = {};            
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
+            
           }
         })
         .catch((err) => {
@@ -241,7 +302,7 @@ export default {
     },
 
     update(payload) {
-      this.updateGeofence(payload)
+      this.updateGeofenceRestriction(payload)
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);

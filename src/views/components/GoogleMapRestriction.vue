@@ -2,7 +2,7 @@
   <v-col cols="12" lg="12">
     <div>
       <h2>Busque una Dirección y Agregue O Seleccione en el Mapa</h2>
-        <vuetify-google-autocomplete
+        <!-- <vuetify-google-autocomplete
           id="map"
           placeholder="Ingrese una Direccion"
           :country="''+this.center.country+''"
@@ -14,7 +14,7 @@
           class="text-capitalize mr-2"
           :disabled="disabledButton">
           Agregar</v-btn
-        >
+        > -->
     </div>
     <br>
     <GmapMap
@@ -22,12 +22,24 @@
       :zoom='this.center.zoom'
       style='width:100%;  height: 400px;'
     >
+    <gmapPolygon
+          :key="index"
+          v-for="(m, index) in pathsCoverages"          
+          :paths="m.value"
+          :editable="false"
+          :draggable="false"
+          :options = optionsCoberages
+      >
+      </gmapPolygon>
+
      <gmapPolygon
-         :paths="paths"
+          :key="index + 1000"
+          v-for="(m, index) in pathsRestrictions" 
+          :paths="m.value"
           :editable="true"
           :draggable="true"
           @paths_changed="updateGeofence($event)"
-          :options = this.options
+          :options = optionsRestrictions
         >
       </gmapPolygon>
     </GmapMap>
@@ -39,15 +51,24 @@ import {mapGetters, mapActions } from "vuex";
 export default {
   name: 'GoogleMapGeoFence',  
   props:{
-    editCoordinates: Array,
+    editRestrictions: Array,
+    geofence: Array,
+    reset: Boolean
   }, 
   
   data() { 
     return {
-      options: {
+      optionsCoberages: {
+        strokeColor: "#2ECDFA",
+        // strokeOpacity: 0.5,
+        strokeWeight: 1.5,
+        fillColor: "#2ECDFA",
+        // fillOpacity: 0.20,
+      },
+      optionsRestrictions: {
         strokeColor: "#F0453A",
         // strokeOpacity: 0.5,
-        // strokeWeight: 1,
+        strokeWeight: 1.5,
         fillColor: "#F0453A",
         // fillOpacity: 0.20,
       },
@@ -59,18 +80,40 @@ export default {
       polygonGeojson: "",
       mvcPaths: null,
       // center: { lat: 1.39, lng: 103.81 },
-      paths: [],
+      pathsRestrictions: [],
+      pathsCoverages: [],
       disabledButton: true
     }
     
   },
   mounted()  { 
-      this.Coordinates()
+      this.Restrictions()
   },
   computed: {
-   ...mapGetters({ storeCountries: "country/getCountries" }),
-    
+   ...mapGetters({ storeCountries: "country/getCountries" })    
+  },
+  watch: {
+    geofence(newValor){
+      this.center = {
+          lat: newValor[0].value[1].lat, 
+          lng: newValor[0].value[1].lng,
+          country: this.center.code,
+          zoom: 14,
+      }  
+      this.pathsCoverages = newValor
+      this.pathsRestrictions.push({
+        value: this.generateRandomPoints(this.center, 400, 3)
+      }) 
     },
+    reset(newValor){
+      console.log("entro")
+       if (newValor) {
+         console.log("entro2")
+          this.pathsRestrictions= [],
+          this.pathsCoverages= []
+       }
+    }
+  },
   methods: {
     ...mapActions({
       getCountryData: "country/getCountryData",
@@ -99,26 +142,11 @@ export default {
 
     updateGeofence(mvcPaths) {     
         this.mvcPaths = mvcPaths;
-        let geofences = this.polygonPaths()[0];
-        this.$emit("geofences", geofences)
+        let restrictions = this.polygonPaths()[0];
+        this.$emit("restrictions", restrictions)
     },
-
-    // readGeojson: function ($event) {
-    //   try {
-    //     this.polygonGeojson = $event.target.value;
-    //     var v = JSON.parse($event.target.value);
-    //     this.paths = v.coordinates.map((linearRing) =>
-    //       linearRing
-    //         .slice(0, linearRing.length - 1)
-    //         .map(([lng, lat]) => ({ lat, lng }))
-    //     );
-    //     this.errorMessage = null;
-    //   } catch (err) {
-    //     this.errorMessage = err.message;
-    //   }
-    // },
     addMarker() {
-    this.paths = []
+    this.pathsRestrictions = []
       if (Object.keys(this.address).length != 0) {
         const coordinate = {
           lat: this.address.latitude,
@@ -127,33 +155,32 @@ export default {
           zoom: 14
         };   
         this.center = coordinate;     
-        this.paths = this.generateRandomPoints(coordinate, 1500, 3);
-        this.$emit("geofences",  this.paths)
+        this.pathsRestrictions = this.generateRandomPoints(coordinate, 1500, 3);
+        this.$emit("restrictions",  this.paths)
        
       }
       
      },
-    Coordinates() {
-      this.paths = []        
+    Restrictions() {
+      this.pathsRestrictions = []        
       this.getCountryData().then((result => {
         const country = result.filter(country =>  country.is_default === 1  );    
-       if(this.editCoordinates.length ) {
+       if(this.editRestrictions.length ) {
           this.center = {
-            lat: this.editCoordinates[0].lat, 
-            lng: this.editCoordinates[0].lng,
+            lat: this.editRestrictions[0].value[1].lat, 
+            lng: this.editRestrictions[0].value[1].lng,
             country: country[0].code,
             zoom: 14,
          }  
-          this.paths = this.editCoordinates
-          this.$emit("geofences", this.paths)
+          this.pathsRestrictions = this.editRestrictions
+          this.$emit("restictions", this.pathsRestrictions)
       } else {
          this.center = {
             lat: parseFloat(country[0].latitude), 
             lng: parseFloat(country[0].longitude),
             country: country[0].code,
             zoom: 13,
-         }  
-          this.paths = this.generateRandomPoints(this.center, 1500, 3);
+         }
       }      
       }))
     },
