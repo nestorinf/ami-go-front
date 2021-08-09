@@ -34,14 +34,24 @@
 
      <gmapPolygon
           :key="index + 1000"
-          v-for="(m, index) in pathsRestrictions" 
+          v-for="(m, index) in pathsregisteredRestrictions" 
           :paths="m.value"
-          :editable="true"
-          :draggable="true"
-          @paths_changed="updateGeofence($event)"
-          :options = optionsRestrictions
+          :editable="false"
+          :draggable="false"
+          :options = optionsRegisteredRestrictions
         >
       </gmapPolygon>
+
+      <gmapPolygon
+            :key="index + 2000"
+            v-for="(m, index) in pathsRestrictions" 
+            :paths="m.value"
+            :editable="true"
+            :draggable="true"
+            @paths_changed="updateGeofence($event)"
+            :options = optionsRestrictions
+          >
+        </gmapPolygon>
     </GmapMap>
    </v-col>
 </template>
@@ -53,7 +63,7 @@ export default {
   props:{
     editRestrictions: Array,
     geofence: Array,
-    reset: Boolean
+    registeredRestrictions: Array
   }, 
   
   data() { 
@@ -65,11 +75,18 @@ export default {
         fillColor: "#2ECDFA",
         // fillOpacity: 0.20,
       },
-      optionsRestrictions: {
+      optionsRegisteredRestrictions: {
         strokeColor: "#F0453A",
         // strokeOpacity: 0.5,
         strokeWeight: 1.5,
         fillColor: "#F0453A",
+        // fillOpacity: 0.20,
+      },
+      optionsRestrictions: {
+        strokeColor: "#EB6B06",
+        // strokeOpacity: 0.5,
+        strokeWeight: 1.5,
+        fillColor: "#EB6B06",
         // fillOpacity: 0.20,
       },
       center: { lat:0.00, lng: 0.00 },
@@ -81,6 +98,7 @@ export default {
       mvcPaths: null,
       // center: { lat: 1.39, lng: 103.81 },
       pathsRestrictions: [],
+      pathsregisteredRestrictions: [],
       pathsCoverages: [],
       disabledButton: true
     }
@@ -103,16 +121,14 @@ export default {
       this.pathsCoverages = newValor
       this.pathsRestrictions.push({
         value: this.generateRandomPoints(this.center, 400, 3)
-      }) 
+      })       
     },
-    reset(newValor){
-      console.log("entro")
-       if (newValor) {
-         console.log("entro2")
-          this.pathsRestrictions= [],
-          this.pathsCoverages= []
-       }
-    }
+    registeredRestrictions(newValor){       
+      this.pathsregisteredRestrictions = newValor
+      // this.pathsregisteredRestrictions.push({
+      //   value: this.
+      // })       
+    },
   },
   methods: {
     ...mapActions({

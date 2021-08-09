@@ -69,7 +69,7 @@
                     @restrictions="restrictions"
                     :editRestrictions="editRestrictions"
                     :geofence="geofence"
-                    :reset="reset"/>
+                    :registeredRestrictions="registeredRestrictions"/>
                 </v-col>
                 <!-- <v-col cols="12" lg="12">
                     <GoogleMap
@@ -132,8 +132,10 @@ export default {
       departmentList: [],
       municipalityList: [],
       geofenceList: [],
+      restrictionList: [],
       editRestrictions:[],
       geofence:[],
+      registeredRestrictions:[],
       center:{},
       reset:false,
       form: {
@@ -168,6 +170,7 @@ export default {
       getDepartmentsData: "department/getDepartmentsData",
       getMunicipalitiesData: "municipality/getMunicipalitiesData",
       getGeofenceData: "geofence/getGeofenceData",
+      getGeofenceRestrictionData: "geofenceRestriction/getGeofenceRestrictionData",
     }),
 
     Geofence() {
@@ -176,7 +179,37 @@ export default {
       this.geofence.push({
       value:pathgeofence[0].geofence
       })
+
+      this.getGeofenceRestrictionData().then((result) => {               
+        if(result) {   
+          result.map((element) => {
+            this.restrictionList.push({
+              value: element.id,
+              text: element.name,
+              geofence_id: element.geofence_id,
+              restriction: element.restriction,
+            });          
+          });
+          
+          const pathregisteredRestrictions = this.restrictionList.filter(restriction =>  restriction.geofence_id === this.form.geofence_id);
+           pathregisteredRestrictions.map((element) => {
+            this.registeredRestrictions.push({
+                value:element.restriction
+            })
+            });            
+        }        
+      }).catch((err) => {
+        console.log(err)        
+      });
     },
+
+    // RegisteredRestrictions() {
+    //   this.registeredRestrictions = []
+    //   const pathregisteredRestrictions = this.restrictionList.filter(restriction =>  restriction.value === this.form.geofence_id);
+    //   this.geofence.push({
+    //   value:pathgeofence[0].geofence
+    //   })
+    // },
 
     restrictions(restrictions){
       this.form.restriction = restrictions
@@ -274,6 +307,35 @@ export default {
             value: result.restriction
           }) 
         });
+
+        this.getGeofenceRestrictionData().then((result) => {               
+        if(result) {   
+          result.map((element) => {
+            this.restrictionList.push({
+              value: element.id,
+              text: element.name,
+              geofence_id: element.geofence_id,
+              restriction: element.restriction,
+            });          
+          });
+          
+          const pathregisteredRestrictions = this.restrictionList.filter((restriction) =>  {
+            console.log(this.id)
+            console.log(restriction.value)
+               if( restriction.geofence_id === this.form.geofence_id &&  restriction.value != this.id){
+                  return restriction;
+                }               
+            });
+           console.log('pathregisteredRestrictions',pathregisteredRestrictions)
+           pathregisteredRestrictions.map((element) => {
+            this.registeredRestrictions.push({
+                value:element.restriction
+            })
+            });            
+        }        
+      }).catch((err) => {
+        console.log(err)        
+      });
         
       }          
     },
