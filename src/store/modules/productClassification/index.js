@@ -22,10 +22,10 @@ const mutations = {
 };
 
 const actions = {
-  getClassificationData({ commit, dispatch }) {
+  getClassificationData({ commit, dispatch }, type_commerce) {
     return new Promise((resolve, reject) => {
       dispatch("loading/loadingState", true, { root: true });
-      ProductClassificationService.all()
+      ProductClassificationService.all(type_commerce)
         .then(({ data }) => {
           const classification = data.payload;
 

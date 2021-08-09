@@ -43,17 +43,6 @@
 
           <v-col cols="12" lg="12">
             <v-text-field
-              v-model="form.name"
-              label="Nombre"
-              filled
-              required
-              :rules="rules.nameRule"
-              background-color="transparent"
-              :error-messages="errorsBags.name"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" lg="12">
-            <v-text-field
               v-model="form.description"
               label="Descripción"
               filled
@@ -169,17 +158,13 @@ export default {
       form: {
         id: "",
         product_id: "",
-        size_id: null,
-        name: "",
         description: "",
         stock: "",
         stock_min: "",
         status: true,
         unit_price: "",
         regular_price: "",
-        colour_id: "",
-        expired_date:"",
-        images_id:[]
+        expired_date:""
       },
 
       listProducts: [],
@@ -190,7 +175,6 @@ export default {
 
       rules: {
         product_idRule: [(v) => !!v || "el campo es obligatorio"],
-        nameRule: [(v) => !!v || "el campo es obligatorio"],
         unit_priceRule: [(v) => !!v || "el campo es obligatorio"],
         regular_priceRule: [(v) => !!v || "el campo es obligatorio"],
       },
@@ -228,7 +212,6 @@ export default {
       
       listProducts.map((element) => {
         if(element.id==product_id){
-          _this.form.name = element.name;
           _this.form.unit_price = element.price;
           _this.form.regular_price = element.price;
         }

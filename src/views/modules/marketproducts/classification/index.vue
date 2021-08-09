@@ -116,7 +116,7 @@ export default {
     },
   },
   mounted() {
-    this.getClassifications(0);
+    this.getClassifications(1);
   },
 };
 </script>

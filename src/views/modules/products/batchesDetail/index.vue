@@ -45,7 +45,7 @@
           <v-col cols="12" lg="4" v-if="formlote.type_size_slug">
             <v-select
               :loading="loadingSize"
-              label="Talla"
+              :label="titlesizeList"
               :items="sizeList"
               v-model="form.size_id"
               filled
@@ -184,6 +184,7 @@ export default {
       errorsBags: [],
 
       
+      titlesizeList: '',
       sizeList: [],
       loadingSize: false,
       colourList: [],
@@ -247,6 +248,7 @@ export default {
       if (this.id) {
         this.ProductBatches(this.id).then((result) => {
           console.log('result',result)
+          this.titlesizeList = result.name_size_slug;
           this.form.product_batche_id = result.id;
           this.formlote = Object.assign({}, result);
           
