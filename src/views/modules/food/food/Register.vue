@@ -358,8 +358,8 @@ export default {
         });
     },
 
-    update(payload) {
-      this.updateFood(payload)
+    update(payload, id) {
+      this.updateFood({ payload, id })
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
@@ -378,13 +378,13 @@ export default {
         });
     },
 
-    watch: {
-      storeAttachement(data) {
-        console.log(data);
-        if (data.attachment.length > 0) {
-          this.imagesList = Object.assign([], this.attachments(data.attachment));
-        }
-      },
+  },
+  watch: {
+    storeAttachement(data) {
+      console.log(data);
+      if (data.attachment.length > 0) {
+        this.imagesList = Object.assign([], this.attachments(data.attachment));
+      }
     },
   },
 };
