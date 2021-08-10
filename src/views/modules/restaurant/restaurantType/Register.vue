@@ -33,6 +33,24 @@
               :error-messages="errorsBags.description"
             ></v-text-field>
           </v-col>
+
+          <v-col cols="8">
+            <ShowsImages
+              :items="imagesList"
+              v-if="true"
+              @delete-imagen="deleteImagen"
+            ></ShowsImages>
+          </v-col>
+
+          <v-col cols="12" lg="12" class="mb-3">
+            <UploadImages
+              ref="VueUploadImages"
+              v-model="form.images"
+              v-if="displayed"
+              :max="1"
+              @changed="handleImages"
+            />
+          </v-col>
         </v-row>
         <v-btn
           color="success"
@@ -60,7 +78,9 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import ShowsImages from "../../components/ShowsImages";
+import UploadImages from "vue-upload-drop-images";
+import { mapActions, mapGetters } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
   name: "RegisterRestaurantType",
@@ -69,17 +89,27 @@ export default {
   },
   components: {
     SnackBar,
+    UploadImages,
+    ShowsImages,
   },
-
+  computed: {
+    ...mapGetters({ storeAttachement: "restaurantType/getRestaurantType" }),
+    getRestaurantTypes() {
+      return this.$store.state.restaurantType.restaurantTypes;
+    },
+  },
   data() {
     return {
       textSnackBar: "",
       valid: true,
+      displayed: true,
       errorsBags: [],
+      imagesList: [],
       form: {
         id: "",
         name: "",
         description: "",
+        images: [],
       },
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
@@ -91,36 +121,73 @@ export default {
   mounted() {
     this.setData();
   },
-  computed: {
-    getRestaurantTypes() {
-      return this.$store.state.restaurantType.restaurantTypes;
-    },
-  },
   methods: {
     ...mapActions({
       createRestaurantType: "restaurantType/createRestaurantType",
       restaurantType: "restaurantType/getRestaurantTypeById",
       updateRestaurantType: "restaurantType/updateRestaurantType",
+      removeAttachment: "commerceType/removeAttachment",
     }),
     save() {
-      this.$refs.form.validate();
       if (this.$refs.form.validate()) {
-        const payload = this.form;
+        const formData = new FormData();
+
+        formData.append("id", this.form.id);
+        formData.append("name", this.form.name);
+        formData.append("description", this.form.description);
+
+        for (var i = 0; i < this.form.images.length; i++) {
+          let file = this.form.images[i];
+          formData.append("images[" + i + "]", file);
+        }
+
         if (this.id) {
-          this.update(payload);
+          formData.append("_method", "PUT");
+          this.update(formData, this.id);
         } else {
-          this.create(payload);
+          this.create(formData);
         }
       }
+    },
+    deleteImagen(id) {
+      const index = this.imagesList.findIndex((x) => x.id === id);
+      const attachments = [...this.imagesList];
+      attachments.splice(index, 1);
+
+      this.removeAttachment(id).then((response) => {
+        if (response) {
+          this.imagesList = attachments;
+        }
+      });
     },
     setData() {
       if (this.id) {
         this.restaurantType(this.id).then((result) => {
-          this.form = Object.assign({}, result);
+          this.form = Object.assign({
+            images: []
+          }, result);
+          this.imagesList = Object.assign([], this.attachments(result.attachment));
         });
       }
     },
+    attachments(attachmentData) {
+      const attachmentsRows = [];
+      if (this.id) {
+        attachmentData.map((element) => {
+          if (element) {
+            attachmentsRows.push({
+              id: element.id,
+              imagen: element.url,
+            });
+          }
+        });
+      }
 
+      return attachmentsRows;
+    },
+    handleImages(event) {
+      this.form.images = event;
+    },
     create(payload) {
       this.createRestaurantType(payload)
         .then((result) => {
@@ -143,8 +210,9 @@ export default {
         });
     },
 
-    update(payload) {
-      this.updateRestaurantType(payload)
+    update(payload, id) {
+
+      this.updateRestaurantType({ payload, id })
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
@@ -161,6 +229,14 @@ export default {
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });
+    },
+  },
+  watch: {
+    storeAttachement(data) {
+      console.log(data);
+      if (data.attachment.length > 0) {
+        this.imagesList = Object.assign([], this.attachments(data.attachment));
+      }
     },
   },
 };

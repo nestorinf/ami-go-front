@@ -76,8 +76,6 @@ export default {
       { text: "Departamento", value: "department_name" },
       { text: "Municipio", value: "municipality_name" },
       { text: "Tipo de restaurante", value: "restaurant_type_name" },
-      // { text: "Logo", value: "logo" },
-      // { text: "Cover", value: "cover" },
       { text: "Descripción", value: "description" },
       { text: "Teléfono", value: "phone" },
     ],
