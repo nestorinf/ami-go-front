@@ -7,15 +7,20 @@ class RestaurantService {
     }
 
     create(data) {
-        return HTTP.post(`${this.path}`, data)
+        return HTTP.post(`${this.path}`, data);
     }
 
     getById(id) {
-        return HTTP.get(`${this.path}/` + id)
+        return HTTP.get(`${this.path}/` + id);
     }
 
-    update(data) {
-        return HTTP.put(`${this.path}/` + data.id, data)
+    update({ payload, id }) {
+        return HTTP.post(`${this.path}/` + id, payload, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                'Accept': 'application/json'
+            }
+        });
     }
 
     remove(id) {
