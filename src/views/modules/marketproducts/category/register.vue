@@ -162,12 +162,14 @@ export default {
   watch: {
     storeCategory(data) { 
       this.imagesListLogo = [];
-      data.attachment.map((element) => {
-        this.imagesListLogo.push({
-            id: element.id,
-            imagen: element.url,
-        });        
-      }); 
+      if (this.id) {
+        data.attachment.map((element) => {
+          this.imagesListLogo.push({
+              id: element.id,
+              imagen: element.url,
+          });        
+        }); 
+      }
       console.log(this.imagesListLogo);
     },
   },
@@ -235,7 +237,7 @@ export default {
           }
         });
       }
-
+ 
       return attachmentsRows;
     },
 
