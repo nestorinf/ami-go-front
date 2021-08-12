@@ -1,40 +1,23 @@
 <template>
   <div>
     <v-row class="pb-10">
-      <v-col cols="2" lg="2" v-for="(item, index) in items" :key="index">
-        <div data-v-69bb59a3="" class="imgsPreview" style="">
-          <div data-v-69bb59a3="" class="imageHolder">
-            <img data-v-69bb59a3="" :src="item.imagen" />
-            <span
-              v-if="!disabled"
-              data-v-69bb59a3=""
-              class="delete"
-              :class="item.delete ? 'warning' : 'danger'"
+      <v-col cols="3" lg="3" v-for="(item, index) in items" :key="index">
+        <div  class="imgsPreview" style="">
+          <div  class="imageHolder">
+            <img  :src="item.imagen" />
+            <span             
+              class="delete danger" 
               style="color: white"
               @click="deleteImagen(item)"
             >
-              <i
-                aria-hidden="true"
-                class="
-                  v-icon
-                  notranslate
-                  v-icon--left
-                  mdi mdi-minus-circle
-                  theme--dark
-                "
-                v-if="item.delete"
-              ></i>
-              <svg
-                v-else
-                data-v-69bb59a3=""
+              <svg              
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
                 class="icon"
               >
-                <path
-                  data-v-69bb59a3=""
+                <path                  
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
