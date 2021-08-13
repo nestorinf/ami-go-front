@@ -1,7 +1,7 @@
 <template>
   <v-col cols="12" lg="12">
     <div>
-      <h2>Busque una Dirección y Agregue O Seleccione en el Mapa</h2>
+      <!-- <h2>Busque una Dirección y Agregue O Seleccione en el Mapa</h2> -->
         <!-- <vuetify-google-autocomplete
           id="map"
           placeholder="Ingrese una Direccion"
@@ -83,10 +83,10 @@ export default {
         // fillOpacity: 0.20,
       },
       optionsRestrictions: {
-        strokeColor: "#EB6B06",
+        strokeColor: "#9805F7",
         // strokeOpacity: 0.5,
         strokeWeight: 1.5,
-        fillColor: "#EB6B06",
+        fillColor: "#9805F7",
         // fillOpacity: 0.20,
       },
       center: { lat:0.00, lng: 0.00 },
