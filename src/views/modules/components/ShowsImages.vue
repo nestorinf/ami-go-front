@@ -45,7 +45,7 @@ export default {
       if(item.id ==undefined){
         this.$emit("delete-imagen-index", index);
       }else{
-        this.$emit("delete-imagen", item.id);
+        this.$emit("delete-imagen", item);
       }
     },
   },

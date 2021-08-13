@@ -6,7 +6,7 @@
           {{ titleForm }}
         </h3>
         <h6 class="subtitle-2 font-weight-light">
-          En este formulario se registran todas los comercios
+          En este formulario se registran todas las categoria Producto Super mercado
         </h6>
       </v-card-text>
       <v-card-text>
@@ -86,7 +86,7 @@
             <v-btn
               color="black"
               class="text-capitalize"
-              to="/commerce/commerce"
+              to="/marketproducts/categories"
               dark
               >Cancelar</v-btn
             >
@@ -121,7 +121,7 @@ export default {
   data() {
     return {
       textSnackBar: "",
-      titleForm: "Comercio",
+      titleForm: "Categoria Producto Super mercado",
       valid: true,
       loadingCommerceType: false,
       commerceTypeList: [],

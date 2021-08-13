@@ -54,6 +54,7 @@ export default {
       this.$emit("images-button", item);
     },
   },
+
   data: () => ({
     search: "",
     loading: false,
