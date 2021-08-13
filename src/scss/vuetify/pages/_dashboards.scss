@@ -86,8 +86,12 @@
   background: rgba(7, 10, 43, 0.8);
 }
 
+.imgsPreview{
+    text-align: center;
+}
+
 .imgsPreview .imageHolder{
-    width: 150px;
+    // width: 150px;
     height: 150px;
     background: #fff;
     position: relative;

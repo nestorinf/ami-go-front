@@ -6,7 +6,7 @@
         Producto
       </h3>
       <h6 class="subtitle-2 font-weight-light">
-        En este formulario se registran todos los productos de Super Mercados
+        En este formulario se registran todos los productos
       </h6>
     </v-card-text>
     <v-card-text>
@@ -20,7 +20,7 @@
               filled
               required
               v-model="form.commerce_id"
-              label="Super mercados"
+              label="Comercio"
               :rules="rules.commerceRule"
               background-color="transparent"
             ></v-select>
@@ -33,7 +33,7 @@
               :rules="rules.categoryRule"
               v-model="form.category_id"
               filled
-              label="Categoria Producto Super mercados"
+              label="Categoria Producto"
               background-color="transparent"
             ></v-select>
           </v-col>
@@ -280,78 +280,20 @@
                   <v-icon small>mdi-plus</v-icon>
                 </v-btn> 
             </v-col>
-            
-          <v-col cols="12" lg="12">
-            <UploadImages
-              ref="VueUploadImageLogo"
-              v-model="images"
-              v-if="displayedLogo"
-              @change="handleImageLogo"
-            />
-          </v-col>
           </v-row>
           
     </v-form>
           <v-row class="px-7">
       <v-col cols="12" lg="12" sm="12">
+
+        
         <DataTable
           :headers="headers"
           :items="listDetail" 
           :loading="true"
           @remove-button="acceptRemoveProductBatches"
-          @images-button="imagesProductBatches"
         ></DataTable>
       </v-col></v-row>
-
-
-
-
-
-
-
-
-      
-                <v-dialog
-                    v-model="dialog2"
-                >
-                    <v-card>
-                      
-      <v-form ref="form_detail" v-model="valid" lazy-validation>
-                    <v-card-title>
-                        Imagenes para el detalle del lote...
-                    </v-card-title>
-                    <v-card-text>
-                         
-                      <v-row>
-                        <v-col cols="8">
-                          <ShowsImages
-                            :items="imagesList" 
-                            @delete-imagen-index="deleteImagenIndex"
-                          ></ShowsImages>
-                        </v-col>
-
-                        <v-col cols="12" lg="12">
-                          <UploadImages
-                            ref="VueUploadImagesModal"
-                            v-if="displayed"
-                          />
-                        </v-col>
-                      </v-row>
-
-
-                    </v-card-text>
-                    <v-card-actions> 
-                        <v-btn
-                        color="primary"
-                        text
-                        @click="dialog2 = false,ClosehandleImages()"
-                        >
-                        Guardar
-                        </v-btn>
-                    </v-card-actions>
-      </v-form>
-                    </v-card>
-                </v-dialog>
     </v-card>
 
     
@@ -377,8 +319,6 @@ import DataTable from "./components/DataTable";
 import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 import DialogConfirm from "../../components/DialogConfirm";
-import ShowsImages from "../../components/ShowsImages";
-import UploadImages from "vue-upload-drop-images";
 export default {
   name: "RegisterProduct",
   props: {
@@ -388,19 +328,9 @@ export default {
     SnackBar,
     DataTable,
     DialogConfirm,
-    UploadImages,
-    ShowsImages,
   },
   data: () => ({
     
-      dialog2: false,
-      imagesList: [],
-      displayed: true,
-
-      imagesListLogo: [],
-      displayedLogo: true,
-      images: [],
-
       menu2: false,
     messageDialog: "",
     textSnackBar: "",
@@ -421,10 +351,6 @@ export default {
       {
         text: "Talla",
         value: "size",
-      },
-      {
-        text: "Imagenes",
-        value: "images",
       },
     ],
     items: [],
@@ -470,13 +396,11 @@ export default {
       product_classification_id: "",
     },
 
-    errorsBags: [],
+      errorsBags: [],
     form_detail: {
       stock: '',
       size_id: '',
-      colour_id: '',
-      logo: [],
-      images: [],
+      colour_id: ''
     },
 
     rules: {
@@ -487,8 +411,6 @@ export default {
       uomRule: [(v) => !!v || "este campo es obligatorio"],
       categoryInternRule: [(v) => !!v || "este campo es obligatorio"],
     },
-
-    detail_index : '',
   }),
 
   mounted() {
@@ -509,142 +431,15 @@ export default {
       coloursData: "referenceList/getReferenceListByReferenceSlugData",
       getClassifications: "productClassification/getClassificationData",
     }),
-    
-    deleteImagenLogo(item) {
-
-      const prod = this.form.product_batches_detail[this.detail_index].attachment; 
-      console.log('prod',prod)
-
-      console.log('item.index',item)
-
-
-
-      prod.splice(item.index, 1);
-
-      // this.removeAttachment(item.id).then((response) => {
-      //   if (response) {
-      //     // this.imagesListLogo = attachments;
-      //   }
-      // });
-
-    },
-    deleteImagenIndex(item) {
-
-      console.log('item',item)
-      console.log('this.detail_index',this.detail_index)
-
-      const prod = this.form.product_batches_detail[this.detail_index].images.Imgs; 
-      console.log('prod',prod)
-
-      this.form.product_batches_detail[this.detail_index].images.Imgs.splice(item, 1);
-      this.form.product_batches_detail[this.detail_index].logo.splice(item, 1);
-      this.imagesProductBatches( this.listDetail[this.detail_index] )
-    },
-    imagesProductBatches(item) {
-      this.detail_index = item.index;
-      console.log('attachment',item)
-      this.dialog2 = true;
-      this.imagesList = this.attachments(item.images); 
-      console.log('imagesList',this.imagesList)
-
-    },
-    attachments(attachmentData) {
-      console.log('attachmentData',attachmentData);
-      const attachmentsRows = [];
-      // if (this.id) {
-        attachmentData.map((element) => {
-          if (element){
-            attachmentsRows.push({
-              id: element.id,
-              imagen: element.id?element.url:element,
-            });
-          }
-        });
-      // }
-      return attachmentsRows;
-    },
-    ClosehandleImages() {
-      console.log('ClosehandleImages')
-      const ImagesNew = this.$refs.VueUploadImagesModal._data;
-
-      console.log('ImagesNew',ImagesNew)
-      for (let i = 0; i < ImagesNew.files.length; i++) {
-          
-        this.form.product_batches_detail[this.detail_index].images.Imgs.push(ImagesNew.Imgs[i]); 
-        this.form.product_batches_detail[this.detail_index].images.files.push(ImagesNew.files[i]); 
- 
-      }  
-      // this.form_detail.logo = event;
-    },
-
-    handleImageLogo(event) {
-      console.log(event);
-      this.form_detail.logo = event;
-      this.form_detail.images = this.$refs.VueUploadImageLogo._data;
-       
-    },
-
     AddProductDetail(){
       this.form.product_batches_detail.push({
-        stock : this.form_detail.stock,
-        size_id: this.form_detail.size_id,
-        colour_id: this.form_detail.colour_id,
-        logo: this.form_detail.logo,
-        images: this.form_detail.images,
+      stock : this.form_detail.stock,
+      size_id: this.form_detail.size_id,
+      colour_id: this.form_detail.colour_id
       });
       this.$refs.form_detail.reset();
-      // this.$refs.VueUploadImageLogo.Imgs = [];
-      // this.$refs.VueUploadImageLogo.files = [];
-      this.form_detail.logo = [];
-      this.images = []; 
-    }, 
-    
-    save() {
-      this.$refs.form.validate();
-      if (this.$refs.form.validate()) {
-        const formData = new FormData();
-        formData.append("id", this.id);
-
-        formData.append("name", this.form.name);
-        formData.append("sku", this.form.sku);
-        formData.append("enabled", this.form.enabled);
-        formData.append("on_stock", this.form.on_stock);
-        formData.append("owns_batch", this.form.owns_batch);
-        formData.append("description", this.form.description);
-        formData.append("conditions", this.form.conditions);
-        formData.append("commerce_id", this.form.commerce_id);
-        formData.append("price", this.form.price);
-        formData.append("weight", this.form.weight);
-        formData.append("uom_id", this.form.uom_id);
-        formData.append("category_id", this.form.category_id);
-        formData.append("provider_id", this.form.provider_id);
-        formData.append("category_intern_ids", this.form.category_intern_ids);
-        formData.append("description_batches", this.form.description_batches);
-        formData.append("expired_date", this.form.expired_date);
-        formData.append("product_classification_id", this.form.product_classification_id);
-  
-        formData.append("count_product_batches_detail", this.form.product_batches_detail.length);
-        for (let i = 0; i < this.form.product_batches_detail.length; i++) {
-          let detail = this.form.product_batches_detail[i];
-          formData.append("product_batches_detail[" + i + "]", JSON.stringify(detail));
-          console.log('detail',detail);
-          for (let ii = 0; ii < detail['logo'].length; ii++) {
-            let file = detail['logo'][ii]; 
-            console.log('detaillogo',file);
-            formData.append("product_batches_detail_images[" + i + "][" + ii + "]", file);
-          }  
-        }  
-
-        if (this.id) {
-          formData.append("_method", "PUT");
-          this.update(formData, this.id);
-        } else {
-          this.create(formData);
-        }
-      }
     },
-
-    saves() {
+    save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
         const payload = this.form;
@@ -660,14 +455,7 @@ export default {
       this.createProduct(payload)
         .then((result) => {
           if (result) { 
-            console.log(result)
-            // this.$refs.form.reset();
-            // this.form.commerce_id = "";
-            // this.form.uom_id = "";
-            // this.form.category_id = "";
-            // this.form.provider_id = "";
-            // this.form.category_intern_ids = [];
-            // this.form.product_classification_id = "";
+            this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
           }
@@ -779,7 +567,7 @@ export default {
     loadCommerces() {
       const rows = [];
       this.loadingCommerces = true;
-      this.commerceData(1)
+      this.commerceData(0)
         .then((result) => {
           if (result) {
             result.map((element) => {
@@ -803,7 +591,7 @@ export default {
     loadCategories() {
       const rows = [];
       this.loadingCategories = true;
-      this.categoryData('MARKET')
+      this.categoryData('COMMERCE')
         .then((result) => {
           if (result) {
             result.map((element) => {
@@ -918,7 +706,7 @@ export default {
 
       const rows = [];
       this.loadingClassification = true;
-      this.getClassifications(1)
+      this.getClassifications(0)
         .then((result) => {
           if (result) {
             result.map((element) => {
@@ -939,6 +727,15 @@ export default {
 
     },
     
+    // changeClassification() {
+    //   const id_class = this.form.product_classification_id;
+    //   const index_class = this.classificationList.findIndex((x) => x.value === id_class);          
+    //   const classif = this.classificationList[index_class];
+      
+    //   console.log('referenceId',classif)
+    //   this.loadSize(classif['reference_slug']);
+    // },
+
     loadSize(referenceId) {
       console.log(referenceId)
       const rows = [];
@@ -1017,7 +814,7 @@ export default {
 
       this.$refs.DialogConfirm.changeStateDialog(false); 
 
-    }, 
+    },
   },
   watch: {
     productClassificationId(){
@@ -1032,8 +829,11 @@ export default {
       const id_class = this.form.product_classification_id;
       const classificationList = this.classificationList;
 
+      console.log('id_class',id_class)
+      console.log('classificationList',classificationList)
       if(id_class!='' && classificationList.length>0){
         
+        console.log('mmmmmm')
         const index_class = classificationList.findIndex((x) => x.value === id_class);          
         const classif = this.classificationList[index_class];
         
@@ -1050,8 +850,7 @@ export default {
       if(data!=undefined && data.length > 0){
         data.map((element, index) => { 
           const color = colourList.findIndex((x) => x.value === element.colour_id); 
-          const talla = sizeList.findIndex((x) => x.value === element.size_id);    
-          console.log('element',element)      
+          const talla = sizeList.findIndex((x) => x.value === element.size_id);          
           if (element) {
             rows.push({
               index: index, 
@@ -1059,8 +858,6 @@ export default {
               stock: element.stock, 
               colour: color!=-1?colourList[color]['text']:'N/A',
               size: talla!=-1?sizeList[talla]['text']:'N/A',
-              logo: element.id?element.attachment:element.logo,
-              images: element.id?element.attachment:element.images.Imgs,
             });
           }
         });
