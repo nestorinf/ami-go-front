@@ -74,7 +74,7 @@ const actions = {
                     commit("setProduct", {});
                 });
         });
-    },
+    }, 
     updateProduct({ commit, dispatch }, body) {
         return new Promise((resolve, reject) => {
             dispatch("loading/loadingState", true, { root: true });

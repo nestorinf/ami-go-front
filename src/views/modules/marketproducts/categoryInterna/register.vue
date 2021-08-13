@@ -1,16 +1,17 @@
 <template>
   <v-card class="mb-7">
-    <v-card-text class="pa-5 border-bottom">
-      <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-        Categorias Internas
-      </h3>
-      <h6 class="subtitle-2 font-weight-light">
-        En este formulario se registran todos las categorias
-      </h6>
-    </v-card-text>
-    <v-card-text>
-      <v-form ref="form" v-model="valid" lazy-validation>
-        <v-row>
+    <v-form ref="form" v-model="valid" lazy-validation>
+      <v-card-text class="pa-5 border-bottom">
+        <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
+          {{ titleForm }}
+        </h3>
+        <h6 class="subtitle-2 font-weight-light">
+          En este formulario se registran todos las categorias
+        </h6>
+      </v-card-text>
+      <v-card-text>
+         <v-row>
+           
           <v-col cols="12" lg="6">
             <v-select
               :items="commerces"
@@ -23,6 +24,7 @@
               background-color="transparent"
             ></v-select>
           </v-col>
+
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.name"
@@ -46,11 +48,23 @@
             ></v-text-field>
           </v-col>
           
-          <v-col cols="12" lg="12">
-            <UploadImages v-if="displayed" :max="50" @change="onFileSelected" />
+          <v-col cols="12">
+            <ShowsImages
+              :items="imagesListLogo"
+              v-if="true"
+              @delete-imagen="deleteImagenLogo"
+            ></ShowsImages>
           </v-col>
-          <ShowsImages :items="form.imagenes" v-if="id" @delete-imagen="deleteImagen"></ShowsImages>
-        
+
+          <v-col cols="12" lg="12">
+            <UploadImages
+              ref="VueUploadImageLogo"
+              v-model="form.images"
+              v-if="displayedLogo"
+              @change="handleImageLogo"
+            />
+          </v-col>
+           
           <v-col cols="12" lg="12">
             <v-checkbox
               v-model="form.enabled"
@@ -60,23 +74,28 @@
             ></v-checkbox>
           </v-col>
         </v-row>
-        <v-btn
-          color="success"
-          @click="save"
-          :disabled="!valid"
-          submit
-          class="text-capitalize mr-2"
-          >Guardar</v-btn
-        >
-        <v-btn
-          color="black"
-          class="text-capitalize"
-          to="/marketproducts/categories_intern"
-          dark
-          >Cancelar</v-btn
-        >
-      </v-form>
-    </v-card-text>
+
+        <v-row>
+          <v-col cols="12">
+            <v-btn
+              color="success"
+              @click="save"
+              :disabled="!valid"
+              submit
+              class="text-capitalize mr-2"
+              >Guardar</v-btn
+            >
+            <v-btn
+              color="black"
+              class="text-capitalize"
+              to="/marketproducts/categories_intern"
+              dark
+              >Cancelar</v-btn
+            >
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-form>
     <SnackBar
       :text="textSnackBar"
       ref="snackBarRef"
@@ -86,9 +105,9 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
-import UploadImages from "vue-upload-drop-images";
+import { mapActions, mapGetters } from "vuex";
 import ShowsImages from "../../components/ShowsImages";
+import UploadImages from "vue-upload-drop-images";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
   name: "RegisterCategoryIntern",
@@ -96,33 +115,35 @@ export default {
     id: String,
   },
   components: {
+    SnackBar,
     UploadImages,
     ShowsImages,
-    SnackBar,
   },
 
   data() {
     return {
+      textSnackBar: "",
+      titleForm: "Categorias Internas",
+      valid: true,
+      imagesListLogo: [],
+      displayedLogo: true,
       
       loadingCommerces: false,
       commerces: [],
-      
-      displayed: true,
-      selectedFile: [],
-      textSnackBar: "",
-      valid: true,
+
       form: {
+        id:"",
         name: "",
-        description: "",
-        enabled:false,
         interno:1,
-        imagenes:[],
-        saved_imagen:true,
-        commerce_id:'',
-        view_type:'MARKET'
+        description: "",
+        parent_id: "",
+        enabled:false,
+        view_type:'MARKET',
+        logo: [],
       },
       errorsBags: [],
 
+      
       rules: {
         nameRule: [(v) => !!v || "el nombre es obligatorio"],
         descriptionRule: [(v) => !!v || "el nombre es obligatorio"],
@@ -132,131 +153,150 @@ export default {
 
   mounted() {
     this.setData();
-    this.loadCommerces();
-  }, 
+  },
   computed: {
-    getCategories() {
-      return this.$store.state.category.categories;
+    ...mapGetters({
+      storeCategory: "category/getCategory",
+    }),
+  },
+
+  watch: {
+    storeCategory(data) { 
+      this.imagesListLogo = [];
+      if (this.id) {
+        data.attachment.map((element) => {
+          this.imagesListLogo.push({
+              id: element.id,
+              imagen: element.url,
+          });        
+        }); 
+      }
+      console.log(this.imagesListLogo);
     },
   },
+
   methods: {
     ...mapActions({
-      createCategory: "category/createCategory",
-      category: "category/getCategoryByID",
-      updateCategory: "category/updateCategory",
-      commerceData: "commerce/getCommercesData",
+        createCategory: "category/createCategory",
+        category: "category/getCategoryByID",
+        updateCategory: "category/updateCategory",
+        
+        commerceData: "commerce/getCommercesData",
+        
+        removeAttachment: "attachment/removeAttachment",
     }),
-
-    
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
-        if (this.selectedFile.length) {
-          const payload = new FormData();
-          payload.append("name", this.form.name);
-          payload.append("description", this.form.description);
-          payload.append("enabled", this.form.enabled);
-          payload.append("interno", 1);
-          payload.append("saved_imagen", this.form.saved_imagen);
-          payload.append("commerce_id", this.form.commerce_id);
-          payload.append("view_type", this.form.view_type);
-          this.selectedFile.forEach((e) => {
-            payload.append("images[]", e);
-          });
-          if (this.id) {
-            payload.append("id", this.id);
-            this.update(payload);
-          } else {
-            this.create(payload);
-          }
-        }else{
-          const payload = this.form;
-          if (this.id) {
-            this.update(payload);
-          } else {
-            this.create(payload);
-          }
+        const formData = new FormData();
+
+        formData.append("id", this.id);
+
+        formData.append("name", this.form.name);
+        formData.append("interno", this.form.interno);
+        formData.append("description", this.form.description);
+        formData.append("parent_id", this.form.parent_id);
+        formData.append("enabled", this.form.enabled);
+        formData.append("view_type", this.form.view_type);
+
+        for (let i = 0; i < this.form.logo.length; i++) {
+          let file = this.form.logo[i];
+          formData.append("logo[" + i + "]", file);
         }
+
+        if (this.id) {
+          formData.append("_method", "PUT");
+          this.update(formData, this.id);
+        } else {
+          this.create(formData);
+        }
+        
       }
     },
- 
-    setData() {
-      if (this.id) {
+    setData() { 
+      this.loadCommerces();
+      if (this.id) { 
         this.category(this.id).then((result) => {
-          this.form = Object.assign({}, result);
+          this.form = {
+            id: result.id,
+            name: result.name,
+            description: result.description,
+            parent_id: result.parent_id,
+            enabled: result.enabled,
+            view_type: result.view_type,
+            interno: result.interno,
+            logo: [],
+          };
         });
       }
+    },
+
+    attachments(attachmentData) {
+      const attachmentsRows = [];
+      if (this.id) {
+        attachmentData.map((element) => {
+          if (element) {
+            attachmentsRows.push({
+              id: element.id,
+              imagen: element.url,
+            });
+          }
+        });
+      }
+ 
+      return attachmentsRows;
     },
 
     create(payload) {
       this.createCategory(payload)
         .then((result) => {
-          if (result) {
-            // this.form = {};
+          if (result) { 
             this.$refs.form.reset();
+            this.form.parent_id = "";
+            this.$refs.VueUploadImageLogo.Imgs = [];
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
-            
-            this.selectedFile = [];
-            this.displayed = false;
-            this.$nextTick(() => {
-              this.displayed = true;
-            });
-            // this.$router.push("/products/categories");
           }
         })
         .catch((err) => {
-          if (err.response) {
-            this.errorsBags = err.response.data.errors;
-            setTimeout(() => {
-              this.errorsBags = [];
-            }, 4000);
-          }
           console.log(err);
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });
     },
 
-    update(payload) {
-      this.updateCategory(payload)
+    update(payload, id) {
+      this.updateCategory({ payload, id })
         .then((result) => {
           if (result) {
-            this.form = Object.assign({}, result);
+            this.$refs.VueUploadImageLogo.Imgs = [];
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
-            
-            this.selectedFile = [];
-            this.displayed = false;
-            this.$nextTick(() => {
-              this.displayed = true;
-            });
-            // this.$router.push("/products/categories");
           }
         })
         .catch((err) => {
-          if (err.response) {
-            this.errorsBags = err.response.data.errors;
-            setTimeout(() => {
-              this.errorsBags = [];
-            }, 4000);
-          }
           console.log(err);
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });
     },
-    onFileSelected(event) {
-      this.selectedFile = event;
+
+    handleImageLogo(event) {
+      this.form.logo = event;
     },
-    deleteImagen(item) { 
-      this.form.imagenes.forEach((e) => {
-        if(e.id == item){
-          e.delete = !e.delete;
+
+    deleteImagenLogo(id) {
+      const index = this.imagesListLogo.findIndex((x) => x.id === id);
+      const attachments = [...this.imagesListLogo];
+      attachments.splice(index, 1);
+
+      this.removeAttachment(id).then((response) => {
+        if (response) {
+          this.imagesListLogo = attachments;
         }
       });
-      this.form.saved_imagen = !this.form.saved_imagen;
     },
+    
     loadCommerces() {
       const rows = [];
       this.loadingCommerces = true;
@@ -280,7 +320,7 @@ export default {
           this.loadingCommerces = false;
         });
     },
-
+     
   },
 };
 </script>
