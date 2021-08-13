@@ -8,7 +8,7 @@
             <span             
               class="delete danger" 
               style="color: white"
-              @click="deleteImagen(item)"
+              @click="deleteImagen(item,index)"
             >
               <svg              
                 xmlns="http://www.w3.org/2000/svg"
@@ -41,8 +41,12 @@ export default {
   },
   components: {},
   methods: {
-    deleteImagen(item) {
-      this.$emit("delete-imagen", item.id);
+    deleteImagen(item,index) {
+      if(item.id ==undefined){
+        this.$emit("delete-imagen-index", index);
+      }else{
+        this.$emit("delete-imagen", item.id);
+      }
     },
   },
   data: () => ({}),

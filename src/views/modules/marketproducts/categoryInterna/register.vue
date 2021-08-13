@@ -202,13 +202,15 @@ export default {
         for (let i = 0; i < this.form.logo.length; i++) {
           let file = this.form.logo[i];
           formData.append("logo[" + i + "]", file);
-        }  
+        }
+
         if (this.id) {
           formData.append("_method", "PUT");
           this.update(formData, this.id);
         } else {
           this.create(formData);
         }
+        
       }
     },
     setData() { 

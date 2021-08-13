@@ -6,9 +6,17 @@ class ProductService {
     all(type) {
         return HTTP.get(`${this.path}`+'?type='+type)
     }
-
+    
     create(data) {
-        return HTTP.post(`${this.path}`, data)
+        return HTTP.post(`${this.path}`, data, {
+            headers: {
+             
+                "Content-Type": "multipart/form-data",
+                'Accept': 'application/json'
+              
+            }
+           
+        })
     }
 
     getById(id) {
