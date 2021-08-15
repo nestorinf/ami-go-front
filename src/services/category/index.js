@@ -18,14 +18,32 @@ class CategoryService {
     }
 
     create(data) {
-        return HTTP.post(`${this.path}`, data)
+        return HTTP.post(`${this.path}`, data, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                'Accept': 'application/json'
+            }
+        })
     }
 
+    
     getById(id) {
         return HTTP.get(`${this.path}/` + id)
     }
 
-    update(data) {
+    
+    
+    update({payload,id}) {
+        return HTTP.post(`${this.path}/` + id, payload, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                'Accept': 'application/json'
+            }
+        })
+    }
+
+
+    update_old(data) {
         return HTTP.post(`${this.path}/` + data['id'], data)
     }
 
