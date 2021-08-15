@@ -2,6 +2,7 @@ import HTTP from "../axios";
 
 class GeofenceRestrictionService {
   path = "geofence-restrictions";
+  pathGeofenceRestrictionsByGeofence = "geofence-restrictions-by-geofence";
   all() {
     return HTTP.get(`${this.path}`);
   }
@@ -12,6 +13,12 @@ class GeofenceRestrictionService {
 
   getById(id) {
     return HTTP.get(`${this.path}/` + id);
+  }
+
+  allGeofenceRestrictionsByGeofence(geofence_id) {
+    return HTTP.get(
+      `${this.pathGeofenceRestrictionsByGeofence}/` + geofence_id
+    );
   }
 
   update(data) {

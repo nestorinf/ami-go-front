@@ -52,6 +52,24 @@ const actions = {
     });
   },
 
+  getGeofenceRestrictionsByGeofence({ commit, dispatch }, id) {
+    return new Promise((resolve, reject) => {
+      dispatch("loading/loadingState", true, { root: true });
+      GeofenceRestrictionService.allGeofenceRestrictionsByGeofence(id)
+        .then(({ data }) => {
+          const geofenceRestrictions = data.payload;
+
+          commit("setGeofenceRestrictions", geofenceRestrictions);
+          dispatch("loading/loadingState", false, { root: true });
+          resolve(data.payload);
+        })
+        .catch((err) => {
+          reject(err);
+          commit("setGeofenceRestrictions", []);
+        });
+    });
+  },
+
   createGeofenceRestriction({ commit, dispatch }, body) {
     return new Promise((resolve, reject) => {
       dispatch("loading/loadingState", true, { root: true });

@@ -112,22 +112,27 @@ export default {
   },
   watch: {
     geofence(newValor){
-      this.center = {
+       this.pathsRestrictions= [],
+        this.pathsregisteredRestrictions= []
+      if (newValor.length){
+        this.center = {
           lat: newValor[0].value[1].lat, 
           lng: newValor[0].value[1].lng,
           country: this.center.code,
           zoom: 14,
-      }  
-      this.pathsCoverages = newValor
-      this.pathsRestrictions.push({
-        value: this.generateRandomPoints(this.center, 400, 3)
-      })       
+        }  
+        this.pathsCoverages = newValor
+        this.pathsRestrictions.push({
+          value: this.generateRandomPoints(this.center, 400, 3)
+        }) 
+      }      
+           
     },
-    registeredRestrictions(newValor){       
+    registeredRestrictions(newValor){
+      this.pathsregisteredRestrictions= []  
+      if (newValor.length){          
       this.pathsregisteredRestrictions = newValor
-      // this.pathsregisteredRestrictions.push({
-      //   value: this.
-      // })       
+      }       
     },
   },
   methods: {

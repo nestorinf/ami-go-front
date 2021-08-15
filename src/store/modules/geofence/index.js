@@ -52,21 +52,26 @@ const actions = {
     });
   },
 
-  //   getGeofencesByIdDepartmentMuniciplity({ commit, dispatch }, id) {
-  //     return new Promise((resolve, reject) => {
-  //         dispatch('loading/loadingState', true, { root: true })
-  //         CommerceService.getProductsByIdCommerce(id).then(({ data }) => {
-  //             const company = data.payload
-  //             commit('setCommerce', company)
-  //             dispatch('loading/loadingState', false, { root: true })
-  //             resolve(data.payload)
-  //         }).catch(err => {
-  //             dispatch('loading/loadingState', false, { root: true })
-  //             reject(err)
-  //             // commit('setCommerceType', {})
-  //         })
-  //     })
-  // },
+  getGeofenceByDepartmentMunicipality({ commit, dispatch }, params) {
+    return new Promise((resolve, reject) => {
+      dispatch("loading/loadingState", true, { root: true });
+      GeofenceService.allGeofenceByDepartmentMunicipality(
+        params.department_id,
+        params.municipality_id
+      )
+        .then(({ data }) => {
+          const geofence = data.payload;
+
+          commit("setGeofences", geofence);
+          dispatch("loading/loadingState", false, { root: true });
+          resolve(data.payload);
+        })
+        .catch((err) => {
+          reject(err);
+          commit("setGeofences", []);
+        });
+    });
+  },
 
   createGeofence({ commit, dispatch }, body) {
     return new Promise((resolve, reject) => {

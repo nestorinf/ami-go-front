@@ -13,6 +13,7 @@
             <v-row>   
                 <v-col cols="12" lg="6">
                     <v-select
+                     @change="loadMunicipalityByDepartment"
                     :loading="loadingDepartments"
                     label="Departamento"
                     :items="departmentList"
@@ -55,13 +56,6 @@
                     @geofences="geofences"
                     :editCoordinates="editCoordinates"/>
                 </v-col>
-                <!-- <v-col cols="12" lg="12">
-                    <GoogleMap
-                    v-if="loadingChild"
-                    @coordinates="coordinates"
-                    :title="'Titulo Marcador'"
-                    :editCoordinates="editCoordinates"/> 
-                </v-col> -->
                 </v-row>
         <v-btn
           color="success"
@@ -144,7 +138,7 @@ export default {
       getGeofenceById: "geofence/getGeofenceById",
       updateGeofence: "geofence/updateGeofence",
       getDepartmentsData: "department/getDepartmentsData",
-      getMunicipalitiesData: "municipality/getMunicipalitiesData",
+       getMunicipalityByDepartment: "municipality/getMunicipalityByDepartment",
     }),
     geofences(geofences){
       this.form.geofence = geofences
@@ -164,8 +158,7 @@ export default {
     setData() {
       this.loadingDepartments = true;       
       this.loadingMunicipalities = true;       
-      const departments = [];
-      const municipalities = [];      
+      const departments = [];    
       this.getDepartmentsData().then((result) => {
         this.loadingChild = true;        
         if(result) {   
@@ -180,32 +173,16 @@ export default {
 
         }
         this.loadingDepartments = false;
-      }).catch((err) => {
-        console.log(err)
-        this.loadingDepartments = false; 
-      });
-      this.getMunicipalitiesData().then((result) => {
-        this.loadingChild = true;        
-        if(result) {   
-          result.map((element) => {
-            municipalities.push({
-              value: element.id,
-              text: element.name,
-            });
-            this.municipalityList = municipalities;
-            
-          });
-
-        }
         this.loadingMunicipalities = false;
       }).catch((err) => {
         console.log(err)
-        this.loadingMunicipalities = false; 
+        this.loadingDepartments = false; 
+        this.loadingMunicipalities = false;
       });
       if (this.id) {
         this.getGeofenceById(this.id).then((result) => {
            this.loadingChild = true;
-          this.form = {
+         const parseData = {
             id: result.id,
             name: result.name,
             department_id: result.department_id,
@@ -213,9 +190,37 @@ export default {
             geofence: result.geofence
           };
           this.editCoordinates = result.geofence
-        });
-        
+          this.form = Object.assign({}, parseData);          
+          
+          this.loadMunicipalityByDepartment();
+
+        }); 
       }          
+    },
+
+    loadMunicipalityByDepartment() {
+      this.loadingMunicipalities = true;
+      const municipalities = []
+      this.municipalityList = [];
+      this.geofenceList = [];
+      this.getMunicipalityByDepartment(this.form.department_id)
+        .then((result) => {
+          if (result) {
+              result.map((element) => {
+              municipalities.push({
+              value: element.id,
+              text: element.name,
+            });
+            this.municipalityList = municipalities;
+            
+          });             
+          }
+          this.loadingMunicipalities = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingMunicipalities = false;
+        });
     },
 
     create(payload) {
