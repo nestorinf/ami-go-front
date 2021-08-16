@@ -81,11 +81,11 @@ export default {
         text: "Descripción",
         value: "description",
       },
-      {
-        text: "Padre",
-        sortable: false,
-        value: "parent",
-      },
+      // {
+      //   text: "Padre",
+      //   sortable: false,
+      //   value: "parent",
+      // },
       {
         text: "Habilitado",
         value: "enabled",
@@ -125,7 +125,7 @@ export default {
     },
   },
   mounted() {
-    this.getCategoriesData('MARKET');
+    this.getCategoriesData("MARKET");
   },
 };
 </script>

@@ -45,11 +45,20 @@
             ></v-select>
           </v-col>
           <v-col cols="12" lg="12">
-            <UploadImages v-if="displayed" :max="50" @change="onFileSelected" />
+            <ShowsImages
+              :items="imagesList"
+              v-if="id"
+              @delete-imagen="deleteImagen"
+            ></ShowsImages>
           </v-col>
-           
-          <ShowsImages :items="form.imagenes" v-if="id" @delete-imagen="deleteImagen"></ShowsImages>
-        
+          <v-col cols="12" lg="12">
+            <UploadImages
+              v-if="displayed"
+              :max="50"
+              @changed="onFileSelected"
+            />
+          </v-col>
+
           <v-col cols="12" lg="12">
             <v-checkbox
               v-model="form.enabled"
@@ -85,7 +94,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import UploadImages from "vue-upload-drop-images";
 import ShowsImages from "../../components/ShowsImages";
 import SnackBar from "@/views/modules/components/SnackBar";
@@ -105,14 +114,15 @@ export default {
       displayed: true,
       selectedFile: [],
       textSnackBar: "",
+      imagesList: [],
       valid: true,
       form: {
         name: "",
         description: "",
         parent_id: "",
-        enabled:false,
-        saved_imagen:true,
-        view_type:'COMMERCE'
+        enabled: false,
+        saved_imagen: true,
+        view_type: "COMMERCE",
       },
       loadingCategories: false,
       categoriesList: [],
@@ -127,10 +137,18 @@ export default {
 
   mounted() {
     this.setData();
-  }, 
+  },
   computed: {
+    ...mapGetters({ storeCategory: "category/getCategory" }),
     getCategories() {
       return this.$store.state.category.categories;
+    },
+  },
+  watch: {
+    storeCategory(data) {
+      if (data.attachment.length > 0) {
+        this.imagesList = Object.assign([], this.attachments(data.attachment));
+      }
     },
   },
   methods: {
@@ -139,6 +157,7 @@ export default {
       category: "category/getCategoryByID",
       updateCategory: "category/updateCategory",
       getCategoriesData: "category/getCategoriesData",
+      removeAttachment: "attachment/removeAttachment",
     }),
     save() {
       this.$refs.form.validate();
@@ -148,21 +167,15 @@ export default {
           payload.append("name", this.form.name);
           payload.append("description", this.form.description);
           payload.append("enabled", this.form.enabled);
-          payload.append("saved_imagen", this.form.saved_imagen);
+
           payload.append("view_type", this.form.view_type);
           this.selectedFile.forEach((e) => {
             payload.append("images[]", e);
           });
           if (this.id) {
+            payload.append("_method", "PUT");
             payload.append("id", this.id);
-            this.update(payload);
-          } else {
-            this.create(payload);
-          }
-        }else{
-          const payload = this.form;
-          if (this.id) {
-            this.update(payload);
+            this.update(payload, this.id);
           } else {
             this.create(payload);
           }
@@ -172,7 +185,7 @@ export default {
     setData() {
       this.loadingCategories = true;
       const rows = [];
-        this.getCategoriesData('COMMERCE').then((result) => {
+      this.getCategoriesData("COMMERCE").then((result) => {
         result.map((element) => {
           rows.push({
             value: element.id,
@@ -180,13 +193,31 @@ export default {
           });
           this.categoriesList = rows;
         });
-          this.loadingCategories = false;
+        this.loadingCategories = false;
       });
       if (this.id) {
         this.category(this.id).then((result) => {
+          console.log(result);
           this.form = Object.assign({}, result);
+          this.imagesList = this.attachments(result.attachment);
+          // console.log(this.imagesList);
         });
       }
+    },
+
+    attachments(attachmentData) {
+      const attachmentsRows = [];
+      if (this.id) {
+        attachmentData.map((element) => {
+          if (element) {
+            attachmentsRows.push({
+              id: element.id,
+              imagen: element.url,
+            });
+          }
+        });
+      }
+      return attachmentsRows;
     },
 
     create(payload) {
@@ -220,20 +251,20 @@ export default {
         });
     },
 
-    update(payload) {
-      this.updateCategory(payload)
+    update(payload, id) {
+      this.updateCategory({ payload, id })
         .then((result) => {
           if (result) {
             this.form = Object.assign({}, result);
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
-            
+
             this.selectedFile = [];
             this.displayed = false;
             this.$nextTick(() => {
               this.displayed = true;
             });
-            
+
             // this.$router.push("/products/categories");
           }
         })
@@ -252,14 +283,27 @@ export default {
     onFileSelected(event) {
       this.selectedFile = event;
     },
-    deleteImagen(item) { 
-      this.form.imagenes.forEach((e) => {
-        if(e.id == item){
-          e.delete = !e.delete;
+
+    deleteImagen(id) {
+      const index = this.imagesList.findIndex((x) => x.id === id);
+      const attachments = [...this.imagesList];
+      attachments.splice(index, 1);
+
+      this.removeAttachment(id).then((response) => {
+        if (response) {
+          this.imagesList = attachments;
         }
       });
-      this.form.saved_imagen = !this.form.saved_imagen;
     },
+
+    // deleteImagen(item) {
+    //   this.form.imagenes.forEach((e) => {
+    //     if (e.id == item) {
+    //       e.delete = !e.delete;
+    //     }
+    //   });
+    //   this.form.saved_imagen = !this.form.saved_imagen;
+    // },
   },
 };
 </script>
