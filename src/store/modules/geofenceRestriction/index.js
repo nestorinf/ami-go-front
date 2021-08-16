@@ -1,28 +1,28 @@
-import GeofenceService from "@/services/geofence";
+import GeofenceRestrictionService from "@/services/geofenceRestriction";
 
 const state = {
-  geofences: [],
-  geofence: {},
+  geofenceRestrictions: [],
+  geofenceRestriction: {},
 };
 
 const mutations = {
-  setGeofences(state, geofences) {
-    state.geofences = geofences;
+  setGeofenceRestrictions(state, geofenceRestrictions) {
+    state.geofenceRestrictions = geofenceRestrictions;
   },
-  setGeofence(state, geofence) {
-    state.geofence = geofence;
+  setGeofenceRestriction(state, geofenceRestriction) {
+    state.geofenceRestriction = geofenceRestriction;
   },
 };
 
 const actions = {
-  getGeofenceData({ commit, dispatch }) {
+  getGeofenceRestrictionData({ commit, dispatch }) {
     return new Promise((resolve, reject) => {
       dispatch("loading/loadingState", true, { root: true });
-      GeofenceService.all()
+      GeofenceRestrictionService.all()
         .then(({ data }) => {
-          const geofences = data.payload;
+          const geofenceRestrictions = data.payload;
 
-          commit("setGeofences", geofences);
+          commit("setGeofenceRestrictions", geofenceRestrictions);
           dispatch("loading/loadingState", false, { root: true });
 
           resolve(data.payload);
@@ -34,14 +34,14 @@ const actions = {
     });
   },
 
-  getGeofenceById({ commit, dispatch }, id) {
+  getGeofenceRestrictionById({ commit, dispatch }, id) {
     return new Promise((resolve, reject) => {
       dispatch("loading/loadingState", true, { root: true });
-      GeofenceService.getById(id)
+      GeofenceRestrictionService.getById(id)
         .then(({ data }) => {
           const company = data.payload;
 
-          commit("setGeofence", company);
+          commit("setGeofenceRestriction", company);
           dispatch("loading/loadingState", false, { root: true });
           resolve(data.payload);
         })
@@ -52,35 +52,32 @@ const actions = {
     });
   },
 
-  getGeofenceByDepartmentMunicipality({ commit, dispatch }, params) {
+  getGeofenceRestrictionsByGeofence({ commit, dispatch }, id) {
     return new Promise((resolve, reject) => {
       dispatch("loading/loadingState", true, { root: true });
-      GeofenceService.allGeofenceByDepartmentMunicipality(
-        params.department_id,
-        params.municipality_id
-      )
+      GeofenceRestrictionService.allGeofenceRestrictionsByGeofence(id)
         .then(({ data }) => {
-          const geofence = data.payload;
+          const geofenceRestrictions = data.payload;
 
-          commit("setGeofences", geofence);
+          commit("setGeofenceRestrictions", geofenceRestrictions);
           dispatch("loading/loadingState", false, { root: true });
           resolve(data.payload);
         })
         .catch((err) => {
           reject(err);
-          commit("setGeofences", []);
+          commit("setGeofenceRestrictions", []);
         });
     });
   },
 
-  createGeofence({ commit, dispatch }, body) {
+  createGeofenceRestriction({ commit, dispatch }, body) {
     return new Promise((resolve, reject) => {
       dispatch("loading/loadingState", true, { root: true });
-      GeofenceService.create(body)
+      GeofenceRestrictionService.create(body)
         .then(({ data }) => {
-          const geofence = Object.assign({}, data.payload);
+          const geofenceRestriction = Object.assign({}, data.payload);
 
-          commit("setGeofence", geofence);
+          commit("setGeofenceRestriction", geofenceRestriction);
           dispatch("loading/loadingState", false, { root: true });
           resolve(data.payload);
         })
@@ -90,14 +87,14 @@ const actions = {
         });
     });
   },
-  updateGeofence({ commit, dispatch }, body) {
+  updateGeofenceRestriction({ commit, dispatch }, body) {
     return new Promise((resolve, reject) => {
       dispatch("loading/loadingState", true, { root: true });
-      GeofenceService.update(body)
+      GeofenceRestrictionService.update(body)
         .then(({ data }) => {
-          const geofence = Object.assign({}, data.payload);
+          const geofenceRestriction = Object.assign({}, data.payload);
 
-          commit("setGeofence", geofence);
+          commit("setGeofenceRestriction", geofenceRestriction);
           dispatch("loading/loadingState", false, { root: true });
           resolve(data.payload);
         })
@@ -108,16 +105,21 @@ const actions = {
     });
   },
 
-  removeGeofence({ commit, dispatch, state }, id) {
+  removeGeofenceRestriction({ commit, dispatch, state }, id) {
     return new Promise((resolve, reject) => {
       dispatch("loading/loadingState", true, { root: true });
-      GeofenceService.remove(id)
+      GeofenceRestrictionService.remove(id)
         .then(({ data }) => {
-          const index = state.geofences.findIndex((x) => x.id === id);
-          const geofence = Object.assign([], state.geofences);
-          geofence.splice(index, 1);
+          const index = state.geofenceRestrictions.findIndex(
+            (x) => x.id === id
+          );
+          const geofenceRestriction = Object.assign(
+            [],
+            state.geofenceRestrictions
+          );
+          geofenceRestriction.splice(index, 1);
 
-          commit("setGeofences", geofence);
+          commit("setGeofenceRestrictions", geofenceRestriction);
           dispatch("loading/loadingState", false, { root: true });
           resolve(data.payload);
         })
@@ -129,11 +131,11 @@ const actions = {
   },
 };
 const getters = {
-  getGeofences: (state) => {
-    return state.geofences;
+  getGeofenceRestrictions: (state) => {
+    return state.geofenceRestrictions;
   },
-  getGeofence: (state) => {
-    return state.geofence;
+  getGeofenceRestriction: (state) => {
+    return state.geofenceRestriction;
   },
 };
 

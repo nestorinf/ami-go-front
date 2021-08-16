@@ -16,13 +16,13 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'geofence/register',
+            path: 'restriction/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveGeofence"
+          @remove-button="acceptRemoveGeofenceRestriction"
         ></DataTable>
       </v-col>
     </v-card>
@@ -59,7 +59,7 @@ export default {
         to: "#",
       },
       {
-        text: "Cobertura",
+        text: "Restricción",
         disabled: true,
       },
     ],
@@ -68,7 +68,7 @@ export default {
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Cobertura",
+    titleForm: "Restricción",
     headers: [
       {
         text: "Accion",
@@ -83,6 +83,10 @@ export default {
         value: "municipality",
       },
       {
+        text: "Zona de Cobertura",
+        value: "geofence",
+      },
+      {
         text: "Nombre",
         value: "name",
       },
@@ -93,10 +97,10 @@ export default {
   }),
 
   computed: {
-    ...mapGetters({ storeGeofences: "geofence/getGeofences" }),
+    ...mapGetters({ storeGeofenceRestrictions: "geofenceRestriction/getGeofenceRestrictions" }),
   },
   watch: {
-    storeGeofences(data) {
+    storeGeofenceRestrictions(data) {
       this.items = [];
       if (data.length > 0) {        
         this.items = data;
@@ -105,24 +109,24 @@ export default {
   },
   methods: {
     ...mapActions({
-      getGeofenceData: "geofence/getGeofenceData",
-      removeGeofence: "geofence/removeGeofence",
+      getGeofenceRestrictionData: "geofenceRestriction/getGeofenceRestrictionData",
+      removeGeofenceRestriction: "geofenceRestriction/removeGeofenceRestriction",
     }),
     editButton({ id }) {
-      this.$router.push("geofence/edit/" + id);
+      this.$router.push("restriction/edit/" + id);
     },
-    acceptRemoveGeofence(item) {
+    acceptRemoveGeofenceRestriction(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeGeofence(this.idDelete);
+      this.removeGeofenceRestriction(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
   },
 
   mounted() {
-    this.getGeofenceData();
+    this.getGeofenceRestrictionData();
   },
 };
 </script>
