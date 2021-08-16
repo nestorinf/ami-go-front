@@ -16,13 +16,13 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'categories_intern/register',
+            path: 'restriction/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveCategory"
+          @remove-button="acceptRemoveGeofenceRestriction"
         ></DataTable>
       </v-col>
     </v-card>
@@ -42,7 +42,7 @@ import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
-  name: "CategoryIntern",
+  name: "Geofence",
   components: {
     DataTable,
     DialogConfirm,
@@ -54,78 +54,79 @@ export default {
     },
     breadcrumbs: [
       {
-        text: "Producto Super mercado",
+        text: "GeoCerca",
         disabled: false,
         to: "#",
       },
       {
-        text: "Categorias Internas",
+        text: "Restricción",
         disabled: true,
       },
     ],
+
     messageDialog: "",
+
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Categorias Internas",
+    titleForm: "Restricción",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
       {
+        text: "Departamento",
+        value: "department",
+      },
+      {
+        text: "Municipio",
+        value: "municipality",
+      },
+      {
+        text: "Zona de Cobertura",
+        value: "geofence",
+      },
+      {
         text: "Nombre",
-        align: "start",
         value: "name",
       },
-      {
-        text: "Descripción",
-        value: "description",
-      },
-      // {
-      //   text: "Padre",
-      //   sortable: false,
-      //   value: "parent",
-      // },
-      {
-        text: "Habilitado",
-        value: "enabled",
-      },
-
-      // { text: "Categoria Padre", value: "category_father" },
+      // { text: "GeoCerca", value: "geofence" },
     ],
     items: [],
     idDelete: "",
   }),
+
   computed: {
-    ...mapGetters({ storeCategories: "category/getCategories" }),
+    ...mapGetters({ storeGeofenceRestrictions: "geofenceRestriction/getGeofenceRestrictions" }),
   },
   watch: {
-    storeCategories(data) {
+    storeGeofenceRestrictions(data) {
       this.items = [];
-      if (data.length > 0) {
+      if (data.length > 0) {        
         this.items = data;
       }
     },
   },
   methods: {
     ...mapActions({
-      getCategoriesData: "category/getCategoriesDataIntern",
-      removeCategory: "category/removeCategory",
+      getGeofenceRestrictionData: "geofenceRestriction/getGeofenceRestrictionData",
+      removeGeofenceRestriction: "geofenceRestriction/removeGeofenceRestriction",
     }),
     editButton({ id }) {
-      this.$router.push("categories_intern/edit/" + id);
+      this.$router.push("restriction/edit/" + id);
     },
-    acceptRemoveCategory(item) {
+    acceptRemoveGeofenceRestriction(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeCategory(this.idDelete);
+      this.removeGeofenceRestriction(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
   },
+
   mounted() {
-    this.getCategoriesData("MARKET");
+    this.getGeofenceRestrictionData();
   },
 };
 </script>

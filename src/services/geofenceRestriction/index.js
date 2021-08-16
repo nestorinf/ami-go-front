@@ -1,9 +1,8 @@
 import HTTP from "../axios";
 
-class GeofenceService {
-  path = "geofences";
-  pathGeofenceByDepartmentMunicipality =
-    "geofences_by_departments_municipalities";
+class GeofenceRestrictionService {
+  path = "geofence-restrictions";
+  pathGeofenceRestrictionsByGeofence = "geofence-restrictions-by-geofence";
   all() {
     return HTTP.get(`${this.path}`);
   }
@@ -16,12 +15,9 @@ class GeofenceService {
     return HTTP.get(`${this.path}/` + id);
   }
 
-  allGeofenceByDepartmentMunicipality(department_id, municipality_id) {
+  allGeofenceRestrictionsByGeofence(geofence_id) {
     return HTTP.get(
-      `${this.pathGeofenceByDepartmentMunicipality}/` +
-        department_id +
-        `/` +
-        municipality_id
+      `${this.pathGeofenceRestrictionsByGeofence}/` + geofence_id
     );
   }
 
@@ -33,4 +29,4 @@ class GeofenceService {
     return HTTP.delete(`${this.path}/` + id);
   }
 }
-export default new GeofenceService();
+export default new GeofenceRestrictionService();
