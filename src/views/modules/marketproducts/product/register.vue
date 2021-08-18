@@ -169,7 +169,7 @@
           <v-btn
             color="black"
             class="text-capitalize"
-            to="/products/product"
+            to="/marketproducts/product"
             dark
             >Cancelar</v-btn
           >
@@ -233,7 +233,7 @@
               {{ titleForm }}
             </h3>
           </v-card-text>
-          <v-form ref="form_detail" v-model="valid" lazy-validation>
+          <v-form ref="form_detail" v-model="validDetail" lazy-validation>
             <v-row class="px-7 pt-7">
               <v-col cols="12" lg="3">
                 <v-text-field
@@ -280,7 +280,7 @@
                 <v-btn
                   color="success"
                   @click="AddProductDetail"
-                  :disabled="!valid"
+                  :disabled="!validDetail"
                   submit
                   class="text-capitalize mr-2"
                 >
@@ -293,7 +293,7 @@
                   ref="VueUploadImageLogo"
                   v-model="images"
                   v-if="displayedLogo"
-                  @change="handleImageLogo"
+                  @changed="handleImageLogo"
                 />
               </v-col>
             </v-row>
@@ -329,7 +329,7 @@
                       <UploadImages
                         ref="VueUploadImagesModal"
                         v-if="displayed"
-                        @change="handleImageLogoModal"
+                        @changed="handleImageLogoModal"
                       />
                     </v-col>
                   </v-row>
@@ -394,6 +394,7 @@ export default {
     menu2: false,
     messageDialog: "",
     textSnackBar: "",
+    rawImg: "",
     titleForm: "Detalles",
     headers: [
       {
@@ -427,6 +428,7 @@ export default {
     loadingColour: false,
 
     valid: true,
+    validDetail: true,
     commerces: [],
     categories: [],
     categoriesIntern: [],
@@ -457,7 +459,7 @@ export default {
       product_batches_detail: [],
       description_batches: "",
       expired_date: "",
-      product_classification_id: "",
+      product_classification_id: null,
       product_batche_id: "",
     },
 
@@ -477,6 +479,7 @@ export default {
       priceRule: [(v) => !!v || "este campo es obligatorio"],
       uomRule: [(v) => !!v || "este campo es obligatorio"],
       categoryInternRule: [(v) => !!v || "este campo es obligatorio"],
+      stockRule: [(v) => !!v || "este campo es obligatorio"],
     },
 
     detail_index: "",
@@ -537,22 +540,42 @@ export default {
       }
     },
     imagesProductBatches(item) {
+      console.log('item',item);
       this.detail_index = item;
       this.dialog2 = true;
-      this.imagesList = this.attachments(item.images);
+      this.imagesList = this.attachments(item.logo);
     },
     attachments(attachmentData) {
-      const attachmentsRows = [];
-      // if (this.id) {
-      attachmentData.map((element) => {
+       const attachmentsRows = [];
+       // if (this.id) {
+      attachmentData.map((element) => { 
+       console.log('element',element);
         if (element) {
-          attachmentsRows.push({
-            id: element.id,
-            imagen: element.id ? element.url : element,
-          });
+          if (!element.id) { 
+
+             const reader = new FileReader()
+             var rawImg = "";
+
+            reader.onloadend = () => {
+              rawImg = reader.result;
+              attachmentsRows.push({
+                id: element.id,
+                imagen: rawImg,
+              }); 
+            }
+            reader.readAsDataURL(element);
+  
+          }else{
+            attachmentsRows.push({
+              id: element.id,
+              imagen: element.url
+            });
+          }
+               
         }
       });
       // }
+      console.log(attachmentsRows);
       return attachmentsRows;
     },
     handleImageLogoModal(event) {
@@ -566,14 +589,11 @@ export default {
           this.save();
         }
       } else {
-        const ImagesNew = this.$refs.VueUploadImagesModal._data;
-        for (let i = 0; i < ImagesNew.files.length; i++) {
+        const ImagesNew = this.ImageLogoModal;
+        for (let i = 0; i < ImagesNew.length; i++) {
           this.form.product_batches_detail[
             this.detail_index.index
-          ].images.Imgs.push(ImagesNew.Imgs[i]);
-          this.form.product_batches_detail[
-            this.detail_index.index
-          ].images.files.push(ImagesNew.files[i]);
+          ].logo.push(ImagesNew[i]);
         }
       }
 
@@ -588,22 +608,27 @@ export default {
     },
 
     AddProductDetail() {
-      this.form.product_batches_detail.push({
-        stock: this.form_detail.stock,
-        size_id: this.form_detail.size_id,
-        colour_id: this.form_detail.colour_id,
-        logo: this.form_detail.logo,
-        images: this.form_detail.images,
-      });
+      
+      this.$refs.form_detail.validate();
+      if (this.$refs.form_detail.validate()) {
+        this.form.product_batches_detail.push({
+          stock: this.form_detail.stock,
+          size_id: this.form_detail.size_id,
+          colour_id: this.form_detail.colour_id,
+          logo: this.form_detail.logo,
+          images: this.form_detail.images,
+        });
 
-      this.$refs.form_detail.reset();
-      this.form_detail.logo = [];
-      this.images = [];
+        this.$refs.form_detail.reset();
+        this.form_detail.logo = [];
+        this.images = [];
 
-      if (this.id) {
         this.$refs.VueUploadImageLogo.Imgs = [];
         this.$refs.VueUploadImageLogo.files = [];
-        this.save();
+
+        if (this.id) {
+          this.save();
+        }
       }
     },
 
@@ -641,10 +666,6 @@ export default {
         for (let i = 0; i < this.form.product_batches_detail.length; i++) {
           let detail = this.form.product_batches_detail[i];
 
-          formData.append(
-            "product_batches_detail[" + i + "]",
-            JSON.stringify(detail)
-          );
 
           if (detail["logo"]) {
             for (let ii = 0; ii < detail["logo"].length; ii++) {
@@ -655,6 +676,12 @@ export default {
               );
             }
           }
+          this.$delete(detail, 'images')
+          this.$delete(detail, 'logo')
+          formData.append(
+            "product_batches_detail[" + i + "]",
+            JSON.stringify(detail)
+          );
         }
         if (this.id) {
           formData.append("product_batche_id", this.form.product_batche_id);
@@ -676,7 +703,7 @@ export default {
             this.form.provider_id = "";
             this.form.category_intern_ids = [];
             this.form.product_batches_detail = [];
-            this.form.product_classification_id = "";
+            this.form.product_classification_id = null;
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
           }
@@ -1011,6 +1038,22 @@ export default {
 
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
+ 
+    uploadImage(file) {    
+      var _this = this;
+      const reader = new FileReader()
+
+         reader.onloadend = () => {
+          _this.rawImg = reader.result;
+          console.log(_this.rawImg);
+        }
+        reader.readAsDataURL(file);
+        
+        
+        
+
+    }
+
   },
   watch: {
     productClassificationId() {
@@ -1054,8 +1097,7 @@ export default {
               colour: color != -1 ? colourList[color]["text"] : "N/A",
               size: talla != -1 ? sizeList[talla]["text"] : "N/A",
               logo: element.id ? element.attachment : element.logo,
-              images: element.id ? element.attachment : element.images.Imgs,
-            });
+             });
           }
         });
       }
