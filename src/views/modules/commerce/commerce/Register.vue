@@ -204,8 +204,6 @@ export default {
           this.imagesListCover = this.attachments([element]);
         }
       });
-
-      console.log(this.imagesListLogo);
     },
   },
 
@@ -295,7 +293,7 @@ export default {
     create(payload) {
       this.createCommerce(payload)
         .then((result) => {
-          if (result) { 
+          if (result) {
             this.$refs.form.reset();
             this.$refs.VueUploadImagesCover.Imgs = [];
             this.$refs.VueUploadImageLogo.Imgs = [];

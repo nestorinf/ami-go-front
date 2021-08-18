@@ -10,8 +10,7 @@
         </h6>
       </v-card-text>
       <v-card-text>
-         <v-row>
-           
+        <v-row>
           <v-col cols="12" lg="6">
             <v-select
               :items="commerces"
@@ -47,12 +46,12 @@
               :error-messages="errorsBags.description"
             ></v-text-field>
           </v-col>
-          
+
           <v-col cols="12">
             <ShowsImages
-              :items="imagesListLogo"
-              v-if="true"
-              @delete-imagen="deleteImagenLogo"
+              :items="imagesList"
+              v-if="id"
+              @delete-imagen="deleteImagen"
             ></ShowsImages>
           </v-col>
 
@@ -61,10 +60,10 @@
               ref="VueUploadImageLogo"
               v-model="form.images"
               v-if="displayedLogo"
-              @change="handleImageLogo"
+              @changed="onFileSelected"
             />
           </v-col>
-           
+
           <v-col cols="12" lg="12">
             <v-checkbox
               v-model="form.enabled"
@@ -125,25 +124,25 @@ export default {
       textSnackBar: "",
       titleForm: "Categorias Internas",
       valid: true,
-      imagesListLogo: [],
+      imagesList: [],
+      selectedFile: [],
       displayedLogo: true,
-      
+
       loadingCommerces: false,
       commerces: [],
 
       form: {
-        id:"",
+        id: "",
         name: "",
-        interno:1,
+        interno: 1,
         description: "",
         parent_id: "",
-        enabled:false,
-        view_type:'MARKET',
-        logo: [],
+        enabled: true,
+        view_type: "MARKET",
+        images: [],
       },
       errorsBags: [],
 
-      
       rules: {
         nameRule: [(v) => !!v || "el nombre es obligatorio"],
         descriptionRule: [(v) => !!v || "el nombre es obligatorio"],
@@ -161,71 +160,70 @@ export default {
   },
 
   watch: {
-    storeCategory(data) { 
-      this.imagesListLogo = [];
+    storeCategory(data) {
+      this.imagesList = [];
       if (this.id) {
         data.attachment.map((element) => {
-          this.imagesListLogo.push({
-              id: element.id,
-              imagen: element.url,
-          });        
-        }); 
+          this.imagesList.push({
+            id: element.id,
+            imagen: element.url,
+          });
+        });
       }
-      console.log(this.imagesListLogo);
+      console.log(this.imagesList);
     },
   },
 
   methods: {
     ...mapActions({
-        createCategory: "category/createCategory",
-        category: "category/getCategoryByID",
-        updateCategory: "category/updateCategory",
-        
-        commerceData: "commerce/getCommercesData",
-        
-        removeAttachment: "attachment/removeAttachment",
+      createCategory: "category/createCategory",
+      category: "category/getCategoryByID",
+      updateCategory: "category/updateCategory",
+
+      commerceData: "commerce/getCommercesData",
+
+      removeAttachment: "attachment/removeAttachment",
     }),
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
         const formData = new FormData();
 
-        formData.append("id", this.id);
-
         formData.append("name", this.form.name);
         formData.append("interno", this.form.interno);
+        formData.append("commerce_id", this.form.commerce_id);
         formData.append("description", this.form.description);
         formData.append("parent_id", this.form.parent_id);
         formData.append("enabled", this.form.enabled);
         formData.append("view_type", this.form.view_type);
 
-        for (let i = 0; i < this.form.logo.length; i++) {
-          let file = this.form.logo[i];
-          formData.append("logo[" + i + "]", file);
-        }
+        this.selectedFile.forEach((e) => {
+          formData.append("images[]", e);
+        });
 
         if (this.id) {
+          formData.append("id", this.id);
           formData.append("_method", "PUT");
           this.update(formData, this.id);
         } else {
           this.create(formData);
         }
-        
       }
     },
-    setData() { 
+    setData() {
       this.loadCommerces();
-      if (this.id) { 
+      if (this.id) {
         this.category(this.id).then((result) => {
           this.form = {
             id: result.id,
             name: result.name,
             description: result.description,
             parent_id: result.parent_id,
+            commerce_id: result.commerce_id,
             enabled: result.enabled,
             view_type: result.view_type,
             interno: result.interno,
-            logo: [],
+            images: [],
           };
         });
       }
@@ -243,14 +241,14 @@ export default {
           }
         });
       }
- 
+
       return attachmentsRows;
     },
 
     create(payload) {
       this.createCategory(payload)
         .then((result) => {
-          if (result) { 
+          if (result) {
             this.$refs.form.reset();
             this.form.parent_id = "";
             this.$refs.VueUploadImageLogo.Imgs = [];
@@ -281,22 +279,22 @@ export default {
         });
     },
 
-    handleImageLogo(event) {
-      this.form.logo = event;
+    onFileSelected(event) {
+      this.selectedFile = event;
     },
 
-    deleteImagenLogo(id) {
-      const index = this.imagesListLogo.findIndex((x) => x.id === id);
-      const attachments = [...this.imagesListLogo];
+    deleteImagen(id) {
+      const index = this.imagesList.findIndex((x) => x.id === id);
+      const attachments = [...this.imagesList];
       attachments.splice(index, 1);
 
       this.removeAttachment(id).then((response) => {
         if (response) {
-          this.imagesListLogo = attachments;
+          this.imagesList = attachments;
         }
       });
     },
-    
+
     loadCommerces() {
       const rows = [];
       this.loadingCommerces = true;
@@ -320,7 +318,6 @@ export default {
           this.loadingCommerces = false;
         });
     },
-     
   },
 };
 </script>

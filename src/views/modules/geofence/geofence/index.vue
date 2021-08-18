@@ -59,7 +59,7 @@ export default {
         to: "#",
       },
       {
-        text: "GeoCerca",
+        text: "Cobertura",
         disabled: true,
       },
     ],
@@ -68,7 +68,7 @@ export default {
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "GeoCerca",
+    titleForm: "Cobertura",
     headers: [
       {
         text: "Accion",
