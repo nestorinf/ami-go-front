@@ -11,7 +11,7 @@
           hide-details
         ></v-text-field>
       </v-card-title>
-
+ 
       <v-data-table
         :headers="headers"
         :items="items"
@@ -25,6 +25,9 @@
             :item="item"
             @handler-remove="removeButton(item)"
           ></ButtonCrudTable>
+        </template>
+        <template v-slot:[`item.images`]="{ item }">
+            <v-btn text small @click="ImagesButton(item)"> {{item.logo.length}} Imagenes</v-btn>
         </template>
       </v-data-table>
     </v-card>
@@ -47,7 +50,11 @@ export default {
     removeButton(item) {
       this.$emit("remove-button", item);
     },
+    ImagesButton(item) {
+      this.$emit("images-button", item);
+    },
   },
+
   data: () => ({
     search: "",
     loading: false,
