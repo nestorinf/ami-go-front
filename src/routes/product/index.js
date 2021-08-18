@@ -129,12 +129,13 @@ export default {
                 title: "Producto",
                 icon: "mdi-comment-outline",
                 to: "product",
-            },
-            {
-                title: "Lotes",
-                icon: "mdi-comment-outline",
-                to: "batches",
             }
+            // ,
+            // {
+            //     title: "Lotes",
+            //     icon: "mdi-comment-outline",
+            //     to: "batches",
+            // }
 
         ]
     }
