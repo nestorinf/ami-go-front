@@ -459,7 +459,7 @@ export default {
       product_batches_detail: [],
       description_batches: "",
       expired_date: "",
-      product_classification_id: null,
+      product_classification_id: "",
       product_batche_id: "",
     },
 
