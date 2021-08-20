@@ -5,6 +5,7 @@ RUN npm i -g @vue/cli
 RUN cd /usr/src/; rm -rf node_modules package-lock.json && npm install --force
 WORKDIR /usr/src
 COPY ["./", "/usr/src/."]
+COPY ["./.env.beta", "/usr/src/.env"]
 RUN npm run build
 
 # etapa de producción

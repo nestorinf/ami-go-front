@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  ami-go-app-front_CD:
+    container_name: ami-go-app-front_CD
+    image: registry.gitlab.com/appamigo/amigo_front-end/beta:latest
+    restart: always
+    expose:
+      - "8081"
+    ports:
+      - "8081:8081"   # express
+      - "8080:80"
+      #- "443"
+    #ports:
+     # - "8081:80"
+    # volumes:
+        # - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    #   - /usr/src/node_modules # esto no me sobreescribe
+    environment:
+      - VIRTUAL_HOST=amigo.front.local
+      #- HOST=amigo-app-front
+      #- PORT=8081
+    networks:
+      - Webdevelopment
+networks:
+  Webdevelopment:
+    external: true
+
+
+    
