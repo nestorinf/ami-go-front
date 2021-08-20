@@ -31,6 +31,18 @@
               background-color="transparent"
             ></v-text-field>
           </v-col>
+          <v-col cols="12" lg="6">
+            <v-select
+              :loading="loadingCommerceTypeSlug"
+              label="Slug Tipo de Comercio"
+              :items="commerceTypeSlugList"
+              v-model="form.commerce_type_slug"
+              filled
+              required
+              :rules="rules.commerceTypeSlugRule"
+              background-color="transparent"
+            ></v-select>
+          </v-col>
           <v-col cols="12" lg="12">
             <v-checkbox v-model="form.is_lock" label="Bloqueado"></v-checkbox>
           </v-col>
@@ -103,11 +115,14 @@ export default {
       valid: true,
       displayed: true,
       selectedFile: [],
+      loadingCommerceTypeSlug: true,
+      commerceTypeSlugList: [],
       imagesList: [],
       form: {
         id: "",
         name: "",
         description: "",
+        commerce_type_slug: "",
         is_lock: 0,
         images: [],
       },
@@ -115,6 +130,7 @@ export default {
       rules: {
         nameRule: [(v) => !!v || "es campo es obligatorio"],
         descriptionRule: [(v) => !!v || "este campo es obligatorio"],
+        commerceTypeSlugRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },
@@ -141,6 +157,7 @@ export default {
       commerceType: "commerceType/getCommerceTypeById",
       updateCommerceType: "commerceType/updateCommerceType",
       removeAttachment: "commerceType/removeAttachment",
+      getCommerceSlug: "referenceList/getReferenceListByReferenceSlugData",
     }),
     save() {
       this.$refs.form.validate();
@@ -151,6 +168,7 @@ export default {
         formData.append("is_lock", this.form.is_lock ? 1 : 0);
         formData.append("name", this.form.name);
         formData.append("description", this.form.description);
+        formData.append("commerce_type_slug", this.form.commerce_type_slug);
 
         for (var i = 0; i < this.form.images.length; i++) {
           let file = this.form.images[i];
@@ -177,6 +195,7 @@ export default {
       });
     },
     setData() {
+      this.loadCommerceTypeSlug();
       if (this.id) {
         this.commerceType(this.id).then((result) => {
           this.form = {
@@ -184,10 +203,27 @@ export default {
             name: result.name,
             description: result.description,
             is_lock: result.is_lock,
+            commerce_type_slug: result.commerce_type_slug,
             images: [],
           };
         });
       }
+    },
+
+    loadCommerceTypeSlug() {
+      const slugName = "TYPE_COMMERCE_SLUG";
+      const rows = [];
+      this.getCommerceSlug(slugName).then((response) => {
+        console.log(response);
+        response.map((element) => {
+          rows.push({
+            value: element.value,
+            text: element.value,
+          });
+          this.loadingCommerceTypeSlug = false;
+          this.commerceTypeSlugList = rows;
+        });
+      });
     },
 
     attachments(attachmentData) {
@@ -209,7 +245,7 @@ export default {
     create(payload) {
       this.createCommerceType(payload)
         .then((result) => {
-          if (result) { 
+          if (result) {
             this.$refs.form.reset();
             this.$refs.VueUploadImages.Imgs = [];
 
