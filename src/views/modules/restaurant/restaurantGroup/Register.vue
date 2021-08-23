@@ -21,6 +21,16 @@
               background-color="transparent"
             ></v-text-field>
           </v-col>
+          <v-col cols="12" lg="12">
+            <v-text-field
+              v-model="form.cost_delivery"
+              label="Costo del Delivery"
+              required
+              filled
+              :rules="rules.costDeliveryRule"
+              background-color="transparent"
+            ></v-text-field>
+          </v-col>
           <v-col cols="12">
             <v-autocomplete
               v-model="form.restaurant_ids"
@@ -95,6 +105,7 @@ export default {
       form: {
         id: "",
         restaurant_ids: null,
+        cost_delivery: null,
         name: "",
         enabled: true,
         group_type: "RESTAURANT",
@@ -103,6 +114,7 @@ export default {
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
         restaurantRule: [(v) => !!v || "este campo es obligatorio"],
+        costDeliveryRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },
