@@ -9,7 +9,7 @@ services:
     tty: true
     environment:
     - VIRTUAL_PORT=8080
-    - VIRTUAL_HOST=amigo.front.local
+    - VIRTUAL_HOST=amigo-front.local
     ports:
       - "8080:80"
      # - "443:443"
@@ -37,7 +37,7 @@ services:
       - ./:/usr/src
       - /usr/src/node_modules # esto no me sobreescribe
     environment:
-      - VIRTUAL_HOST=amigo.front.local
+      - VIRTUAL_HOST=amigo-front.local
       #- HOST=amigo-app-front
       #- PORT=8081
     networks:
