@@ -13,6 +13,9 @@ class FoodCategoryService {
   getById(id) {
     return HTTP.get(`${this.path}/` + id);
   }
+  getCategoryByRestaurant(id) {
+    return HTTP.get(`${this.path}/restaurant/` + id);
+  }
 
   update(data) {
     return HTTP.put(`${this.path}/` + data.id, data);

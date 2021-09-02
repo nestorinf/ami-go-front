@@ -36,6 +36,24 @@ const actions = {
         });
     });
   },
+  getCategoryByRestaurantData({ commit, dispatch },id) {
+    return new Promise((resolve, reject) => {
+      dispatch("loading/loadingState", true, { root: true });
+      FoodCategoryService.getCategoryByRestaurant(id)
+        .then(({ data }) => {
+          const foodCategory = data.payload;
+
+          commit("setFoodCategorys", foodCategory);
+          dispatch("loading/loadingState", false, { root: true });
+          resolve(data.payload);
+        })
+        .catch((err) => {
+          reject(err);
+          dispatch("loading/loadingState", false, { root: true });
+          commit("setFoodCategorys", []);
+        });
+    });
+  },
 
   getFoodCategoryById({ commit, dispatch }, id) {
     return new Promise((resolve, reject) => {
