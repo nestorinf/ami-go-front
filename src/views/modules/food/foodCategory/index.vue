@@ -72,6 +72,7 @@ export default {
         text: "Accion",
         value: "action",
       },
+      { text: "Restaurante", value: "restaurant" },
       {
         text: "Nombre",
         align: "start",

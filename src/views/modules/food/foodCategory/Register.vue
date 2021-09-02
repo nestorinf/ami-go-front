@@ -12,6 +12,19 @@
       <v-form ref="form" v-model="valid" lazy-validation>
         <v-row>
           <v-col cols="12" lg="12">
+            <v-select
+              :loading="loadingRestaurant"
+              label="Restaurante"
+              :items="restaurantLists"
+              v-model="form.restaurant_id"
+              filled
+              required
+              :rules="rules.restaurantRule"
+              background-color="transparent"
+              :error-messages="errorsBags.restaurant_id"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.name"
               label="Nombre"
@@ -75,7 +88,9 @@ export default {
     return {
       textSnackBar: "",
       valid: true,
+      loadingRestaurant: true,
       errorsBags: [],
+      restaurantLists: [],
       form: {
         id: "",
         name: "",
@@ -84,6 +99,7 @@ export default {
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
         descriptionRule: [(v) => !!v || "este campo es obligatorio"],
+        restaurantRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },
@@ -101,6 +117,7 @@ export default {
       createFoodCategory: "foodCategory/createFoodCategory",
       foodCategory: "foodCategory/getFoodCategoryById",
       updateFoodCategory: "foodCategory/updateFoodCategory",
+      restaurants: "restaurant/getRestaurantsData",
     }),
     save() {
       this.$refs.form.validate();
@@ -119,8 +136,29 @@ export default {
           this.form = Object.assign({}, result);
         });
       }
+      this.loadRestaurants();
     },
-
+    loadRestaurants() {
+      const rows = [];
+      this.loadingRestaurant = true;
+      this.restaurants()
+        .then((result) => {
+          if (result) {
+            result.map((element) => {
+              rows.push({
+                value: element.id,
+                text: element.name,
+              });
+              this.restaurantLists = rows;
+            });
+          }
+          this.loadingRestaurant = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingPrloadingRestaurantviders = false;
+        });
+    },
     create(payload) {
       this.createFoodCategory(payload)
         .then((result) => {
