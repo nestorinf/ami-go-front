@@ -1,23 +1,22 @@
 <template>
   <v-card class="mb-7">
-    <v-card-text class="pa-5 border-bottom">
-      <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-        {{ titleForm }}
-      </h3>
-      <h6 class="subtitle-2 font-weight-light">
-        En este formulario se registran todas las promociones
-      </h6>
-    </v-card-text>
-    <v-card-text>
-      <v-form ref="form" v-model="valid" lazy-validation>
+    <v-form ref="form" v-model="valid" lazy-validation>
+      <v-card-text class="pa-5 border-bottom">
+        <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
+          {{ titleForm }}
+        </h3>
+        <h6 class="subtitle-2 font-weight-light">
+          En este formulario se registran todas las promociones
+        </h6>
+      </v-card-text>
+      <v-card-text>
         <v-row>
-        
           <v-col cols="12" lg="12" v-if="ExpirePromotion">
             <v-alert outlined type="warning" prominent border="left">
               No se puede editar una promoción que ya ha expirado.
             </v-alert>
           </v-col>
-         
+
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
@@ -93,9 +92,9 @@
                 @input="menu2 = false"
               ></v-date-picker>
             </v-menu>
-          </v-col> 
+          </v-col>
         </v-row>
- 
+
         <v-row>
           <v-col cols="12" lg="6">
             <v-select
@@ -123,7 +122,8 @@
               :error-messages="errorsBags.amount"
             ></v-text-field>
           </v-col>
-        </v-row> 
+        </v-row>
+
         <v-row>
           <v-col cols="12" lg="4">
             <v-checkbox
@@ -175,36 +175,26 @@
             ></v-select>
           </v-col>
         </v-row>
-  
-        <v-row  v-if="!ExpirePromotion">
+
+        <v-row v-if="!ExpirePromotion">
           <v-col cols="12" lg="12">
-            <ShowsImages
-              :items="imagesList"
-              v-if="id"
-              @delete-imagen="deleteImagen"
-            ></ShowsImages>
-          </v-col>
-          <v-col cols="12" lg="12">
-            <UploadImages
-              v-if="displayed && imagesList.length==0"
-              :max="1" 
-              @change="onFileSelected"
-            />
-            <v-col cols="12" lg="12" v-if="imagesList.length>0">
-              <v-alert outlined type="warning" prominent border="left">
-                Para añadir una nueva imagen debes borrar la anterior!
-              </v-alert>
-            </v-col>
-            
+            <UploadImages v-if="displayed" :max="50" @change="onFileSelected" />
           </v-col>
         </v-row>
+
+        <ShowsImages
+          :items="form.imagenes"
+          :disabled="ExpirePromotion"
+          v-if="id"
+          @delete-imagen="deleteImagen"
+        ></ShowsImages>
 
         <v-row class="pt-10">
           <v-col cols="12" lg="12">
             <v-btn
               v-if="!ExpirePromotion"
               color="success"
-              @click="save"
+              @click="preparedDataFiles"
               :disabled="!valid"
               submit
               class="text-capitalize mr-2"
@@ -219,8 +209,8 @@
             >
           </v-col>
         </v-row>
-      </v-form>
-    </v-card-text>
+      </v-card-text>
+    </v-form>
     <SnackBar
       :text="textSnackBar"
       ref="snackBarRef"
@@ -230,7 +220,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex";
 import UploadImages from "vue-upload-drop-images";
 import ShowsImages from "../../components/ShowsImages";
 import SnackBar from "@/views/modules/components/SnackBar";
@@ -247,22 +237,30 @@ export default {
 
   data() {
     return {
-
-    
-      titleForm: "Promoción",
       menu2: false,
       date_expired: false,
+      headers: [
+        {
+          text: "Accion",
+          value: "action",
+        },
+        {
+          text: "Nombre",
+          align: "start",
+          sortable: false,
+          value: "name",
+        },
+        {
+          text: "Tipo",
+          align: "start",
+          sortable: false,
+          value: "type",
+        },
+      ],
 
-      displayed: true,
-      selectedFile: [],
       textSnackBar: "",
-      imagesList: [],
+      titleForm: "Promoción",
       valid: true,
-
-
-
-
-
       form: {
         id: "",
         name: "",
@@ -274,7 +272,8 @@ export default {
         total_cupon: "",
         visible: '',
         type_descuent: "",
-        amount: "", 
+        amount: "",
+        images_id: [],
         commerce_id: '',
         entities:0,
       },
@@ -332,10 +331,6 @@ export default {
           text: "Deducible del total",
         },
       ],
-
-
-      commerces: [],
-      loadingCommerces: false,
       errorsBags: [],
 
       rules: {
@@ -348,69 +343,44 @@ export default {
         commerceRule: [(v) => !!v || "este campo es obligatorio"],
         types_visibleRule: [(v) => !!v || "este campo es obligatorio"],
       },
+
+      ListEntities: [],
+
+      displayed: true,
+      selectedFile: [],
+      commerces: [],
+      loadingCommerces: false,
     };
   },
 
   mounted() {
     this.setData();
   },
-  computed: {
-    ...mapGetters({ storePromotion: "promotion/getPromotion" }) ,
-    
-    ExpirePromotion() {
-      var date_expired = this.date_expired;
-      return date_expired;
-    },
-  },
-  watch: {
-    storePromotion(data) {
-      if (data.attachment.length > 0) {
-        this.imagesList = Object.assign([], this.attachments(data.attachment));
-      }
-    },
-  },
   methods: {
     ...mapActions({
- 
-      commerceData: "commerce/getCommercesData",
       createPromotion: "promotion/createPromotion",
       getPromotionById: "promotion/getPromotionById",
       updatePromotion: "promotion/updatePromotion",
 
-      removeAttachment: "attachment/removeAttachment",
+      createImage: "image/createImage",
+      commerceData: "commerce/getCommercesData",
     }),
+
     save() {
+      console.log('guarda normalmente')
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
-        //if (this.selectedFile.length) {
-          const payload = new FormData();
-          payload.append("name", this.form.name);  
-          payload.append("description", this.form.description);  
-          payload.append("expire_date", this.form.expire_date);  
-          payload.append("type", this.form.type);  
-          payload.append("is_cupon", this.form.is_cupon);  
-          payload.append("code_cupon", this.form.code_cupon);  
-          payload.append("total_cupon", this.form.total_cupon);  
-          payload.append("visible", this.form.visible);  
-          payload.append("type_descuent", this.form.type_descuent);  
-          payload.append("amount", this.form.amount);  
-          payload.append("commerce_id", this.form.commerce_id);  
-          payload.append("entities", this.form.entities); 
-          this.selectedFile.forEach((e) => {
-            payload.append("images[]", e);
-          });
-          if (this.id) {
-            payload.append("_method", "PUT");
-            payload.append("id", this.id);
-            this.update(payload, this.id);
-          } else {
-            this.create(payload);
-          }
-        //}
+        const payload = this.form;
+        if (this.id) {
+          this.update(payload);
+        } else {
+          this.create(payload);
+        }
       }
     },
+
     setData() {
-      if (this.id) { 
+      if (this.id) {
         this.getPromotionById(this.id).then((result) => {
           this.date_expired = result.expired;
           this.form = {
@@ -424,7 +394,9 @@ export default {
             description: result.description,
             visible: result.visible,
             type_descuent: result.type_descuent,
-            amount: result.amount, 
+            amount: result.amount,
+            images_id: result.images_id,
+            imagenes: result.imagenes,
             commerce_id: result.commerce_id,
             entities: result.entities,
           };
@@ -433,6 +405,116 @@ export default {
           }
         });
       }
+    },
+
+    create(payload) {
+      this.createPromotion(payload)
+        .then((result) => {
+          if (result) {
+            this.form = {};
+            this.$refs.form.reset();
+            this.form.images_id = [];
+            this.form.is_cupon = false;
+            this.form.images_id = [];
+            this.$refs.snackBarRef.changeStatusSnackbar(true);
+            this.textSnackBar = "Guardado existosamente!";
+          }
+        })
+        .catch((err) => {
+          if (err.response) {
+            this.errorsBags = err.response.data.errors;
+            setTimeout(() => {
+              this.errorsBags = [];
+            }, 4000);
+          }
+          console.log(err);
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = "Disculpe, ha ocurrido un error";
+        });
+    },
+
+    update(payload) {
+      this.updatePromotion(payload)
+        .then((result) => {
+          if (result) {
+            this.form = Object.assign({}, result);
+            this.$refs.snackBarRef.changeStatusSnackbar(true);
+            this.textSnackBar = "Actualizado existosamente!";
+          }
+        })
+        .catch((err) => {
+          if (err.response) {
+            this.errorsBags = err.response.data.errors;
+            setTimeout(() => {
+              this.errorsBags = [];
+            }, 4000);
+          }
+          console.log(err);
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = "Disculpe, ha ocurrido un error";
+        });
+    },
+
+    onFileSelected(event) {
+      this.selectedFile = event;
+      console.log('Vamos cargando las imagenes en el array a enviar',event,this.selectedFile)
+    },
+
+    preparedDataFiles() {
+      this.$refs.form.validate();
+      if (this.$refs.form.validate()) {
+        if (this.selectedFile.length) {
+          console.log('como hay mas de una imagen las guardar en el FormData')
+          const payload = new FormData();
+          this.selectedFile.forEach((e) => {
+            payload.append("images[]", e);
+          });
+          this.createImagenes(payload);
+        } else {
+          this.save();
+        }
+      }
+    },
+
+    createImagenes(payload) {
+      
+      console.log('entra en el metodo de guardar imagenes')
+      this.createImage(payload)
+        .then((result) => {
+          if (result) {
+            
+            console.log('todo bien con el guardar imagenes')
+            result.forEach((e) => {
+              this.form.images_id.push(e.id);
+            });
+            
+            console.log('las integro al images_id del form')
+            this.selectedFile = [];
+
+            this.displayed = false;
+            this.$nextTick(() => {
+              this.displayed = true;
+            });
+
+            this.save();
+
+            this.$refs.snackBarRef.changeStatusSnackbar(true);
+            this.textSnackBar = "Guardado existosamente!";
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = "Disculpe, ha ocurrido un error";
+        });
+    },
+
+    deleteImagen(item) {
+      this.form.imagenes.forEach((e) => {
+        if (e.id == item) {
+          e.delete = !e.delete;
+        }
+      });
     },
 
     ChangeType(){
@@ -465,107 +547,15 @@ export default {
           this.loadingCommerces = false;
         });
     },
-    attachments(attachmentData) {
-      const attachmentsRows = [];
-      if (this.id) {
-        attachmentData.map((element) => {
-          if (element) {
-            attachmentsRows.push({
-              id: element.id,
-              imagen: element.url,
-            });
-          }
-        });
-      }
-      return attachmentsRows;
-    },
 
-    create(payload) {
-      this.createPromotion(payload)
-        .then((result) => {
-          if (result) {
-            // this.form = {};
-            this.$refs.form.reset();
-            this.form.expire_date = "";
-            this.form.is_cupon = false;
-            this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Guardado existosamente!";
 
-            this.selectedFile = [];
-            this.displayed = false;
-            this.$nextTick(() => {
-              this.displayed = true;
-            });
-
-            // this.$router.push("/products/categories");
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.errorsBags = err.response.data.errors;
-            setTimeout(() => {
-              this.errorsBags = [];
-            }, 4000);
-          }
-          console.log(err);
-          this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = "Disculpe, ha ocurrido un error";
-        });
-    },
-
-    update(payload, id) {
-      this.updatePromotion({ payload, id })
-        .then((result) => {
-          if (result) {
-            this.form = Object.assign({}, result);
-            this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Actualizado existosamente!";
-
-            this.selectedFile = [];
-            this.displayed = false;
-            this.$nextTick(() => {
-              this.displayed = true;
-            });
-
-            // this.$router.push("/products/categories");
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            this.errorsBags = err.response.data.errors;
-            setTimeout(() => {
-              this.errorsBags = [];
-            }, 4000);
-          }
-          console.log(err);
-          this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = "Disculpe, ha ocurrido un error";
-        });
-    },
-    onFileSelected(event) {
-      this.selectedFile = event;
-    },
-
-    deleteImagen(id) {
-      const index = this.imagesList.findIndex((x) => x.id === id);
-      const attachments = [...this.imagesList];
-      attachments.splice(index, 1);
-
-      this.removeAttachment(id).then((response) => {
-        if (response) {
-          this.imagesList = attachments;
-        }
-      });
-    },
-
-    // deleteImagen(item) {
-    //   this.form.imagenes.forEach((e) => {
-    //     if (e.id == item) {
-    //       e.delete = !e.delete;
-    //     }
-    //   });
-    //   this.form.saved_imagen = !this.form.saved_imagen;
-    // },
   },
+  computed: {
+    ExpirePromotion() {
+      var date_expired = this.date_expired;
+      return date_expired;
+    },
+  },
+
 };
 </script>

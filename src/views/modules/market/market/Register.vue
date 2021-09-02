@@ -6,7 +6,7 @@
           {{ titleForm }}
         </h3>
         <h6 class="subtitle-2 font-weight-light">
-          En este formulario se registran todas los comercios
+          En este formulario se registran todas los Super Mercados
         </h6>
       </v-card-text>
       <v-card-text>
@@ -14,7 +14,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Nombre del comercio"
+              label="Nombre del Super Mercados"
               required
               filled
               :rules="rules.nameRule"
@@ -25,7 +25,7 @@
             <v-text-field
               type="email"
               v-model="form.email"
-              label="Email Comercio"
+              label="Email Super Mercados"
               required
               filled
               :rules="rules.emailRule"
@@ -103,7 +103,7 @@
             <v-btn
               color="black"
               class="text-capitalize"
-              to="/commerce/commerce"
+              to="/market/market"
               dark
               >Cancelar</v-btn
             >
@@ -138,7 +138,7 @@ export default {
   data() {
     return {
       textSnackBar: "",
-      titleForm: "Comercio",
+      titleForm: "Super Mercados",
       valid: true,
       imagesListLogo: [],
       imagesListCover: [],

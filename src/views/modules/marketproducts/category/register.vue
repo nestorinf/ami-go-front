@@ -122,6 +122,7 @@ export default {
         description: "",
         parent_id: "",
         enabled: false,
+        interno: 0,
         saved_imagen: true,
         view_type: "MARKET",
       },
@@ -168,6 +169,7 @@ export default {
           payload.append("name", this.form.name);
           payload.append("description", this.form.description);
           payload.append("enabled", this.form.enabled);
+          payload.append("interno", this.form.interno);
 
           payload.append("view_type", this.form.view_type);
           this.selectedFile.forEach((e) => {
