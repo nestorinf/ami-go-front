@@ -248,6 +248,7 @@ export default {
         .then((result) => {
           if (result) {
             this.$refs.form.reset();
+            this.form.images_id = [];
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
             this.$router.push("/products/batchesDetail/detail/"+result.id);

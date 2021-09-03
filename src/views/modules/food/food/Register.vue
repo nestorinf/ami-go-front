@@ -19,6 +19,7 @@
               v-model="form.restaurant_id"
               filled
               required
+              @change="loadCategoryRestaurant"
               background-color="transparent"
               :error-messages="errorsBags.restaurant_id"
             ></v-select>
@@ -225,7 +226,7 @@ export default {
   computed: {
     ...mapGetters({
       getUoms: "food/getUoms",
-      storeAttachement: "food/getFood"
+      storeAttachement: "food/getFood",
     }),
     getFoods() {
       return this.$store.state.food.foods;
@@ -237,7 +238,7 @@ export default {
       food: "food/getFoodById",
       updateFood: "food/updateFood",
       getRestaurantsData: "restaurant/getRestaurantsData",
-      getFoodCategoryData: "foodCategory/getFoodCategoryData",
+      getCategoryByRestaurantData: "foodCategory/getCategoryByRestaurantData",
       removeAttachment: "commerceType/removeAttachment",
     }),
     save() {
@@ -297,24 +298,35 @@ export default {
         });
         this.loadingRestaurant = false;
       });
-      this.getFoodCategoryData().then((result) => {
-        result.map((element) => {
-          foodCategories.push({
-            value: element.id,
-            text: element.name,
-          });
-          this.foodCategoryList = foodCategories;
-        });
-        this.loadingFoodCategory = false;
-      });
+      // if (this.form.restaurant_id) {
+      //   this.getCategoryByRestaurantData(this.form.restaurant_id).then(
+      //     (result) => {
+      //       result.map((element) => {
+      //         foodCategories.push({
+      //           value: element.id,
+      //           text: element.name,
+      //         });
+      this.foodCategoryList = foodCategories;
+      //       });
+      this.loadingFoodCategory = false;
+      //     }
+      //   );
+      // }
       this.uomList = this.getUoms;
       if (this.id) {
         this.food(this.id).then((result) => {
-          this.form = Object.assign({
-            images: []
-          }, result);
-          this.imagesList = Object.assign([], this.attachments(result.attachment));
-
+          this.form = Object.assign(
+            {
+              images: [],
+              food_category_id: result.food_category_id,
+            },
+            result
+          );
+          this.loadCategoryRestaurant(result.restaurant_id);
+          this.imagesList = Object.assign(
+            [],
+            this.attachments(result.attachment)
+          );
         });
       }
     },
@@ -332,6 +344,22 @@ export default {
       }
 
       return attachmentsRows;
+    },
+    loadCategoryRestaurant(id) {
+      const foodCategories = [];
+      this.loadingFoodCategory = true;
+      if (id) {
+        this.getCategoryByRestaurantData(id).then((result) => {
+          result.map((element) => {
+            foodCategories.push({
+              value: element.id,
+              text: element.name,
+            });
+            this.foodCategoryList = foodCategories;
+          });
+          this.loadingFoodCategory = false;
+        });
+      }
     },
     handleImages(event) {
       this.form.images = event;
@@ -377,7 +405,6 @@ export default {
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });
     },
-
   },
   watch: {
     storeAttachement(data) {
