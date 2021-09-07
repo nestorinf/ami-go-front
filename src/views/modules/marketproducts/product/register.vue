@@ -280,7 +280,7 @@
                 <v-btn
                   color="success"
                   @click="AddProductDetail"
-                  :disabled="!validDetail"
+                  :disabled="!validDetail || form_detail.logo.length==0"
                   submit
                   class="text-capitalize mr-2"
                 >
@@ -293,7 +293,7 @@
                   ref="VueUploadImageLogo"
                   v-model="images"
                   v-if="displayedLogo"
-                  @change="handleImageLogo"
+                  @changed="handleImageLogo"
                 />
               </v-col>
             </v-row>

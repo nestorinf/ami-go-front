@@ -280,7 +280,7 @@
                 <v-btn
                   color="success"
                   @click="AddProductDetail"
-                  :disabled="!validDetail"
+                  :disabled="!validDetail || form_detail.logo.length==0"
                   submit
                   class="text-capitalize mr-2"
                 >

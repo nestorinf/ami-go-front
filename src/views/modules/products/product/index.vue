@@ -104,8 +104,8 @@ export default {
             enabled: element.enabled,
             description: element.description || "",
             conditions: element.conditions,
-            category: element.category.name ? element.category.name : "",
-            provider: element.provider ? element.category.name : "",
+            category: element.category_name,
+            provider: element.provider_name
           });
         });
         this.items = rows;
