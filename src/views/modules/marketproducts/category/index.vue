@@ -31,6 +31,11 @@
       @handler-dialog-confirm="removeButton"
       :message="messageDialog"
     ></DialogConfirm>
+    <SnackBar
+      :text="textSnackBar"
+      ref="snackBarRef"
+      :snackbar="true"
+    ></SnackBar>
   </v-container>
 </template>
 
@@ -39,6 +44,7 @@ import DataTable from "../../components/DataTable";
 import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
+import SnackBar from "@/views/modules/components/SnackBar";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
@@ -46,9 +52,11 @@ export default {
   components: {
     DataTable,
     DialogConfirm,
+    SnackBar,
   },
 
   data: () => ({
+      textSnackBar: "",
     page: {
       title: "AmiGo",
     },
@@ -93,6 +101,7 @@ export default {
 
       // { text: "Categoria Padre", value: "category_father" },
     ],
+      errorsBags: [],
     items: [],
     idDelete: "",
   }),
@@ -118,10 +127,26 @@ export default {
     acceptRemoveCategory(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
-    },
-    removeButton() {
-      this.removeCategory(this.idDelete);
-      this.$refs.DialogConfirm.changeStateDialog(false);
+    },    
+    removeButton() {      
+       this.removeCategory(this.idDelete)
+        .then((result) => {
+          if (result) {
+            this.$refs.snackBarRef.changeStatusSnackbar(true);
+            this.textSnackBar = "Eliminado existosamente!";
+          }
+        }).catch((err) => { 
+          if (err.response) {
+            this.errorsBags = err.response.data.errors;
+            setTimeout(() => {
+              this.errorsBags = [];
+            }, 4000);
+          }
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = "Disculpe, No se puede eliminar esta Categoria";
+        });
+
+      this.$refs.DialogConfirm.changeStateDialog(false); 
     },
   },
   mounted() {
