@@ -64,6 +64,17 @@
               background-color="transparent"
             ></v-text-field>
           </v-col>
+
+          <v-col cols="12" lg="6">
+            <v-text-field
+              v-model="form.precision_qty"
+              label="Precision de Decimales en una Orden"
+              filled
+              required
+              :rules="rules.precisionQtyRule"
+              background-color="transparent"
+            ></v-text-field>
+          </v-col>
         </v-row>
         <v-row>
           <v-col cols="6" lg="6">
@@ -82,7 +93,7 @@
               @change="handleImageLogo"
             />
           </v-col>
-  
+
           <v-col cols="6" lg="6">
             <label for="cover">Cover</label>
             <ShowsImages
@@ -161,6 +172,7 @@ export default {
       form: {
         id: "",
         commerce_type_id: null,
+        precision_qty: 1,
         name: "",
         agent: "",
         email: "",
@@ -174,6 +186,9 @@ export default {
         commerceTypeRule: [(v) => !!v || "este campo es obligatorio"],
         agentRule: [(v) => !!v || "este campo es obligatorio"],
         phoneRule: [(v) => !!v || "este campo es obligatorio"],
+        precisionQtyRule: [
+          (v) => (!!v && v > 0) || "este campo es obligatorio",
+        ],
         emailRule: [
           (v) => !!v || "el este campo es obligatorio",
           (v) =>
@@ -227,6 +242,7 @@ export default {
         formData.append("agent", this.form.agent);
         formData.append("email", this.form.email);
         formData.append("phone", this.form.phone);
+        formData.append("precision_qty", this.form.precision_qty);
 
         for (let i = 0; i < this.form.logo.length; i++) {
           let file = this.form.logo[i];
@@ -267,6 +283,7 @@ export default {
             email: result.email,
             phone: result.phone,
             commerce_type_id: result.commerce_type_id,
+            precision_qty: result.precision_qty,
             logo: [],
             cover: [],
           };
