@@ -46,7 +46,10 @@ export default {
         disabled: true
       }
     ]
+
+
   }),
+      
   components: {
     TheEarningCard: () =>
       import(
@@ -80,6 +83,7 @@ export default {
       import(
         "@/views/dashboards/dashboardComponents/recent-chats/TheRecentChats"
       )
-  }
+  },
+
 };
 </script>

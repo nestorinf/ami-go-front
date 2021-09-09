@@ -105,5 +105,16 @@ export default {
     // TheTodoList: () =>
     //   import("@/views/dashboards/dashboardComponents/todo-list/TheTodoList")
   },
+
+  mounted() {
+
+      window.Echo.channel('channel')
+        .listen('Hello', (e) => {
+            console.log(e);
+        });
+      
+
+    }
+
 };
 </script>
