@@ -329,7 +329,7 @@
                       <UploadImages
                         ref="VueUploadImagesModal"
                         v-if="displayed"
-                        @change="handleImageLogoModal"
+                        @changed="handleImageLogoModal"
                       />
                     </v-col>
                   </v-row>
