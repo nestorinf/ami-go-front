@@ -51,10 +51,35 @@
               @delete-imagen="deleteImagen"
             ></ShowsImages>
           </v-col>
-          <v-col cols="12" lg="12">
+          <v-col cols="12" lg="12" v-if="id && imagesList.length>0">
+            <v-alert
+              dense
+              outlined
+              type="success"
+            >Solo se permite registrar una imagen</v-alert>
+          </v-col>
+          <v-col cols="12" lg="12" class="mb-10" v-else-if="id && imagesList.length==0"> 
+            <v-alert 
+              dense
+              outlined
+              type="info"
+            >El campo de imagen es obligatorio</v-alert> 
             <UploadImages
               v-if="displayed"
-              :max="50"
+              :max="1"
+              @changed="onFileSelected"
+            />
+          </v-col>
+          <v-col cols="12" lg="12" class="mb-10" v-else>  
+            <v-alert
+              v-if="selectedFile.length==0 && !id"
+              dense
+              outlined
+              type="info"
+            >El campo de imagen es obligatorio</v-alert>
+            <UploadImages
+              v-if="displayed"
+              :max="1"
               @changed="onFileSelected"
             />
           </v-col>
@@ -120,6 +145,7 @@ export default {
         name: "",
         description: "",
         parent_id: "",
+        interno: 0,
         enabled: false,
         saved_imagen: true,
         view_type: "COMMERCE",
@@ -162,27 +188,45 @@ export default {
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
-        if (this.selectedFile.length) {
           const payload = new FormData();
           payload.append("name", this.form.name);
           payload.append("description", this.form.description);
           payload.append("enabled", this.form.enabled);
-
+          payload.append("interno", this.form.interno);
+          payload.append("parent_id", this.form.parent_id);
           payload.append("view_type", this.form.view_type);
-          this.selectedFile.forEach((e) => {
-            payload.append("images[]", e);
-          });
-          if (this.id) {
-            payload.append("_method", "PUT");
-            payload.append("id", this.id);
-            this.update(payload, this.id);
-          } else {
-            this.create(payload);
+          if (this.selectedFile.length) {
+            this.selectedFile.forEach((e) => {
+              payload.append("images[]", e);
+            });
           }
-        }
+          if (this.id) {
+            if (this.selectedFile.length>0 || this.imagesList.length>0) {
+              payload.append("_method", "PUT");
+              payload.append("id", this.id);
+              this.update(payload, this.id);
+            }
+          } else {
+            if (this.selectedFile.length || this.id) {
+              this.create(payload);
+            }
+          }
+        
       }
     },
     setData() {
+      this.LoadCategoriesData();
+      if (this.id) {
+        this.category(this.id).then((result) => {
+          console.log(result);
+          this.form = Object.assign({}, result);
+          this.imagesList = this.attachments(result.attachment);
+          // console.log(this.imagesList);
+        });
+      }
+    },
+
+    LoadCategoriesData() {
       this.loadingCategories = true;
       const rows = [];
       this.getCategoriesData("COMMERCE").then((result) => {
@@ -195,16 +239,7 @@ export default {
         });
         this.loadingCategories = false;
       });
-      if (this.id) {
-        this.category(this.id).then((result) => {
-          console.log(result);
-          this.form = Object.assign({}, result);
-          this.imagesList = this.attachments(result.attachment);
-          // console.log(this.imagesList);
-        });
-      }
     },
-
     attachments(attachmentData) {
       const attachmentsRows = [];
       if (this.id) {
@@ -231,10 +266,10 @@ export default {
 
             this.selectedFile = [];
             this.displayed = false;
+            this.LoadCategoriesData();
             this.$nextTick(() => {
               this.displayed = true;
             });
-
             // this.$router.push("/products/categories");
           }
         })
