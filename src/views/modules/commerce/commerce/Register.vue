@@ -90,7 +90,7 @@
               v-model="form.logo"
               v-if="displayedLogo"
               :max="1"
-              @change="handleImageLogo"
+              @changed="handleImageLogo"
             />
           </v-col>
 
@@ -108,7 +108,7 @@
               v-model="form.cover"
               v-if="displayedCover"
               :max="1"
-              @change="handleImageCover"
+              @changed="handleImageCover"
             />
           </v-col>
         </v-row>

@@ -76,7 +76,7 @@ export default {
       },
       {
         text: "Tipo de Comercio",
-        value: "commerce_type",
+        value: "commerce_type_name",
       },
       {
         text: "Nombre del Comercio",

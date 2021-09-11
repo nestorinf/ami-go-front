@@ -2,10 +2,10 @@
   <v-card class="mb-7">
     <v-card-text class="pa-5 border-bottom">
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-        Categorias Internas
+        Categorias Internas Producto
       </h3>
       <h6 class="subtitle-2 font-weight-light">
-        En este formulario se registran todos las categorias
+        En este formulario se registran todas las categorias Internas Producto
       </h6>
     </v-card-text>
     <v-card-text>
@@ -18,7 +18,7 @@
               filled
               required
               v-model="form.commerce_id"
-              label="Comercio"
+              label="Comercios"
               :rules="rules.commerceRule"
               background-color="transparent"
             ></v-select>
@@ -45,12 +45,49 @@
               :error-messages="errorsBags.description"
             ></v-text-field>
           </v-col>
-          
           <v-col cols="12" lg="12">
-            <UploadImages v-if="displayed" :max="50" @change="onFileSelected" />
+            <ShowsImages
+              :items="imagesList"
+              v-if="id"
+              @delete-imagen="deleteImagen"
+            ></ShowsImages>
           </v-col>
-          <ShowsImages :items="form.imagenes" v-if="id" @delete-imagen="deleteImagen"></ShowsImages>
-        
+
+          <v-col cols="12" lg="12" v-if="id && imagesList.length>0">
+            <v-alert
+              dense
+              outlined
+              type="success"
+            >Solo se permite registrar una imagen</v-alert>
+          </v-col>
+          <v-col cols="12" lg="12" class="mb-10" v-else-if="id && imagesList.length==0"> 
+            <v-alert 
+              dense
+              outlined
+              type="info"
+            >El campo de imagen es obligatorio</v-alert> 
+            <UploadImages
+              v-if="displayed"
+              :max="1"
+              @changed="onFileSelected"
+            />
+          </v-col>
+          <v-col cols="12" lg="12" class="mb-10" v-else>  
+            <v-alert
+              v-if="selectedFile.length==0 && !id"
+              dense
+              outlined
+              type="info"
+            >El campo de imagen es obligatorio</v-alert>
+            <UploadImages
+              v-if="displayed"
+              :max="1"
+              @changed="onFileSelected"
+            />
+           <br>
+          </v-col>
+
+
           <v-col cols="12" lg="12">
             <v-checkbox
               v-model="form.enabled"
@@ -71,7 +108,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/products/categories_intern"
+          to="/marketproducts/categories"
           dark
           >Cancelar</v-btn
         >
@@ -86,12 +123,12 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import UploadImages from "vue-upload-drop-images";
 import ShowsImages from "../../components/ShowsImages";
 import SnackBar from "@/views/modules/components/SnackBar";
 export default {
-  name: "RegisterCategoryIntern",
+  name: "RegisterCategory",
   props: {
     id: String,
   },
@@ -103,40 +140,48 @@ export default {
 
   data() {
     return {
-      
       loadingCommerces: false,
       commerces: [],
-      
+
       displayed: true,
       selectedFile: [],
       textSnackBar: "",
+      imagesList: [],
       valid: true,
       form: {
         name: "",
         description: "",
-        enabled:false,
-        interno:1,
-        imagenes:[],
-        saved_imagen:true,
-        commerce_id:'',
-        view_type:'COMMERCE'
-      },
+        commerce_id: "",
+        parent_id: "",
+        enabled: true,
+        interno: 1,
+        saved_imagen: true,
+        view_type: "COMMERCE",
+      },      
       errorsBags: [],
 
       rules: {
-        nameRule: [(v) => !!v || "el nombre es obligatorio"],
-        descriptionRule: [(v) => !!v || "el nombre es obligatorio"],
+        commerceRule: [(v) => !!v || "El comercio es obligatorio"],
+        nameRule: [(v) => !!v || "El nombre es obligatorio"],
+        descriptionRule: [(v) => !!v || "La descripción es obligatorio"],
       },
     };
   },
 
   mounted() {
     this.setData();
-    this.loadCommerces();
-  }, 
+  },
   computed: {
+    ...mapGetters({ storeCategory: "category/getCategory" }),
     getCategories() {
       return this.$store.state.category.categories;
+    },
+  },
+  watch: {
+    storeCategory(data) {
+      if (data.attachment.length > 0) {
+        this.imagesList = Object.assign([], this.attachments(data.attachment));
+      }
     },
   },
   methods: {
@@ -144,48 +189,63 @@ export default {
       createCategory: "category/createCategory",
       category: "category/getCategoryByID",
       updateCategory: "category/updateCategory",
+      removeAttachment: "attachment/removeAttachment",
       commerceData: "commerce/getCommercesData",
     }),
-
-    
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
-        if (this.selectedFile.length) {
           const payload = new FormData();
           payload.append("name", this.form.name);
           payload.append("description", this.form.description);
           payload.append("enabled", this.form.enabled);
-          payload.append("interno", 1);
-          payload.append("saved_imagen", this.form.saved_imagen);
+          payload.append("interno", this.form.interno);
           payload.append("commerce_id", this.form.commerce_id);
           payload.append("view_type", this.form.view_type);
           this.selectedFile.forEach((e) => {
             payload.append("images[]", e);
           });
+          
           if (this.id) {
-            payload.append("id", this.id);
-            this.update(payload);
+            if (this.selectedFile.length>0 || this.imagesList.length>0) {
+              payload.append("_method", "PUT");
+              payload.append("id", this.id);
+              this.update(payload, this.id);
+            }
           } else {
-            this.create(payload);
+            if (this.selectedFile.length || this.id) {
+              this.create(payload);
+            }
           }
-        }else{
-          const payload = this.form;
-          if (this.id) {
-            this.update(payload);
-          } else {
-            this.create(payload);
-          }
-        }
+           
       }
     },
- 
     setData() {
+      this.loadCommerces();
       if (this.id) {
         this.category(this.id).then((result) => {
+          console.log(result);
           this.form = Object.assign({}, result);
+
+          this.imagesList = this.attachments(result.attachment);
+          // console.log(this.imagesList);
         });
       }
+    },
+
+    attachments(attachmentData) {
+      const attachmentsRows = [];
+      if (this.id) {
+        attachmentData.map((element) => {
+          if (element) {
+            attachmentsRows.push({
+              id: element.id,
+              imagen: element.url,
+            });
+          }
+        });
+      }
+      return attachmentsRows;
     },
 
     create(payload) {
@@ -196,12 +256,13 @@ export default {
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
-            
+
             this.selectedFile = [];
             this.displayed = false;
             this.$nextTick(() => {
               this.displayed = true;
             });
+
             // this.$router.push("/products/categories");
           }
         })
@@ -218,19 +279,20 @@ export default {
         });
     },
 
-    update(payload) {
-      this.updateCategory(payload)
+    update(payload, id) {
+      this.updateCategory({ payload, id })
         .then((result) => {
           if (result) {
             this.form = Object.assign({}, result);
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
-            
+
             this.selectedFile = [];
             this.displayed = false;
             this.$nextTick(() => {
               this.displayed = true;
             });
+
             // this.$router.push("/products/categories");
           }
         })
@@ -249,14 +311,19 @@ export default {
     onFileSelected(event) {
       this.selectedFile = event;
     },
-    deleteImagen(item) { 
-      this.form.imagenes.forEach((e) => {
-        if(e.id == item){
-          e.delete = !e.delete;
+
+    deleteImagen(id) {
+      const index = this.imagesList.findIndex((x) => x.id === id);
+      const attachments = [...this.imagesList];
+      attachments.splice(index, 1);
+
+      this.removeAttachment(id).then((response) => {
+        if (response) {
+          this.imagesList = attachments;
         }
       });
-      this.form.saved_imagen = !this.form.saved_imagen;
     },
+
     loadCommerces() {
       const rows = [];
       this.loadingCommerces = true;
@@ -279,8 +346,15 @@ export default {
           console.log(err);
           this.loadingCommerces = false;
         });
-    },
-
+    }
+    // deleteImagen(item) {
+    //   this.form.imagenes.forEach((e) => {
+    //     if (e.id == item) {
+    //       e.delete = !e.delete;
+    //     }
+    //   });
+    //   this.form.saved_imagen = !this.form.saved_imagen;
+    // },
   },
 };
 </script>
