@@ -100,6 +100,16 @@
               :error-messages="errorsBags.phone_2"
             ></v-text-field>
           </v-col>
+          <v-col cols="12" lg="6">
+            <v-text-field
+              v-model="form.precision_qty"
+              label="Precision de Decimales en una Orden"
+              filled
+              required
+              :rules="rules.precisionQtyRule"
+              background-color="transparent"
+            ></v-text-field>
+          </v-col>
           <v-switch
             v-model="form.enabled"
             inset
@@ -217,11 +227,18 @@ export default {
         department_id: "",
         municipality_id: "",
         description: "",
+        precision_qty: 1,
         phone: "",
         phone_2: "",
         enabled: true,
         logo: [],
         cover: [],
+      },
+
+      rules: {
+        precisionQtyRule: [
+          (v) => (!!v && v > 0) || "este campo es obligatorio",
+        ],
       },
     };
   },
@@ -255,6 +272,7 @@ export default {
         formData.append("phone", this.form.phone);
         formData.append("phone_2", this.form.phone_2);
         formData.append("enabled", this.form.enabled);
+        formData.append("precision_qty", this.form.precision_qty);
 
         for (let i = 0; i < this.form.logo.length; i++) {
           let file = this.form.logo[i];
