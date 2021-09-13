@@ -64,6 +64,11 @@ export default {
                 to: "user/commerces",
             },
             {
+                title: "Usuarios Super Mercados",
+                icon: "mdi-account",
+                to: "user/markets",
+            },
+            {
                 title: "Usuarios Restaurantes",
                 icon: "mdi-account",
                 to: "user/restaurants",
