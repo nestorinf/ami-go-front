@@ -106,12 +106,7 @@ export default {
               is_lock: element.is_lock,
               is_lock_text: element.is_lock ? "Si" : "No",
             }
-            //  element.name;
           );
-
-          // this.items = data;
-          // this.items[0].description = data.description;
-          // this.items[0].is_lock = data.is_lock ? 'Sí' : 'No';
         });
       }
     },

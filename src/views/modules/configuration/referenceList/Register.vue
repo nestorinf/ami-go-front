@@ -68,6 +68,16 @@
             :error-messages="errorsBags.json_value"          
             rows="4"
           ></v-textarea>
+          <v-col cols="12" lg="6">
+            <v-checkbox
+              v-model="form.enabled"
+              checked
+              filled
+              required
+              label="Habilitado"
+              :error-messages="errorsBags.enabled"
+            ></v-checkbox>
+          </v-col>
           </v-col>
         </v-row>
         <v-btn
@@ -120,6 +130,7 @@ export default {
         value: "",
         alternative: "",
         json_value: "",
+        enabled: true,
       },
       rules: {
         reference_idRule: [(v) => !!v || "este campo es obligatorio"],
@@ -150,7 +161,7 @@ export default {
         if (this.id) {
           this.update(payload);
         } else {
-          this.create(payload);
+          this.create(payload);  
         }
       }
     },
@@ -181,7 +192,8 @@ export default {
             value: result.value,
             reference_id: result.reference_id,
             alternative: result.alternative,
-            json_value: result.json_value
+            json_value: result.json_value,
+            enabled: result.enabled
           };
         });
       }
@@ -191,10 +203,9 @@ export default {
       this.createReferenceList(payload)
         .then((result) => {
           if (result) {
-            this.form = {};
-            this.$refs.form.reset();
+            this.$refs.form.resetValidation();        
             this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Guardado existosamente!";
+            this.textSnackBar = "Guardado existosamente!";          
           }
         })
         .catch((err) => {
@@ -228,6 +239,7 @@ export default {
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });
     },
+
   },
 };
 </script>
