@@ -178,7 +178,7 @@ export default {
             commerces_id: result.commerces_id,
             restaurates_id: result.restaurates_id,
             commerce_id: result.commerce_id,
-            promotions_products: result.promotions_products,
+            promotions_products: (result.promotions_products)?result.promotions_products:[],
           };
 
           this.SearchEntities();
@@ -258,7 +258,7 @@ export default {
             id: element.id,
             name: element.name,
             type: element.commerce_type,
-            seleted: this.form.commerces_id.includes(element.id)
+            seleted: this.form.commerce_id.includes(element.id)
           });
           this.ListEntities = rows;
         });
