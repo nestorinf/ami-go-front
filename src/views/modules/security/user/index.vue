@@ -117,6 +117,12 @@ export default {
                 slug: 'ROLE_COMMERCE'
               };
             break;
+            case 'markets':
+              data = {
+                name: 'Super Mercados',
+                slug: 'ROLE_MARKET'
+              };
+            break;
             case 'restaurants':
               data = {
                 name: 'Restaurantes',
@@ -153,9 +159,9 @@ export default {
 
         this.items = data;
 
-        if(this.type=="commerces" || this.type=="restaurants"){
+        if(this.type=="commerces" || this.type=="markets" || this.type=="restaurants"){
           this.headers.push({
-            text: this.type=="commerces"?"Comercio":"Restaurante",
+            text: this.type=="commerces"?"Comercio":this.type=="markets"?"Super Mercado":"Restaurante",
             align: "start",
             sortable: false,
             value: 'entitie',
