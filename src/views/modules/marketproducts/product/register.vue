@@ -79,6 +79,7 @@
                 label="Precio"
                 prefix="$"
                 required
+                min="0"
                 :rules="rules.priceRule"
                 background-color="transparent"
               ></v-text-field>
@@ -88,6 +89,7 @@
                 type="number"
                 v-model="form.weight"
                 label="Peso"
+                min="0"
                 background-color="transparent"
               ></v-text-field>
             </v-col>
