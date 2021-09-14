@@ -53,40 +53,33 @@
             ></ShowsImages>
           </v-col>
 
-          <v-col cols="12" lg="12" v-if="id && imagesList.length>0">
-            <v-alert
-              dense
-              outlined
-              type="success"
-            >Solo se permite registrar una imagen</v-alert>
+          <v-col cols="12" lg="12" v-if="id && imagesList.length > 0">
+            <v-alert dense outlined type="success"
+              >Solo se permite registrar una imagen</v-alert
+            >
           </v-col>
-          <v-col cols="12" lg="12" class="mb-10" v-else-if="id && imagesList.length==0"> 
-            <v-alert 
+          <v-col
+            cols="12"
+            lg="12"
+            class="mb-10"
+            v-else-if="id && imagesList.length == 0"
+          >
+            <v-alert dense outlined type="info"
+              >El campo de imagen es obligatorio</v-alert
+            >
+            <UploadImages v-if="displayed" :max="1" @changed="onFileSelected" />
+          </v-col>
+          <v-col cols="12" lg="12" class="mb-10" v-else>
+            <v-alert
+              v-if="selectedFile.length == 0 && !id"
               dense
               outlined
               type="info"
-            >El campo de imagen es obligatorio</v-alert> 
-            <UploadImages
-              v-if="displayed"
-              :max="1"
-              @changed="onFileSelected"
-            />
+              >El campo de imagen es obligatorio</v-alert
+            >
+            <UploadImages v-if="displayed" :max="1" @changed="onFileSelected" />
+            <br />
           </v-col>
-          <v-col cols="12" lg="12" class="mb-10" v-else>  
-            <v-alert
-              v-if="selectedFile.length==0 && !id"
-              dense
-              outlined
-              type="info"
-            >El campo de imagen es obligatorio</v-alert>
-            <UploadImages
-              v-if="displayed"
-              :max="1"
-              @changed="onFileSelected"
-            />
-           <br>
-          </v-col>
-
 
           <v-col cols="12" lg="12">
             <v-checkbox
@@ -108,7 +101,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/marketproducts/categories"
+          to="/products/categories_intern"
           dark
           >Cancelar</v-btn
         >
@@ -157,7 +150,7 @@ export default {
         interno: 1,
         saved_imagen: true,
         view_type: "COMMERCE",
-      },      
+      },
       errorsBags: [],
 
       rules: {
@@ -195,29 +188,28 @@ export default {
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
-          const payload = new FormData();
-          payload.append("name", this.form.name);
-          payload.append("description", this.form.description);
-          payload.append("enabled", this.form.enabled);
-          payload.append("interno", this.form.interno);
-          payload.append("commerce_id", this.form.commerce_id);
-          payload.append("view_type", this.form.view_type);
-          this.selectedFile.forEach((e) => {
-            payload.append("images[]", e);
-          });
-          
-          if (this.id) {
-            if (this.selectedFile.length>0 || this.imagesList.length>0) {
-              payload.append("_method", "PUT");
-              payload.append("id", this.id);
-              this.update(payload, this.id);
-            }
-          } else {
-            if (this.selectedFile.length || this.id) {
-              this.create(payload);
-            }
+        const payload = new FormData();
+        payload.append("name", this.form.name);
+        payload.append("description", this.form.description);
+        payload.append("enabled", this.form.enabled);
+        payload.append("interno", this.form.interno);
+        payload.append("commerce_id", this.form.commerce_id);
+        payload.append("view_type", this.form.view_type);
+        this.selectedFile.forEach((e) => {
+          payload.append("images[]", e);
+        });
+
+        if (this.id) {
+          if (this.selectedFile.length > 0 || this.imagesList.length > 0) {
+            payload.append("_method", "PUT");
+            payload.append("id", this.id);
+            this.update(payload, this.id);
           }
-           
+        } else {
+          if (this.selectedFile.length || this.id) {
+            this.create(payload);
+          }
+        }
       }
     },
     setData() {
@@ -346,7 +338,7 @@ export default {
           console.log(err);
           this.loadingCommerces = false;
         });
-    }
+    },
     // deleteImagen(item) {
     //   this.form.imagenes.forEach((e) => {
     //     if (e.id == item) {

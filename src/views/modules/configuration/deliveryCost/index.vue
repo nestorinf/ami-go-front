@@ -16,14 +16,15 @@
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: 'reference/register',
+            path: 'delivery-cost/register',
           }"
           :headers="headers"
           :items="items"
           :loading="true"
           @edit-button="editButton"
-          @remove-button="acceptRemoveReference"
-        ></DataTable>
+          @remove-button="acceptRemoveDeliveryCost"
+        >
+        </DataTable>
       </v-col>
     </v-card>
     <DialogConfirm
@@ -40,8 +41,9 @@ import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
+
 export default {
-  name: "Company",
+  name: "DeliveryCost",
   components: {
     DataTable,
     DialogConfirm,
@@ -58,53 +60,67 @@ export default {
         to: "#",
       },
       {
-        text: "Referencia",
+        text: "Costo Delivery",
         disabled: true,
       },
     ],
     messageDialog: "",
-
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Referencia",
+    titleForm: "Costo Delivery",
     headers: [
       {
         text: "Accion",
         value: "action",
       },
+    //   {
+    //     text: "Referencia",
+    //     value: "reference",
+    //   },
       {
-        text: "Slug",
-        value: "slug",
-      },
-      {
-        text: "Nombre",
+        text: "Kilometros",
         align: "start",
-        sortable: false,
-        value: "name",
+        value: "value",
       },
-      { text: "Descripcion", value: "description" },
-      { text: "Bloqueado", value: "is_lock_text" },
+    //   {
+    //     text: "Id Lista Referencia",
+    //     value: "id",
+    //   },
+      {
+        text: "Costo",
+        value: "alternative",
+      },
+    //   {
+    //     text: "Valor Json",
+    //     value: "json_value",
+    //   },
+      {
+        text: "Habilitado",
+        value: "enabled_text",
+      },
+
+      // { text: "Categoria Padre", value: "category_father" },
     ],
     items: [],
     idDelete: "",
   }),
-
   computed: {
-    ...mapGetters({ storeReferences: "reference/getReferences" }),
+    ...mapGetters({ storeDeliveryCosts: "deliveryCost/getDeliveryCosts" }),
   },
   watch: {
-    storeReferences(data) {
+    storeDeliveryCosts(data) {
+      this.items = [];
       if (data.length > 0) {
-        this.items = [];
         data.map((element) => {
           this.items.push(
             {
               id: element.id,
-              slug: element.slug,
-              name: element.name,
-              description: element.description,
-              is_lock: element.is_lock,
-              is_lock_text: element.is_lock ? "Si" : "No",
+            //   reference: element.reference,
+              value: element.value,
+              alternative: element.alternative,
+            //   json_value: element.json_value,
+              enabled: element.enabled,
+              enabled_text: element.enabled ? "Si" : "No",
             }
           );
         });
@@ -113,24 +129,23 @@ export default {
   },
   methods: {
     ...mapActions({
-      getReferenceData: "reference/getReferenceData",
-      removeReference: "reference/removeReference",
+      getDeliveryCostData: "deliveryCost/getDeliveryCostData",
+      removeDeliveryCost: "deliveryCost/removeDeliveryCost",
     }),
     editButton({ id }) {
-      this.$router.push("reference/edit/" + id);
+      this.$router.push("delivery-cost/edit/" + id);
     },
-    acceptRemoveReference(item) {
+    acceptRemoveDeliveryCost(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
     removeButton() {
-      this.removeReference(this.idDelete);
+      this.removeDeliveryCost(this.idDelete);
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
   },
-
   mounted() {
-    this.getReferenceData();
+    this.getDeliveryCostData();
   },
 };
 </script>
