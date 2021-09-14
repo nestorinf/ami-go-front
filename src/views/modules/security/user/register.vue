@@ -56,7 +56,7 @@
                 :error-messages="errorsBags.password"
               ></v-text-field>
             </v-col>
-            <v-col cols="12" lg="6" v-if="type=='commerces'">
+            <v-col cols="12" lg="6" v-if="type=='commerces' || type=='markets'">
               <v-select
                 :items="commerces"
                 :loading="loadingCommerces"
@@ -192,6 +192,9 @@ export default {
       if(this.type=='commerces'){
         this.loadCommerces();
       }
+      if(this.type=='markets'){
+        this.loadMarkets();
+      }
       if(this.type=='restaurants'){
         this.loadRestaurants();
       }
@@ -245,7 +248,30 @@ export default {
     loadCommerces() {
       const rows = [];
       this.loadingCommerces = true;
-      this.commerceData()
+      this.commerceData(0)
+        .then((result) => {
+          if (result) {
+            result.map((element) => {
+              if (element.commerce_type !== "Restaurantes") {
+                rows.push({
+                  value: element.id,
+                  text: element.name,
+                });
+              }
+              this.commerces = rows;
+            });
+          }
+          this.loadingCommerces = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingCommerces = false;
+        });
+    },
+    loadMarkets() {
+      const rows = [];
+      this.loadingCommerces = true;
+      this.commerceData(1)
         .then((result) => {
           if (result) {
             result.map((element) => {
@@ -297,6 +323,12 @@ export default {
               data = {
                 name: 'Comercios',
                 slug: 'ROLE_COMMERCE'
+              };
+            break;
+            case 'markets':
+              data = {
+                name: 'Super Mercados',
+                slug: 'ROLE_MARKET'
               };
             break;
             case 'restaurants':

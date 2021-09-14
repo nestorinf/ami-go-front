@@ -1,8 +1,16 @@
 <template>
   <div>
-    <v-snackbar v-model="snackbar" :timeout="timeout" top right>
+    <v-snackbar v-model="snackbar" :timeout="timeout" top right app>
       {{ text }}
-      <v-btn color="info" text @click="snackbar = false"> Cerrar </v-btn>
+      <v-btn
+        class="text-right"
+        color="info"
+        max-width="20"
+        text
+        @click="snackbar = false"
+      >
+        X
+      </v-btn>
     </v-snackbar>
   </div>
 </template>
