@@ -83,12 +83,20 @@ export default {
         value: "value",
       },
       {
+        text: "Id Lista Referencia",
+        value: "id",
+      },
+      {
         text: "Valor Alternativo",
         value: "alternative",
       },
       {
         text: "Valor Json",
         value: "json_value",
+      },
+      {
+        text: "Habilitado",
+        value: "enabled_text",
       },
 
       // { text: "Categoria Padre", value: "category_father" },
@@ -103,7 +111,19 @@ export default {
     storeReferenceLists(data) {
       this.items = [];
       if (data.length > 0) {
-        this.items = data;
+        data.map((element) => {
+          this.items.push(
+            {
+              id: element.id,
+              reference: element.reference,
+              value: element.value,
+              alternative: element.description,
+              json_value: element.json_value,
+              enabled: element.enabled,
+              enabled_text: element.enabled ? "Si" : "No",
+            }
+          );
+        });
       }
     },
   },
