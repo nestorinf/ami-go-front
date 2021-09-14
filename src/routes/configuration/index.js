@@ -3,13 +3,13 @@ export default {
     {
       name: "Upload Images",
       path: "configuration/images",
-      component: () => import("../../views/modules/configuration/images")
+      component: () => import("../../views/modules/configuration/images"),
     },
     {
       name: "Register Images",
       path: "configuration/images/register",
       component: () =>
-        import("../../views/modules/configuration/images/Register")
+        import("../../views/modules/configuration/images/Register"),
     },
     // routes for reference
     {
@@ -70,6 +70,26 @@ export default {
       component: () =>
         import("../../views/modules/configuration/frequentQuestion/Register"),
     },
+
+    // routes for Delivery Cost
+    {
+      name: "Delivery Cost",
+      path: "configuration/delivery-cost",
+      component: () => import("../../views/modules/configuration/deliveryCost"),
+    },
+    {
+      name: "Delivery Cost Register",
+      path: "configuration/delivery-cost/register",
+      component: () =>
+        import("../../views/modules/configuration/deliveryCost/Register"),
+    },
+    {
+      name: "Delivery Cost Edit",
+      path: "configuration/delivery-cost/edit/:id",
+      props: true,
+      component: () =>
+        import("../../views/modules/configuration/deliveryCost/Register"),
+    },
   ],
   menu: {
     group: "/configuration",
@@ -79,23 +99,28 @@ export default {
       {
         title: "Referencia",
         icon: "mdi-comment-outline",
-        to: "reference"
+        to: "reference",
       },
       {
         title: "Lista Referencia",
         icon: "mdi-comment-outline",
-        to: "reference-list"
+        to: "reference-list",
       },
       {
         title: "Pregunta Frecuente",
         icon: "mdi-comment-outline",
         to: "frequent-question",
       },
+      {
+        title: "Costo Delivery",
+        icon: "mdi-comment-outline",
+        to: "delivery-cost",
+      },
       // {
       //   title: "Subir Imagenes",
       //   icon: "mdi-comment-outline",
       //   to: "images"
       // }
-    ]
-  }
+    ],
+  },
 };
