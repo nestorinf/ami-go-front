@@ -187,6 +187,10 @@ export default {
       }
     },
 
+    loadCommerces(type) {
+      this.getCommercesData(type);
+    },
+
     create() {
 
       this.entities = {
@@ -218,7 +222,9 @@ export default {
     SearchEntities() {
       this.ListEntities = [];
       if(this.form.type=='commerce' || this.form.type=='delivery_commerce'){        
-        this.getCommercesData();
+        this.loadCommerces(0);
+      }else if(this.form.type=='market' || this.form.type=='delivery_market'){        
+        this.loadCommerces(1);
       }else if(this.form.type=='restaurant' || this.form.type=='delivery_restaurant'){        
         this.getRestaurantsData();
       }else if(this.form.type=='products'){        
@@ -252,12 +258,12 @@ export default {
   watch: {
     storeCommerce(data) {
       const rows = [];      
-      if (data.length > 0) {
+      if (data.length > 0) { 
         data.map((element) => {
           rows.push({
             id: element.id,
             name: element.name,
-            type: element.commerce_type,
+            type: element.commerce_type_name,
             seleted: this.form.commerce_id.includes(element.id)
           });
           this.ListEntities = rows;
