@@ -11,4 +11,26 @@ export const loadStore = (folderPrincipal) => {
     return modules
 }
 
+export const handleMessage = (message, status, refs) => {
+    switch (status) {
+        case 422:
+            refs.$refs.snackBarRef.changeStatusSnackbar(true);
+            refs.textSnackBar = message;
+            break;
+        
+        case 200:
+            refs.$refs.snackBarRef.changeStatusSnackbar(true);
+            refs.textSnackBar = message;
+            break;
+        
+        case 403:
+            refs.$refs.snackBarRef.changeStatusSnackbar(true);
+            refs.textSnackBar = message;
+            break;
 
+        default:
+            refs.$refs.snackBarRef.changeStatusSnackbar(true);
+            refs.textSnackBar = "Disculpe, ha ocurrido un error";
+          break;
+      }
+}

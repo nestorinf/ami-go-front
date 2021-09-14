@@ -1,11 +1,28 @@
 <template>
   <v-card class="mb-7">
     <v-card-text class="pa-5 border-bottom">
-      <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
+      <span
+        class="text-h5 ml-2 blue-grey--text text--darken-4 font-weight-regular"
+      >
         Categoria
-      </h3>
+      </span>
+
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <h6 class="subtitle-2 font-weight-light">
-        En este formulario se registran todos las categorias
+        En este formulario se registran todas las categorias de productos para
+        un comercio.
       </h6>
     </v-card-text>
     <v-card-text>
@@ -14,23 +31,22 @@
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.name"
-              label="Nombre"
+              label="Nombre *"
               filled
               required
               :rules="rules.nameRule"
               background-color="transparent"
-              :error-messages="errorsBags.name"
-            ></v-text-field>
+            >
+            </v-text-field>
           </v-col>
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.description"
-              label="Descripción"
+              label="Descripción *"
               filled
               required
               :rules="rules.descriptionRule"
               background-color="transparent"
-              :error-messages="errorsBags.description"
             ></v-text-field>
           </v-col>
           <v-col cols="12" lg="12">
@@ -41,7 +57,6 @@
               v-model="form.parent_id"
               filled
               background-color="transparent"
-              :error-messages="errorsBags.parent_id"
             ></v-select>
           </v-col>
           <v-col cols="12" lg="12">
@@ -51,37 +66,24 @@
               @delete-imagen="deleteImagen"
             ></ShowsImages>
           </v-col>
-          <v-col cols="12" lg="12" v-if="id && imagesList.length>0">
-            <v-alert
-              dense
-              outlined
-              type="success"
-            >Solo se permite registrar una imagen</v-alert>
+          <v-col cols="12" lg="12" v-if="id && imagesList.length > 0">
+            <v-alert dense outlined type="success"
+              >Solo se permite registrar una imagen</v-alert
+            >
           </v-col>
-          <v-col cols="12" lg="12" class="mb-10" v-else-if="id && imagesList.length==0"> 
-            <v-alert 
-              dense
-              outlined
-              type="info"
-            >El campo de imagen es obligatorio</v-alert> 
-            <UploadImages
-              v-if="displayed"
-              :max="1"
-              @changed="onFileSelected"
-            />
+          <v-col
+            cols="12"
+            lg="12"
+            class="mb-10"
+            v-else-if="id && imagesList.length == 0"
+          >
+            <v-alert dense outlined type="info"
+              >El campo de imagen es obligatorio</v-alert
+            >
+            <UploadImages v-if="displayed" :max="1" @changed="onFileSelected" />
           </v-col>
-          <v-col cols="12" lg="12" class="mb-10" v-else>  
-            <v-alert
-              v-if="selectedFile.length==0 && !id"
-              dense
-              outlined
-              type="info"
-            >El campo de imagen es obligatorio</v-alert>
-            <UploadImages
-              v-if="displayed"
-              :max="1"
-              @changed="onFileSelected"
-            />
+          <v-col cols="12" lg="12" class="mb-10" v-else>
+            <UploadImages v-if="displayed" :max="1" @changed="onFileSelected" />
           </v-col>
 
           <v-col cols="12" lg="12">
@@ -89,7 +91,6 @@
               v-model="form.enabled"
               required
               label="Habilitado"
-              :error-messages="errorsBags.enabled"
             ></v-checkbox>
           </v-col>
         </v-row>
@@ -123,6 +124,8 @@ import { mapActions, mapGetters } from "vuex";
 import UploadImages from "vue-upload-drop-images";
 import ShowsImages from "../../components/ShowsImages";
 import SnackBar from "@/views/modules/components/SnackBar";
+
+import { handleMessage } from "@/utils";
 export default {
   name: "RegisterCategory",
   props: {
@@ -146,7 +149,7 @@ export default {
         description: "",
         parent_id: "",
         interno: 0,
-        enabled: false,
+        enabled: true,
         saved_imagen: true,
         view_type: "COMMERCE",
       },
@@ -156,7 +159,7 @@ export default {
 
       rules: {
         nameRule: [(v) => !!v || "el nombre es obligatorio"],
-        descriptionRule: [(v) => !!v || "el nombre es obligatorio"],
+        descriptionRule: [(v) => !!v || "la descripcion es obligatorio"],
       },
     };
   },
@@ -188,30 +191,29 @@ export default {
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
-          const payload = new FormData();
-          payload.append("name", this.form.name);
-          payload.append("description", this.form.description);
-          payload.append("enabled", this.form.enabled);
-          payload.append("interno", this.form.interno);
-          payload.append("parent_id", this.form.parent_id);
-          payload.append("view_type", this.form.view_type);
-          if (this.selectedFile.length) {
-            this.selectedFile.forEach((e) => {
-              payload.append("images[]", e);
-            });
+        const payload = new FormData();
+        payload.append("name", this.form.name);
+        payload.append("description", this.form.description);
+        payload.append("enabled", this.form.enabled);
+        payload.append("interno", this.form.interno);
+        payload.append("parent_id", this.form.parent_id);
+        payload.append("view_type", this.form.view_type);
+        if (this.selectedFile.length) {
+          this.selectedFile.forEach((e) => {
+            payload.append("images[]", e);
+          });
+        }
+        if (this.id) {
+          if (this.selectedFile.length > 0 || this.imagesList.length > 0) {
+            payload.append("_method", "PUT");
+            payload.append("id", this.id);
+            this.update(payload, this.id);
           }
-          if (this.id) {
-            if (this.selectedFile.length>0 || this.imagesList.length>0) {
-              payload.append("_method", "PUT");
-              payload.append("id", this.id);
-              this.update(payload, this.id);
-            }
-          } else {
-            if (this.selectedFile.length || this.id) {
-              this.create(payload);
-            }
+        } else {
+          if (this.selectedFile.length || this.id) {
+            this.create(payload);
           }
-        
+        }
       }
     },
     setData() {
@@ -259,10 +261,8 @@ export default {
       this.createCategory(payload)
         .then((result) => {
           if (result) {
-            // this.form = {};
             this.$refs.form.reset();
-            this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Guardado existosamente!";
+            handleMessage("Guardado existosamente!", 200, this);
 
             this.selectedFile = [];
             this.displayed = false;
@@ -274,15 +274,11 @@ export default {
           }
         })
         .catch((err) => {
-          if (err.response) {
-            this.errorsBags = err.response.data.errors;
-            setTimeout(() => {
-              this.errorsBags = [];
-            }, 4000);
-          }
-          console.log(err);
-          this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = "Disculpe, ha ocurrido un error";
+          const {
+            data: { message },
+            status,
+          } = err.response;
+          handleMessage(message, status, this);
         });
     },
 
@@ -291,8 +287,7 @@ export default {
         .then((result) => {
           if (result) {
             this.form = Object.assign({}, result);
-            this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Actualizado existosamente!";
+            handleMessage("Actualizado existosamente!", 200, this);
 
             this.selectedFile = [];
             this.displayed = false;
@@ -304,15 +299,11 @@ export default {
           }
         })
         .catch((err) => {
-          if (err.response) {
-            this.errorsBags = err.response.data.errors;
-            setTimeout(() => {
-              this.errorsBags = [];
-            }, 4000);
-          }
-          console.log(err);
-          this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = "Disculpe, ha ocurrido un error";
+          const {
+            data: { message },
+            status,
+          } = err.response;
+          handleMessage(message, status, this);
         });
     },
     onFileSelected(event) {
@@ -342,3 +333,10 @@ export default {
   },
 };
 </script>
+
+<style>
+div[aria-required="true"].v-input .v-label::after {
+  content: " *";
+  color: red;
+}
+</style>
