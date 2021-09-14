@@ -117,6 +117,7 @@
               label="Descuento"
               filled
               required
+              min="0"
               :disabled="ExpirePromotion"
               :rules="rules.amountRule"
               background-color="transparent"
@@ -152,6 +153,7 @@
               label="Cantidad de Cupones"
               filled
               required
+              min="0"
               :disabled="ExpirePromotion"
               :rules="rules.total_cuponRule"
               background-color="transparent"
@@ -184,6 +186,59 @@
               @delete-imagen="deleteImagen"
             ></ShowsImages>
           </v-col>
+
+
+          <v-col cols="12" lg="12" v-if="id && imagesList.length>0">
+            <v-alert
+              dense
+              outlined
+              type="success"
+            >Solo se permite registrar una imagen</v-alert>
+          </v-col>
+          <v-col cols="12" lg="12" class="mb-10" v-else-if="id && imagesList.length==0"> 
+            <v-alert 
+              dense
+              outlined
+              type="info"
+            >El campo de imagen es obligatorio</v-alert> 
+            <UploadImages
+              v-if="displayed"
+              :max="1"
+              @changed="onFileSelected"
+            />
+          </v-col>
+          <v-col cols="12" lg="12" class="mb-10" v-else>  
+            <v-alert
+              v-if="selectedFile.length==0 && !id"
+              dense
+              outlined
+              type="info"
+            >El campo de imagen es obligatorio</v-alert>
+            <UploadImages
+              v-if="displayed"
+              :max="1"
+              @changed="onFileSelected"
+            />
+          </v-col>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
+
           <v-col cols="12" lg="12">
             <UploadImages
               v-if="displayed && imagesList.length==0"
@@ -196,7 +251,7 @@
               </v-alert>
             </v-col>
             
-          </v-col>
+          </v-col> -->
         </v-row>
 
         <v-row class="pt-10">
@@ -290,6 +345,14 @@ export default {
         {
           value: "delivery_commerce",
           text: "Delivery (Comercios)",
+        },
+        {
+          value: "market",
+          text: "Super Mercados",
+        },
+        {
+          value: "market_commerce",
+          text: "Delivery (Super Mercados)",
         },
         {
           value: "restaurant",
@@ -400,11 +463,15 @@ export default {
             payload.append("images[]", e);
           });
           if (this.id) {
-            payload.append("_method", "PUT");
-            payload.append("id", this.id);
-            this.update(payload, this.id);
+            if (this.selectedFile.length>0 || this.imagesList.length>0) {
+              payload.append("_method", "PUT");
+              payload.append("id", this.id);
+              this.update(payload, this.id);
+            }
           } else {
-            this.create(payload);
+            if (this.selectedFile.length || this.id) {
+              this.create(payload);
+            }
           }
         //}
       }
@@ -417,7 +484,7 @@ export default {
             id: result.id,
             name: result.name,
             type: result.type,
-            expire_date: result.expire_date,
+            expire_date: (result.expire_date==null)?'':result.expire_date,
             is_cupon: result.is_cupon,
             code_cupon: result.code_cupon,
             total_cupon: result.total_cupon,
@@ -517,7 +584,8 @@ export default {
       this.updatePromotion({ payload, id })
         .then((result) => {
           if (result) {
-            this.form = Object.assign({}, result);
+            this.form = Object.assign({}, result); 
+            this.form.expire_date = (result.expire_date==null)?'':result.expire_date;
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
 
