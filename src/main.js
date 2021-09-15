@@ -10,6 +10,7 @@ import InstantSearch from "vue-instantsearch";
 import * as VueGoogleMaps from "vue2-google-maps";
 import VuetifyGoogleAutocomplete from 'vuetify-google-autocomplete';
 
+
 Vue.config.productionTip = false;
 
 Vue.use(VueGoogleMaps, {
@@ -33,7 +34,6 @@ Vue.use(VueSkycons, {
 Vue.use(InstantSearch);
 Vue.config.productionTip = false;
 Vue.use(Vuebar);
-
 
 new Vue({
   vuetify,
