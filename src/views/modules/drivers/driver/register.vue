@@ -4,6 +4,19 @@
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
         Conductor
       </h3>
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registran todos los conductores
       </h6>
@@ -14,7 +27,7 @@
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.name"
-              label="Nombres y Apellidos"
+              label="Nombres y Apellidos *"
               filled
               required
               :rules="rules.nameRule"
@@ -28,7 +41,7 @@
             <v-text-field
               v-model="form.email"
               type="email"
-              label="Correo Electronico"
+              label="Correo Electronico *"
               filled
               required
               :rules="rules.emailRule"
@@ -40,7 +53,7 @@
             <v-text-field
               number
               v-model="form.phone"
-              label="Teléfono"
+              label="Teléfono *"
               filled
               :rules="rules.phoneRule"
               background-color="transparent"
@@ -54,7 +67,7 @@
               label="Habilitado"
               :error-messages="errorsBags.enabled"
             ></v-checkbox>
-          </v-col>        
+          </v-col>
         </v-row>
 
         <v-btn
@@ -65,11 +78,7 @@
           class="text-capitalize mr-2"
           >Guardar</v-btn
         >
-        <v-btn
-          color="black"
-          class="text-capitalize"
-          to="/drivers"
-          dark
+        <v-btn color="black" class="text-capitalize" to="/drivers" dark
           >Cancelar</v-btn
         >
       </v-form>
@@ -105,13 +114,13 @@ export default {
         phone: "",
         email: "",
         enabled: true,
-        latitude:null,
-        longitude: null
+        latitude: null,
+        longitude: null,
       },
       rules: {
-      nameRule: [(v) => !!v || "este campo es obligatorio"],
-      phoneRule: [(v) => !!v || "este campo es obligatorio"],
-      emailRule: [(v) => !!v || "este campo es obligatorio"],
+        nameRule: [(v) => !!v || "este campo es obligatorio"],
+        phoneRule: [(v) => !!v || "este campo es obligatorio"],
+        emailRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },

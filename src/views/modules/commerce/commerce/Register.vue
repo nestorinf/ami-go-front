@@ -5,6 +5,19 @@
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
           {{ titleForm }}
         </h3>
+        <v-col>
+          <v-alert
+            border="left"
+            colored-border
+            type="error"
+            dense
+            dismissible
+            width="xl"
+            mode
+          >
+            Los Campos con <strong>*</strong> son obligatorios
+          </v-alert>
+        </v-col>
         <h6 class="subtitle-2 font-weight-light">
           En este formulario se registran todas los comercios
         </h6>
@@ -14,7 +27,7 @@
           <v-col cols="12" lg="6">
             <v-select
               :loading="loadingCommerceType"
-              label="Tipo de Comercio"
+              label="Tipo de Comercio *"
               :items="commerceTypeList"
               v-model="form.commerce_type_id"
               filled
@@ -26,7 +39,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Nombre del comercio"
+              label="Nombre del comercio *"
               required
               filled
               :rules="rules.nameRule"
@@ -37,7 +50,7 @@
             <v-text-field
               type="email"
               v-model="form.email"
-              label="Email Comercio"
+              label="Email Comercio *"
               required
               filled
               :rules="rules.emailRule"
@@ -47,7 +60,7 @@
           <v-col cols="6" lg="6">
             <v-text-field
               v-model="form.agent"
-              label="Persona Contacto"
+              label="Persona Contacto *"
               filled
               required
               :rules="rules.agentRule"
@@ -57,7 +70,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.phone"
-              label="Telefono Persona Contacto"
+              label="Telefono Persona Contacto *"
               filled
               required
               :rules="rules.phoneRule"
@@ -68,7 +81,9 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.precision_qty"
-              label="Precision de Decimales en una Orden"
+              label="Precision de Decimales en una Orden *"
+              type="number"
+              min="1"
               filled
               required
               :rules="rules.precisionQtyRule"

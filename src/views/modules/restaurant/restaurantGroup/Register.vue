@@ -4,6 +4,19 @@
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
         Agrupar Restaurantes
       </h3>
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registran todas las agrupaciones de restaurantes
       </h6>
@@ -14,7 +27,7 @@
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.name"
-              label="Nombre del Grupo"
+              label="Nombre del Grupo *"
               required
               filled
               :rules="rules.nameRule"
@@ -24,7 +37,9 @@
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.cost_delivery"
-              label="Costo del Delivery"
+              label="Costo del Delivery *"
+              type="number"
+              min="1"
               required
               filled
               :rules="rules.costDeliveryRule"
@@ -38,7 +53,7 @@
               dense
               chips
               small-chips
-              label="Restarauntes"
+              label="Restarauntes *"
               multiple
               solo
               required
@@ -114,7 +129,10 @@ export default {
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
         restaurantRule: [(v) => !!v || "este campo es obligatorio"],
-        costDeliveryRule: [(v) => !!v || "este campo es obligatorio"],
+        costDeliveryRule: [
+          (v) => !!v || "este campo es obligatorio",
+          (v) => v > 0 || "El valor del costo delivery debe ser mayor a 0",
+        ],
       },
     };
   },

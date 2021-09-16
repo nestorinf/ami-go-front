@@ -5,6 +5,19 @@
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
           {{ titleForm }}
         </h3>
+        <v-col>
+          <v-alert
+            border="left"
+            colored-border
+            type="error"
+            dense
+            dismissible
+            width="xl"
+            mode
+          >
+            Los Campos con <strong>*</strong> son obligatorios
+          </v-alert>
+        </v-col>
         <h6 class="subtitle-2 font-weight-light">
           En este formulario se registran todas los Super Mercados
         </h6>
@@ -14,7 +27,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Nombre del Super Mercados"
+              label="Nombre del Super Mercados *"
               required
               filled
               :rules="rules.nameRule"
@@ -25,7 +38,7 @@
             <v-text-field
               type="email"
               v-model="form.email"
-              label="Email Super Mercados"
+              label="Email Super Mercados *"
               required
               filled
               :rules="rules.emailRule"
@@ -35,7 +48,7 @@
           <v-col cols="6" lg="6">
             <v-text-field
               v-model="form.agent"
-              label="Persona Contacto"
+              label="Persona Contacto *"
               filled
               required
               :rules="rules.agentRule"
@@ -45,7 +58,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.phone"
-              label="Telefono Persona Contacto"
+              label="Telefono Persona Contacto *"
               filled
               required
               :rules="rules.phoneRule"
@@ -55,7 +68,7 @@
         </v-row>
         <v-row>
           <v-col cols="6" lg="6">
-            <label for="logo">Logo</label>
+            <label for="logo">Logo *</label>
             <ShowsImages
               :items="imagesListLogo"
               v-if="true"
@@ -72,7 +85,7 @@
           </v-col>
 
           <v-col cols="6" lg="6">
-            <label for="cover">Cover</label>
+            <label for="cover">Cover *</label>
             <ShowsImages
               :items="imagesListCover"
               v-if="true"
@@ -233,7 +246,6 @@ export default {
       }
     },
     setData() {
-     
       if (this.id) {
         this.getCommerceById(this.id).then((result) => {
           this.form = {
@@ -269,7 +281,7 @@ export default {
     create(payload) {
       this.createCommerce(payload)
         .then((result) => {
-          if (result) { 
+          if (result) {
             this.$refs.form.reset();
             this.$refs.VueUploadImagesCover.Imgs = [];
             this.$refs.VueUploadImageLogo.Imgs = [];

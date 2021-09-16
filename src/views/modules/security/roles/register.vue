@@ -5,6 +5,19 @@
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
           {{ titleForm }}
         </h3>
+        <v-col>
+          <v-alert
+            border="left"
+            colored-border
+            type="error"
+            dense
+            dismissible
+            width="xl"
+            mode
+          >
+            Los Campos con <strong>*</strong> son obligatorios
+          </v-alert>
+        </v-col>
         <h6 class="subtitle-2 font-weight-light">
           En este formulario se registran todas los roles
         </h6>
@@ -14,7 +27,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Nombre"
+              label="Nombre *"
               required
               filled
               :rules="rules.nameRule"
@@ -25,7 +38,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.slug"
-              label="Slug"
+              label="Slug *"
               required
               filled
               :rules="rules.slugRule"

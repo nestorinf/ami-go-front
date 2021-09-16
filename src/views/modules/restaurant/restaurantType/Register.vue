@@ -4,6 +4,19 @@
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
         Tipo de Restaurante
       </h3>
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registran todos los Tipos de Restaurante
       </h6>
@@ -14,7 +27,7 @@
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.name"
-              label="Nombre"
+              label="Nombre *"
               filled
               required
               :rules="rules.nameRule"
@@ -25,7 +38,7 @@
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.description"
-              label="Descripcion"
+              label="Descripcion *"
               filled
               required
               :rules="rules.descriptionRule"
@@ -163,10 +176,16 @@ export default {
     setData() {
       if (this.id) {
         this.restaurantType(this.id).then((result) => {
-          this.form = Object.assign({
-            images: []
-          }, result);
-          this.imagesList = Object.assign([], this.attachments(result.attachment));
+          this.form = Object.assign(
+            {
+              images: [],
+            },
+            result
+          );
+          this.imagesList = Object.assign(
+            [],
+            this.attachments(result.attachment)
+          );
         });
       }
     },
@@ -211,7 +230,6 @@ export default {
     },
 
     update(payload, id) {
-
       this.updateRestaurantType({ payload, id })
         .then((result) => {
           if (result) {

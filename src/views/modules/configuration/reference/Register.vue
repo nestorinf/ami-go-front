@@ -4,6 +4,19 @@
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
         Referencia
       </h3>
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registran todos las Referencias
       </h6>
@@ -14,7 +27,7 @@
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.name"
-              label="Nombre"
+              label="Nombre *"
               filled
               required
               :rules="rules.nameRule"
@@ -25,7 +38,7 @@
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.slug"
-              label="Slug"
+              label="Slug *"
               filled
               required
               :rules="rules.slugRule"
@@ -36,7 +49,7 @@
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.description"
-              label="Descripcion"
+              label="Descripcion *"
               filled
               required
               :rules="rules.descriptionRule"

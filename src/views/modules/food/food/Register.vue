@@ -4,6 +4,19 @@
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
         Comida
       </h3>
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registra una comida de restaurante
       </h6>
@@ -14,32 +27,34 @@
           <v-col cols="12" lg="6">
             <v-select
               :loading="loadingRestaurant"
-              label="Restaurante"
+              label="Restaurante *"
               :items="restaurantList"
               v-model="form.restaurant_id"
               filled
               required
               @change="loadCategoryRestaurant"
               background-color="transparent"
+              :rules="rules.restaurantRule"
               :error-messages="errorsBags.restaurant_id"
             ></v-select>
           </v-col>
           <v-col cols="12" lg="6">
             <v-select
               :loading="loadingFoodCategory"
-              label="Categoría"
+              label="Categoría *"
               :items="foodCategoryList"
               v-model="form.food_category_id"
               filled
               required
               background-color="transparent"
+              :rules="rules.categoryRule"
               :error-messages="errorsBags.food_category_id"
             ></v-select>
           </v-col>
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Nombre"
+              label="Nombre *"
               filled
               required
               :rules="rules.nameRule"
@@ -50,7 +65,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.description"
-              label="Descripción"
+              label="Descripción *"
               filled
               :rules="rules.descriptionRule"
               background-color="transparent"
@@ -81,7 +96,8 @@
             <v-text-field
               type="number"
               v-model="form.price"
-              label="Precio"
+              label="Precio *"
+              prefix="$"
               filled
               required
               :rules="rules.priceRule"
@@ -216,6 +232,8 @@ export default {
         descriptionRule: [(v) => !!v || "este campo es obligatorio"],
         priceRule: [(v) => !!v || "este campo es obligatorio"],
         quantityRule: [(v) => !!v || "este campo es obligatorio"],
+        restaurantRule: [(v) => !!v || "este campo es obligatorio"],
+        categoryRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },

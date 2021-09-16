@@ -5,6 +5,19 @@
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
           Departamento
         </h3>
+        <v-col>
+          <v-alert
+            border="left"
+            colored-border
+            type="error"
+            dense
+            dismissible
+            width="xl"
+            mode
+          >
+            Los Campos con <strong>*</strong> son obligatorios
+          </v-alert>
+        </v-col>
         <h6 class="subtitle-2 font-weight-light">
           En este formulario se registran todos los departamentos
         </h6>
@@ -14,7 +27,7 @@
           <v-col cols="12" lg="12">
             <v-select
               :loading="loadingCountry"
-              label="País"
+              label="País *"
               :items="countryList"
               v-model="form.country_id"
               filled
@@ -26,7 +39,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Nombre del departamento"
+              label="Nombre del departamento *"
               filled
               background-color="transparent"
               :error-messages="errorsBags.name"
@@ -35,7 +48,7 @@
           <v-col cols="6" lg="6">
             <v-text-field
               v-model="form.code"
-              label="Código del departamento"
+              label="Código del departamento *"
               filled
               background-color="transparent"
               :error-messages="errorsBags.code"

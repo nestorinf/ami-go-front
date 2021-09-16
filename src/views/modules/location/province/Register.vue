@@ -4,6 +4,19 @@
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
         Provincia
       </h3>
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registran todas las Provincias
       </h6>
@@ -11,10 +24,10 @@
     <v-card-text>
       <v-form ref="form" v-model="valid" lazy-validation>
         <v-row>
-            <v-col cols="12" lg="12">
+          <v-col cols="12" lg="12">
             <v-select
               :loading="loadingCountries"
-              label="País"
+              label="País *"
               :items="countriesLists"
               v-model="form.country_id"
               filled
@@ -27,7 +40,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Nombre"
+              label="Nombre *"
               filled
               required
               :rules="rules.nameRule"
@@ -38,7 +51,7 @@
           <v-col cols="12" lg="">
             <v-text-field
               v-model="form.iso31662"
-              label="Código Provincia"
+              label="Código Provincia *"
               filled
               required
               :rules="rules.iso31662Rule"
@@ -134,30 +147,30 @@ export default {
     setData() {
       this.loadingCountries = true;
       const rows = [];
-      this.getCountryData().then((result) => {
-        if(result) {
-          result.map((element) => {
-            rows.push({
-              value: element.id,
-              text: element.name,
+      this.getCountryData()
+        .then((result) => {
+          if (result) {
+            result.map((element) => {
+              rows.push({
+                value: element.id,
+                text: element.name,
+              });
+              this.countriesLists = rows;
             });
-            this.countriesLists = rows;
-            
-          });
-
-        }
-        this.loadingCountries = false;
-      }).catch((err) => {
-        console.log(err)
-        this.loadingCountries = false; 
-      });
+          }
+          this.loadingCountries = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingCountries = false;
+        });
       if (this.id) {
         this.getProvinceById(this.id).then((result) => {
           this.form = {
             id: result.id,
             name: result.name,
             country_id: result.country_id,
-            iso31662: result.iso31662
+            iso31662: result.iso31662,
           };
         });
       }

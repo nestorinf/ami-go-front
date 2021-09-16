@@ -4,6 +4,19 @@
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
         Lista Referencia
       </h3>
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registran todos los valores de Referencias
       </h6>
@@ -11,10 +24,10 @@
     <v-card-text>
       <v-form ref="form" v-model="valid" lazy-validation>
         <v-row>
-            <v-col cols="12" lg="12">
+          <v-col cols="12" lg="12">
             <v-select
               :loading="loadingReferences"
-              label="Referencia"
+              label="Referencia *"
               :items="referencesLists"
               v-model="form.reference_id"
               filled
@@ -27,7 +40,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.value"
-              label="Valor"
+              label="Valor *"
               filled
               required
               :rules="rules.valueRule"
@@ -45,7 +58,7 @@
               :error-messages="errorsBags.alternative"
             ></v-text-field>
           </v-col>
-          
+
           <!-- <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.json_value"
@@ -57,25 +70,25 @@
             ></v-text-field>
           </v-col> -->
 
-        <v-col cols="12" lg="12">
-          <v-textarea
-            v-model="form.json_value"
-            label="Valor Json"
-            auto-grow
-            filled
-            required
-            background-color="transparent"
-            :error-messages="errorsBags.json_value"          
-            rows="4"
-          ></v-textarea>
-          <v-col cols="12" lg="6">
-            <v-checkbox
-              v-model="form.enabled"
+          <v-col cols="12" lg="12">
+            <v-textarea
+              v-model="form.json_value"
+              label="Valor Json"
+              auto-grow
+              filled
               required
-              label="Habilitado"
-              :error-messages="errorsBags.enabled"
-            ></v-checkbox>
-          </v-col>
+              background-color="transparent"
+              :error-messages="errorsBags.json_value"
+              rows="4"
+            ></v-textarea>
+            <v-col cols="12" lg="6">
+              <v-checkbox
+                v-model="form.enabled"
+                required
+                label="Habilitado"
+                :error-messages="errorsBags.enabled"
+              ></v-checkbox>
+            </v-col>
           </v-col>
         </v-row>
         <v-btn
@@ -166,23 +179,23 @@ export default {
     setData() {
       this.loadingReferences = true;
       const rows = [];
-      this.getReferenceData().then((result) => {
-        if(result) {
-          result.map((element) => {
-            rows.push({
-              value: element.id,
-              text: element.name,
+      this.getReferenceData()
+        .then((result) => {
+          if (result) {
+            result.map((element) => {
+              rows.push({
+                value: element.id,
+                text: element.name,
+              });
+              this.referencesLists = rows;
             });
-            this.referencesLists = rows;
-            
-          });
-
-        }
-        this.loadingReferences = false;
-      }).catch((err) => {
-        console.log(err)
-        this.loadingReferences = false; 
-      });
+          }
+          this.loadingReferences = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingReferences = false;
+        });
       if (this.id) {
         this.getReferenceListById(this.id).then((result) => {
           this.form = {
@@ -191,7 +204,7 @@ export default {
             reference_id: result.reference_id,
             alternative: result.alternative,
             json_value: result.json_value,
-            enabled: result.enabled
+            enabled: result.enabled,
           };
         });
       }
@@ -201,9 +214,9 @@ export default {
       this.createReferenceList(payload)
         .then((result) => {
           if (result) {
-            this.$refs.form.reset();          
+            this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Guardado existosamente!";            
+            this.textSnackBar = "Guardado existosamente!";
           }
         })
         .catch((err) => {

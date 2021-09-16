@@ -4,6 +4,19 @@
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
         Costo Delivery
       </h3>
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registra el costo del delivery por KM
       </h6>
@@ -14,7 +27,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.value"
-              label="Kilometros"              
+              label="Kilometros *"
               type="number"
               min="1"
               filled
@@ -27,7 +40,9 @@
           <v-col cols="12" lg="">
             <v-text-field
               v-model="form.alternative"
-              label="Costo"
+              label="Costo *"
+              type="number"
+              min="1"
               filled
               required
               :rules="rules.alternativeRule"
@@ -35,7 +50,7 @@
               :error-messages="errorsBags.alternative"
             ></v-text-field>
           </v-col>
-           <v-col cols="12" lg="6">
+          <v-col cols="12" lg="6">
             <v-checkbox
               v-model="form.enabled"
               checked
@@ -44,7 +59,7 @@
               label="Habilitado"
               :error-messages="errorsBags.enabled"
             ></v-checkbox>
-            </v-col>
+          </v-col>
         </v-row>
         <v-btn
           color="success"
@@ -96,7 +111,10 @@ export default {
       },
       rules: {
         valueRule: [(v) => !!v || "este campo es obligatorio"],
-        alternativeRule: [(v) => !!v || "este campo es obligatorio"],
+        alternativeRule: [
+          (v) => !!v || "este campo es obligatorio",
+          (v) => v > 0 || "El valor del costo delivery debe ser mayor a 0",
+        ],
       },
     };
   },
@@ -122,7 +140,7 @@ export default {
         if (this.id) {
           this.update(payload);
         } else {
-          this.create(payload);  
+          this.create(payload);
         }
       }
     },
@@ -133,7 +151,7 @@ export default {
             id: result.id,
             value: result.value,
             alternative: result.alternative,
-            enabled: result.enabled
+            enabled: result.enabled,
           };
         });
       }
@@ -143,10 +161,10 @@ export default {
       this.createDeliveryCost(payload)
         .then((result) => {
           if (result) {
-            this.$refs.form.resetValidation();        
-            this.$refs.form.reset();        
+            this.$refs.form.resetValidation();
+            this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Guardado existosamente!";          
+            this.textSnackBar = "Guardado existosamente!";
           }
         })
         .catch((err) => {
@@ -180,7 +198,6 @@ export default {
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });
     },
-
   },
 };
 </script>

@@ -5,6 +5,19 @@
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
           Municipio
         </h3>
+        <v-col>
+          <v-alert
+            border="left"
+            colored-border
+            type="error"
+            dense
+            dismissible
+            width="xl"
+            mode
+          >
+            Los Campos con <strong>*</strong> son obligatorios
+          </v-alert>
+        </v-col>
         <h6 class="subtitle-2 font-weight-light">
           En este formulario se registran todos los municipios
         </h6>
@@ -14,7 +27,7 @@
           <v-col cols="12" lg="6">
             <v-select
               :loading="loadingDepartment"
-              label="Departamento a que pertenece el municipio"
+              label="Departamento a que pertenece el municipio *"
               :items="departmentList"
               v-model="form.department_id"
               filled
@@ -26,7 +39,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Nombre del municipio"
+              label="Nombre del municipio *"
               filled
               background-color="transparent"
               :error-messages="errorsBags.name"
@@ -35,7 +48,7 @@
           <v-col cols="6" lg="6">
             <v-text-field
               v-model="form.code"
-              label="Código del Municipio"
+              label="Código del Municipio *"
               filled
               background-color="transparent"
               :error-messages="errorsBags.code"
@@ -53,7 +66,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/municipality/municipality"
+          to="/location/municipality"
           dark
           >Cancelar</v-btn
         >
