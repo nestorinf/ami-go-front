@@ -4,6 +4,19 @@
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
         Pregunta Frecuente
       </h3>
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registran todas las preguntas frecuentes
       </h6>
@@ -14,7 +27,7 @@
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.name"
-              label="Pregunta"
+              label="Pregunta *"
               filled
               required
               :rules="rules.nameRule"
@@ -23,17 +36,17 @@
             ></v-text-field>
           </v-col>
           <v-col cols="12" lg="12">
-          <v-textarea
-            v-model="form.description"
-            label="Respuesta"
-            auto-grow
-            filled
-            required
-            :rules="rules.descriptionRule"
-            background-color="transparent"
-            :error-messages="errorsBags.description"          
-            rows="4"
-          ></v-textarea>
+            <v-textarea
+              v-model="form.description"
+              label="Respuesta *"
+              auto-grow
+              filled
+              required
+              :rules="rules.descriptionRule"
+              background-color="transparent"
+              :error-messages="errorsBags.description"
+              rows="4"
+            ></v-textarea>
           </v-col>
         </v-row>
         <v-btn
@@ -81,7 +94,7 @@ export default {
       form: {
         id: "",
         name: "",
-        description: ""
+        description: "",
       },
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],

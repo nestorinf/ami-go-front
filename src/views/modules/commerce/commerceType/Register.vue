@@ -4,6 +4,19 @@
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
         Categoria de Comercio
       </h3>
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registran todos las Categorias de Comercio
       </h6>
@@ -14,7 +27,7 @@
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.name"
-              label="Nombre de la categoria"
+              label="Nombre de la categoria *"
               filled
               required
               :rules="rules.nameRule"
@@ -24,7 +37,7 @@
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.description"
-              label="Descripcion"
+              label="Descripcion *"
               filled
               required
               :rules="rules.descriptionRule"
@@ -34,7 +47,7 @@
           <v-col cols="12" lg="6">
             <v-select
               :loading="loadingCommerceTypeSlug"
-              label="Slug Tipo de Comercio"
+              label="Slug Tipo de Comercio *"
               :items="commerceTypeSlugList"
               v-model="form.commerce_type_slug"
               filled

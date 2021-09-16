@@ -8,14 +8,14 @@
     <v-card class="mb-7">
       <v-card-text class="pa-5 border-bottom">
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-          {{ titleForm }} {{typeUSer.name}}
+          {{ titleForm }} {{ typeUSer.name }}
         </h3>
       </v-card-text>
       <v-col cols="12" lg="12" sm="12">
         <DataTable
           :dataButtonRegister="{
             title: 'Registrar',
-            path: type+'/register',
+            path: type + '/register',
           }"
           :headers="headers"
           :items="items"
@@ -100,71 +100,78 @@ export default {
   computed: {
     ...mapGetters({ storeUser: "user/getUsers" }),
 
-    typeUSer(){
-
-        var type = this.type;
-        var data = null;        
-        switch(type) {
-            case 'admin':
-              data = {
-                name: 'Administradores',
-                slug: 'ROLE_ROOT'
-              };
-            break;
-            case 'commerces':
-              data = {
-                name: 'Comercios',
-                slug: 'ROLE_COMMERCE'
-              };
-            break;
-            case 'markets':
-              data = {
-                name: 'Super Mercados',
-                slug: 'ROLE_MARKET'
-              };
-            break;
-            case 'restaurants':
-              data = {
-                name: 'Restaurantes',
-                slug: 'ROLE_RESTAURANT'
-              };
-            break;
-            case 'drivers':
-              data = {
-                name: 'Conductores',
-                slug: 'ROLE_DRIVER'
-              };
-            break;
-            case 'clients':
-              data = {
-                name: 'Clientes',
-                slug: 'ROLE_CLIENT'
-              };
-            break;
-            default:
-              data = {
-                name: 'Clientes',
-                slug: 'ROLE_CLIENT'
-              };
-            break;
-        }
-        return data;
-    }
+    typeUSer() {
+      var type = this.type;
+      var data = null;
+      switch (type) {
+        case "admin":
+          data = {
+            name: "Administradores",
+            slug: "ROLE_ROOT",
+          };
+          break;
+        case "commerces":
+          data = {
+            name: "Comercios",
+            slug: "ROLE_COMMERCE",
+          };
+          break;
+        case "markets":
+          data = {
+            name: "Super Mercados",
+            slug: "ROLE_COMMERCE",
+          };
+          break;
+        case "restaurants":
+          data = {
+            name: "Restaurantes",
+            slug: "ROLE_RESTAURANT",
+          };
+          break;
+        case "drivers":
+          data = {
+            name: "Conductores",
+            slug: "ROLE_DRIVER",
+          };
+          break;
+        case "clients":
+          data = {
+            name: "Clientes",
+            slug: "ROLE_CLIENT",
+          };
+          break;
+        default:
+          data = {
+            name: "Clientes",
+            slug: "ROLE_CLIENT",
+          };
+          break;
+      }
+      return data;
+    },
   },
   watch: {
     storeUser(data) {
       this.items = [];
       this.resetHeaders();
       if (data.length > 0) {
-
         this.items = data;
 
-        if(this.type=="commerces" || this.type=="markets" || this.type=="restaurants"){
+        if (
+          this.type == "commerces" ||
+          this.type == "markets" ||
+          this.type == "restaurants"
+        ) {
           this.headers.push({
-            text: this.type=="commerces"?"Comercio":this.type=="markets"?"Super Mercado":"Restaurante",
+            text:
+              this.type == "commerces"
+                ? "Comercio"
+                : this.type == "markets"
+                ? "Super Mercado"
+                : "Restaurante",
             align: "start",
             sortable: false,
-            value: 'entitie',
+            value: "entitie",
           });
         }
       }
@@ -179,8 +186,8 @@ export default {
       getUsersData: "user/getUsersData",
       removeUser: "user/removeUser",
     }),
-    
-    resetHeaders(){
+
+    resetHeaders() {
       this.headers = [
         {
           text: "Accion",
@@ -198,7 +205,7 @@ export default {
         { text: "Email del Usuario", value: "email" },
       ];
     },
-    getUser(slug){
+    getUser(slug) {
       this.getUsersData(slug).then((result) => {
         this.form = {
           id: result.id,
@@ -209,13 +216,13 @@ export default {
       });
     },
     editButton({ id }) {
-      this.$router.push(this.type+"/edit/" + id);
+      this.$router.push(this.type + "/edit/" + id);
     },
     acceptRemoveCommerceType(item) {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
-    
+
     removeButton() {
       this.removeUser(this.idDelete)
         .then((result) => {
@@ -224,7 +231,7 @@ export default {
             this.textSnackBar = "Eliminado existosamente!";
           }
         })
-        .catch(() => {          
+        .catch(() => {
           this.$refs.snackBarRef.changeStatusSnackbar(true);
           this.textSnackBar = "Disculpe, ha ocurrido un error";
         });

@@ -5,6 +5,19 @@
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
           Restaurante
         </h3>
+        <v-col>
+          <v-alert
+            border="left"
+            colored-border
+            type="error"
+            dense
+            dismissible
+            width="xl"
+            mode
+          >
+            Los Campos con <strong>*</strong> son obligatorios
+          </v-alert>
+        </v-col>
         <h6 class="subtitle-2 font-weight-light">
           En este formulario se registran todos los restaurantes
         </h6>
@@ -14,7 +27,7 @@
           <v-col cols="12" lg="6">
             <v-select
               :loading="loadingRestaurantType"
-              label="Tipo de restaurante"
+              label="Tipo de restaurante *"
               :items="restaurantTypeList"
               v-model="form.restaurant_type_id"
               filled
@@ -27,7 +40,7 @@
           <v-col cols="12" lg="6">
             <v-select
               :loading="loadingDepartment"
-              label="Departamento a que pertenece el restaurante"
+              label="Departamento a que pertenece el restaurante *"
               :items="departmentList"
               v-model="form.department_id"
               filled
@@ -39,7 +52,7 @@
           <v-col cols="12" lg="6">
             <v-select
               :loading="loadingMunicipality"
-              label="Municipio a que pertenece el restaurante"
+              label="Municipio a que pertenece el restaurante *"
               :items="municipalityList"
               v-model="form.municipality_id"
               filled
@@ -67,7 +80,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Nombre"
+              label="Nombre *"
               filled
               background-color="transparent"
               :error-messages="errorsBags.name"
@@ -76,7 +89,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.description"
-              label="Breve descripción"
+              label="Breve descripción *"
               filled
               background-color="transparent"
               :error-messages="errorsBags.description"
@@ -85,7 +98,7 @@
           <v-col cols="6" lg="6">
             <v-text-field
               v-model="form.phone"
-              label="Teléfono principal del Restaurante"
+              label="Teléfono principal del Restaurante *"
               filled
               background-color="transparent"
               :error-messages="errorsBags.phone"
@@ -103,9 +116,11 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.precision_qty"
-              label="Precision de Decimales en una Orden"
+              label="Precision de Decimales en una Orden *"
               filled
               required
+              type="number"
+              min="1"
               :rules="rules.precisionQtyRule"
               background-color="transparent"
             ></v-text-field>

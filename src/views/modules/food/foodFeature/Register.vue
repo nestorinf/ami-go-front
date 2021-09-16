@@ -1,14 +1,28 @@
 <template>
   <v-card class="mb-7">
     <v-form ref="form" v-model="valid" lazy-validation>
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <v-card-text>
         <h4 class="font-weight-light">Nueva Característica</h4>
+
         <v-row>
           <v-col cols="4" lg="4">
             <v-select
               @input="searchTypeFeature()"
               :loading="loadingTypeFeature"
-              label="Tipo de característica"
+              label="Tipo de característica *"
               :items="TypeFeaturesList"
               v-model="form.feature_type_id"
               filled
@@ -21,7 +35,7 @@
           <v-col cols="4" lg="4">
             <v-text-field
               v-model="form.name"
-              label="Nombre"
+              label="Nombre *"
               filled
               background-color="transparent"
               :rules="rules.nameRule"

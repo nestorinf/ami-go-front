@@ -4,6 +4,19 @@
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
         Categorias Internas Producto
       </h3>
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registran todas las categorias Internas Producto
       </h6>
@@ -18,7 +31,7 @@
               filled
               required
               v-model="form.commerce_id"
-              label="Comercios"
+              label="Comercio *"
               :rules="rules.commerceRule"
               background-color="transparent"
             ></v-select>
@@ -26,7 +39,7 @@
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.name"
-              label="Nombre"
+              label="Nombre *"
               filled
               required
               :rules="rules.nameRule"
@@ -37,7 +50,7 @@
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.description"
-              label="Descripción"
+              label="Descripción *"
               filled
               required
               :rules="rules.descriptionRule"

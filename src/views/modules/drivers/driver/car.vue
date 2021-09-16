@@ -4,6 +4,19 @@
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
         Conductor - Vehículo
       </h3>
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registran las datos del Vehículo
       </h6>
@@ -14,7 +27,7 @@
           <v-col cols="12" lg="6">
             <v-select
               :loading="loadinglistTypeVh"
-              label="Tipo Vehículo"
+              label="Tipo Vehículo *"
               :items="TypeVhList"
               v-model="form.type"
               filled
@@ -27,7 +40,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.model"
-              label="Modelo"
+              label="Modelo *"
               filled
               :rules="rules.modelRule"
               background-color="transparent"
@@ -38,7 +51,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.brand"
-              label="Marca"
+              label="Marca *"
               filled
               required
               :rules="rules.brandRule"
@@ -48,7 +61,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.license_plate"
-              label="Placa"
+              label="Placa *"
               filled
               :rules="rules.licensePlateRule"
               background-color="transparent"
@@ -59,7 +72,7 @@
           <v-col cols="12" lg="6">
             <v-select
               :loading="loadingColour"
-              label="Color"
+              label="Color *"
               :items="colourList"
               v-model="form.colour"
               filled
@@ -75,7 +88,7 @@
                 <v-text-field
                   number
                   v-model="form.year"
-                  label="Año"
+                  label="Año *"
                   filled
                   :rules="rules.yearRule"
                   background-color="transparent"

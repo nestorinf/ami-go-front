@@ -4,6 +4,19 @@
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
         Dirección Restaurante
       </h3>
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registran todas las direcciones de restaurant
       </h6>
@@ -14,7 +27,7 @@
           <v-col cols="12" lg="12">
             <v-select
               :loading="loadingRestaurants"
-              label="Restaurante"
+              label="Restaurante *"
               :items="restaurantList"
               v-model="form.restaurant_id"
               filled
@@ -27,7 +40,7 @@
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.name"
-              label="Dirección"
+              label="Dirección *"
               required
               filled
               :rules="rules.nameRule"

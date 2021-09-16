@@ -1,55 +1,69 @@
 <template>
   <v-card class="mb-7">
-      <v-card-text class="pa-5 border-bottom">
+    <v-card-text class="pa-5 border-bottom">
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
         Dirección Super mercado
       </h3>
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registran todas las direcciones de Super mercado
       </h6>
-    </v-card-text>    
-      <v-card-text>
-        <v-form ref="form" v-model="valid" lazy-validation>
-            <v-row>   
-                <v-col cols="12" lg="12">
-                    <v-select
-                    :loading="loadingCommerces"
-                    label="Super mercados"
-                    :items="commerceList"
-                    v-model="form.commerce_id"
-                    filled
-                    required
-                    :rules="rules.commerceRule"
-                    background-color="transparent"
-                    :error-messages="errorsBags.comerce"
-                    ></v-select>
-                </v-col>
-                <v-col cols="12" lg="12">
-                    <v-text-field
-                    v-model="form.name"
-                    label="Dirección"
-                    required
-                    filled
-                    :rules="rules.nameRule"
-                    background-color="transparent"
-                    :error-messages="errorsBags.name"
-                    ></v-text-field>
-                </v-col>
-                <v-col cols="12" lg="12">
-                    <GoogleMap
-                    v-if="loadingChild"
-                    @coordinates="coordinates"
-                    :title="'Titulo Marcador'"
-                    :editCoordinates="editCoordinates"/> 
-                </v-col>
-                <!-- <v-col cols="12" lg="12">
+    </v-card-text>
+    <v-card-text>
+      <v-form ref="form" v-model="valid" lazy-validation>
+        <v-row>
+          <v-col cols="12" lg="12">
+            <v-select
+              :loading="loadingCommerces"
+              label="Super mercados *"
+              :items="commerceList"
+              v-model="form.commerce_id"
+              filled
+              required
+              :rules="rules.commerceRule"
+              background-color="transparent"
+              :error-messages="errorsBags.comerce"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" lg="12">
+            <v-text-field
+              v-model="form.name"
+              label="Dirección *"
+              required
+              filled
+              :rules="rules.nameRule"
+              background-color="transparent"
+              :error-messages="errorsBags.name"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="12">
+            <GoogleMap
+              v-if="loadingChild"
+              @coordinates="coordinates"
+              :title="'Titulo Marcador'"
+              :editCoordinates="editCoordinates"
+            />
+          </v-col>
+          <!-- <v-col cols="12" lg="12">
                     <GoogleMap
                     v-if="loadingChild"
                     @coordinates="coordinates"
                     :title="'Titulo Marcador'"
                     :editCoordinates="editCoordinates"/> 
                 </v-col> -->
-                </v-row>
+        </v-row>
         <v-btn
           color="success"
           @click="save"
@@ -65,9 +79,9 @@
           dark
           >Cancelar</v-btn
         >
-        </v-form>
-      </v-card-text>
-    
+      </v-form>
+    </v-card-text>
+
     <SnackBar
       :text="textSnackBar"
       ref="snackBarRef"
@@ -99,8 +113,8 @@ export default {
       loadingCommerces: false,
       loadingChild: false,
       commerceList: [],
-      editCoordinates:{},
-      center:{},
+      editCoordinates: {},
+      center: {},
       form: {
         id: "",
         commerce_id: null,
@@ -111,7 +125,7 @@ export default {
 
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
-        commerceRule: [(v) => !!v || "este campo es obligatorio"]
+        commerceRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },
@@ -131,15 +145,15 @@ export default {
       updateCommerceAddress: "commerceAddress/updateCommerceAddress",
       getCommercesData: "commerce/getCommercesData",
     }),
-    coordinates(coordinate){
-      this.form.latitude = coordinate.lat
-      this.form.longitude = coordinate.lng
+    coordinates(coordinate) {
+      this.form.latitude = coordinate.lat;
+      this.form.longitude = coordinate.lng;
     },
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
         const payload = this.form;
-        console.log(payload)
+        console.log(payload);
         if (this.id) {
           this.update(payload);
         } else {
@@ -148,43 +162,42 @@ export default {
       }
     },
     setData() {
-      this.loadingCommerces = true;       
-      const rows = [];      
-      this.getCommercesData(1).then((result) => {
-        this.loadingChild = true;        
-        if(result) {   
-          result.map((element) => {
-            rows.push({
-              value: element.id,
-              text: element.name,
+      this.loadingCommerces = true;
+      const rows = [];
+      this.getCommercesData(1)
+        .then((result) => {
+          this.loadingChild = true;
+          if (result) {
+            result.map((element) => {
+              rows.push({
+                value: element.id,
+                text: element.name,
+              });
+              this.commerceList = rows;
             });
-            this.commerceList = rows;
-            
-          });
-
-        }
-        this.loadingCommerces = false;
-      }).catch((err) => {
-        console.log(err)
-        this.loadingCommerces = false; 
-      });
+          }
+          this.loadingCommerces = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingCommerces = false;
+        });
       if (this.id) {
         this.getCommerceAddressById(this.id).then((result) => {
-           this.loadingChild = true;
+          this.loadingChild = true;
           this.form = {
             id: result.id,
             name: result.name,
             commerce_id: result.commerce_id,
             latitude: result.latitude,
-            longitude: result.longitude
+            longitude: result.longitude,
           };
           this.editCoordinates = {
-            lat:result.latitude,
-            lng:result.longitude
-          }
+            lat: result.latitude,
+            lng: result.longitude,
+          };
         });
-        
-      }          
+      }
     },
 
     create(payload) {

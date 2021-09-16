@@ -4,6 +4,19 @@
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
         {{ titleForm }}
       </h3>
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registran todas las promociones
       </h6>
@@ -11,17 +24,16 @@
     <v-card-text>
       <v-form ref="form" v-model="valid" lazy-validation>
         <v-row>
-        
           <v-col cols="12" lg="12" v-if="ExpirePromotion">
             <v-alert outlined type="warning" prominent border="left">
               No se puede editar una promoción que ya ha expirado.
             </v-alert>
           </v-col>
-         
+
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Nombre de la promoción"
+              label="Nombre de la promoción *"
               required
               filled
               :disabled="ExpirePromotion"
@@ -43,18 +55,22 @@
           <v-col cols="12" lg="6">
             <v-select
               @input="ChangeType"
-              label="Aplica para.."
+              label="Aplica a *"
               :items="types"
               v-model="form.type"
               filled
-              :disabled="!!id && form.type=='products' || ExpirePromotion || form.entities>0"
+              :disabled="
+                (!!id && form.type == 'products') ||
+                ExpirePromotion ||
+                form.entities > 0
+              "
               required
               :rules="rules.typeRule"
               background-color="transparent"
               :error-messages="errorsBags.type"
             ></v-select>
           </v-col>
-          <v-col cols="12" lg="6" v-if="form.type=='products'">
+          <v-col cols="12" lg="6" v-if="form.type == 'products'">
             <v-select
               :items="commerces"
               :loading="loadingCommerces"
@@ -93,13 +109,13 @@
                 @input="menu2 = false"
               ></v-date-picker>
             </v-menu>
-          </v-col> 
+          </v-col>
         </v-row>
- 
+
         <v-row>
           <v-col cols="12" lg="6">
             <v-select
-              label="Tipo de Descuento"
+              label="Tipo de Descuento *"
               :items="types_promotion"
               v-model="form.type_descuent"
               filled
@@ -114,7 +130,7 @@
             <v-text-field
               type="number"
               v-model="form.amount"
-              label="Descuento"
+              label="Descuento *"
               filled
               required
               min="0"
@@ -124,7 +140,7 @@
               :error-messages="errorsBags.amount"
             ></v-text-field>
           </v-col>
-        </v-row> 
+        </v-row>
         <v-row>
           <v-col cols="12" lg="4">
             <v-checkbox
@@ -163,9 +179,8 @@
         </v-row>
         <v-row>
           <v-col cols="12" lg="6">
-            
             <v-select
-              label="Visible en..."
+              label="Visible en *"
               :items="types_visible"
               v-model="form.visible"
               :disabled="ExpirePromotion"
@@ -177,8 +192,8 @@
             ></v-select>
           </v-col>
         </v-row>
-  
-        <v-row  v-if="!ExpirePromotion">
+
+        <v-row v-if="!ExpirePromotion">
           <v-col cols="12" lg="12">
             <ShowsImages
               :items="imagesList"
@@ -187,57 +202,34 @@
             ></ShowsImages>
           </v-col>
 
-
-          <v-col cols="12" lg="12" v-if="id && imagesList.length>0">
-            <v-alert
-              dense
-              outlined
-              type="success"
-            >Solo se permite registrar una imagen</v-alert>
+          <v-col cols="12" lg="12" v-if="id && imagesList.length > 0">
+            <v-alert dense outlined type="success"
+              >Solo se permite registrar una imagen</v-alert
+            >
           </v-col>
-          <v-col cols="12" lg="12" class="mb-10" v-else-if="id && imagesList.length==0"> 
-            <v-alert 
+          <v-col
+            cols="12"
+            lg="12"
+            class="mb-10"
+            v-else-if="id && imagesList.length == 0"
+          >
+            <v-alert dense outlined type="info"
+              >El campo de imagen es obligatorio</v-alert
+            >
+            <UploadImages v-if="displayed" :max="1" @changed="onFileSelected" />
+          </v-col>
+          <v-col cols="12" lg="12" class="mb-10" v-else>
+            <v-alert
+              v-if="selectedFile.length == 0 && !id"
               dense
               outlined
               type="info"
-            >El campo de imagen es obligatorio</v-alert> 
-            <UploadImages
-              v-if="displayed"
-              :max="1"
-              @changed="onFileSelected"
-            />
-          </v-col>
-          <v-col cols="12" lg="12" class="mb-10" v-else>  
-            <v-alert
-              v-if="selectedFile.length==0 && !id"
-              dense
-              outlined
-              type="info"
-            >El campo de imagen es obligatorio</v-alert>
-            <UploadImages
-              v-if="displayed"
-              :max="1"
-              @changed="onFileSelected"
-            />
+              >El campo de imagen es obligatorio</v-alert
+            >
+            <UploadImages v-if="displayed" :max="1" @changed="onFileSelected" />
           </v-col>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- 
+          <!-- 
 
           <v-col cols="12" lg="12">
             <UploadImages
@@ -302,8 +294,6 @@ export default {
 
   data() {
     return {
-
-    
       titleForm: "Promoción",
       menu2: false,
       date_expired: false,
@@ -314,10 +304,6 @@ export default {
       imagesList: [],
       valid: true,
 
-
-
-
-
       form: {
         id: "",
         name: "",
@@ -327,11 +313,11 @@ export default {
         is_cupon: false,
         code_cupon: "",
         total_cupon: "",
-        visible: '',
+        visible: "",
         type_descuent: "",
-        amount: "", 
-        commerce_id: '',
-        entities:0,
+        amount: "",
+        commerce_id: "",
+        entities: 0,
       },
       types: [
         {
@@ -396,7 +382,6 @@ export default {
         },
       ],
 
-
       commerces: [],
       loadingCommerces: false,
       errorsBags: [],
@@ -418,8 +403,8 @@ export default {
     this.setData();
   },
   computed: {
-    ...mapGetters({ storePromotion: "promotion/getPromotion" }) ,
-    
+    ...mapGetters({ storePromotion: "promotion/getPromotion" }),
+
     ExpirePromotion() {
       var date_expired = this.date_expired;
       return date_expired;
@@ -434,7 +419,6 @@ export default {
   },
   methods: {
     ...mapActions({
- 
       commerceData: "commerce/getCommercesData",
       createPromotion: "promotion/createPromotion",
       getPromotionById: "promotion/getPromotionById",
@@ -446,65 +430,65 @@ export default {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
         //if (this.selectedFile.length) {
-          const payload = new FormData();
-          payload.append("name", this.form.name);  
-          payload.append("description", this.form.description);  
-          payload.append("expire_date", this.form.expire_date);  
-          payload.append("type", this.form.type);  
-          payload.append("is_cupon", this.form.is_cupon);  
-          payload.append("code_cupon", this.form.code_cupon);  
-          payload.append("total_cupon", this.form.total_cupon);  
-          payload.append("visible", this.form.visible);  
-          payload.append("type_descuent", this.form.type_descuent);  
-          payload.append("amount", this.form.amount);  
-          payload.append("commerce_id", this.form.commerce_id);  
-          payload.append("entities", this.form.entities); 
-          this.selectedFile.forEach((e) => {
-            payload.append("images[]", e);
-          });
-          if (this.id) {
-            if (this.selectedFile.length>0 || this.imagesList.length>0) {
-              payload.append("_method", "PUT");
-              payload.append("id", this.id);
-              this.update(payload, this.id);
-            }
-          } else {
-            if (this.selectedFile.length || this.id) {
-              this.create(payload);
-            }
+        const payload = new FormData();
+        payload.append("name", this.form.name);
+        payload.append("description", this.form.description);
+        payload.append("expire_date", this.form.expire_date);
+        payload.append("type", this.form.type);
+        payload.append("is_cupon", this.form.is_cupon);
+        payload.append("code_cupon", this.form.code_cupon);
+        payload.append("total_cupon", this.form.total_cupon);
+        payload.append("visible", this.form.visible);
+        payload.append("type_descuent", this.form.type_descuent);
+        payload.append("amount", this.form.amount);
+        payload.append("commerce_id", this.form.commerce_id);
+        payload.append("entities", this.form.entities);
+        this.selectedFile.forEach((e) => {
+          payload.append("images[]", e);
+        });
+        if (this.id) {
+          if (this.selectedFile.length > 0 || this.imagesList.length > 0) {
+            payload.append("_method", "PUT");
+            payload.append("id", this.id);
+            this.update(payload, this.id);
           }
+        } else {
+          if (this.selectedFile.length || this.id) {
+            this.create(payload);
+          }
+        }
         //}
       }
     },
     setData() {
-      if (this.id) { 
+      if (this.id) {
         this.getPromotionById(this.id).then((result) => {
           this.date_expired = result.expired;
           this.form = {
             id: result.id,
             name: result.name,
             type: result.type,
-            expire_date: (result.expire_date==null)?'':result.expire_date,
+            expire_date: result.expire_date == null ? "" : result.expire_date,
             is_cupon: result.is_cupon,
             code_cupon: result.code_cupon,
             total_cupon: result.total_cupon,
             description: result.description,
             visible: result.visible,
             type_descuent: result.type_descuent,
-            amount: result.amount, 
+            amount: result.amount,
             commerce_id: result.commerce_id,
             entities: result.entities,
           };
-          if(result.commerce_id!=''){
+          if (result.commerce_id != "") {
             this.loadCommerces();
           }
         });
       }
     },
 
-    ChangeType(){
-      this.form.commerce_id = '';
-      if(this.form.type == 'products'){
+    ChangeType() {
+      this.form.commerce_id = "";
+      if (this.form.type == "products") {
         this.loadCommerces();
       }
     },
@@ -584,8 +568,9 @@ export default {
       this.updatePromotion({ payload, id })
         .then((result) => {
           if (result) {
-            this.form = Object.assign({}, result); 
-            this.form.expire_date = (result.expire_date==null)?'':result.expire_date;
+            this.form = Object.assign({}, result);
+            this.form.expire_date =
+              result.expire_date == null ? "" : result.expire_date;
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
 
