@@ -1,62 +1,76 @@
 <template>
   <v-card class="mb-7">
-      <v-card-text class="pa-5 border-bottom">
+    <v-card-text class="pa-5 border-bottom">
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-        Cobertura
+        Coberturas
       </h3>
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registra la zona de cobertura
       </h6>
-    </v-card-text>    
-      <v-card-text>
-        <v-form ref="form" v-model="valid" lazy-validation>
-            <v-row>   
-                <v-col cols="12" lg="6">
-                    <v-select
-                     @change="loadMunicipalityByDepartment"
-                    :loading="loadingDepartments"
-                    label="Departamento"
-                    :items="departmentList"
-                    v-model="form.department_id"
-                    filled
-                    required
-                    :rules="rules.departmentRule"
-                    background-color="transparent"
-                    :error-messages="errorsBags.department"
-                    ></v-select>
-                </v-col>
-                <v-col cols="12" lg="6">
-                    <v-select
-                    :loading="loadingMunicipalities"
-                    label="Municipio"
-                    :items="municipalityList"
-                    v-model="form.municipality_id"
-                    filled
-                    required
-                    :rules="rules.municipalityRule"
-                    background-color="transparent"
-                    :error-messages="errorsBags.municipality"
-                    ></v-select>
-                </v-col>
-                <v-col cols="12" lg="12">
-                    <v-text-field
-                    v-model="form.name"
-                    label="Nombre"
-                    required
-                    filled
-                    :rules="rules.nameRule"
-                    background-color="transparent"
-                    :error-messages="errorsBags.name"
-                    ></v-text-field>
-                </v-col>
-                <v-col cols="12" lg="12">
-                    <GoogleMapGeoFence
-                    v-if="loadingChild"
-                    :title="'Titulo Marcador'"
-                    @geofences="geofences"
-                    :editCoordinates="editCoordinates"/>
-                </v-col>
-                </v-row>
+    </v-card-text>
+    <v-card-text>
+      <v-form ref="form" v-model="valid" lazy-validation>
+        <v-row>
+          <v-col cols="12" lg="6">
+            <v-select
+              @change="loadMunicipalityByDepartment"
+              :loading="loadingDepartments"
+              label="Departamento *"
+              :items="departmentList"
+              v-model="form.department_id"
+              filled
+              required
+              :rules="rules.departmentRule"
+              background-color="transparent"
+              :error-messages="errorsBags.department"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" lg="6">
+            <v-select
+              :loading="loadingMunicipalities"
+              label="Municipio *"
+              :items="municipalityList"
+              v-model="form.municipality_id"
+              filled
+              required
+              :rules="rules.municipalityRule"
+              background-color="transparent"
+              :error-messages="errorsBags.municipality"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" lg="12">
+            <v-text-field
+              v-model="form.name"
+              label="Nombre *"
+              required
+              filled
+              :rules="rules.nameRule"
+              background-color="transparent"
+              :error-messages="errorsBags.name"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" lg="12">
+            <GoogleMapGeoFence
+              v-if="loadingChild"
+              :title="'Titulo Marcador'"
+              @geofences="geofences"
+              :editCoordinates="editCoordinates"
+            />
+          </v-col>
+        </v-row>
         <v-btn
           color="success"
           @click="save"
@@ -72,9 +86,9 @@
           dark
           >Cancelar</v-btn
         >
-        </v-form>
-      </v-card-text>
-    
+      </v-form>
+    </v-card-text>
+
     <SnackBar
       :text="textSnackBar"
       ref="snackBarRef"
@@ -86,7 +100,7 @@
 <script>
 import SnackBar from "@/views/modules/components/SnackBar";
 import GoogleMapGeoFence from "../../../components/GoogleMapGeoFence";
-import { mapActions,mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "RegisterGeofence",
   props: {
@@ -108,20 +122,20 @@ export default {
       loadingChild: false,
       departmentList: [],
       municipalityList: [],
-      editCoordinates:[],
-      center:{},
+      editCoordinates: [],
+      center: {},
       form: {
         id: "",
         department_id: null,
         municipality_id: null,
         name: "",
-        geofence: []
+        geofence: [],
       },
 
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
         departmentRule: [(v) => !!v || "este campo es obligatorio"],
-        municipalityRule: [(v) => !!v || "este campo es obligatorio"]
+        municipalityRule: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },
@@ -138,16 +152,16 @@ export default {
       getGeofenceById: "geofence/getGeofenceById",
       updateGeofence: "geofence/updateGeofence",
       getDepartmentsData: "department/getDepartmentsData",
-       getMunicipalityByDepartment: "municipality/getMunicipalityByDepartment",
+      getMunicipalityByDepartment: "municipality/getMunicipalityByDepartment",
     }),
-    geofences(geofences){
-      this.form.geofence = geofences
+    geofences(geofences) {
+      this.form.geofence = geofences;
     },
     save() {
       this.$refs.form.validate();
       if (this.$refs.form.validate()) {
         const payload = this.form;
-        console.log(payload)
+        console.log(payload);
         if (this.id) {
           this.update(payload);
         } else {
@@ -156,64 +170,62 @@ export default {
       }
     },
     setData() {
-      this.loadingDepartments = true;       
-      this.loadingMunicipalities = true;       
-      const departments = [];    
-      this.getDepartmentsData().then((result) => {
-        this.loadingChild = true;        
-        if(result) {   
-          result.map((element) => {
-            departments.push({
-              value: element.id,
-              text: element.name,
+      this.loadingDepartments = true;
+      this.loadingMunicipalities = true;
+      const departments = [];
+      this.getDepartmentsData()
+        .then((result) => {
+          this.loadingChild = true;
+          if (result) {
+            result.map((element) => {
+              departments.push({
+                value: element.id,
+                text: element.name,
+              });
+              this.departmentList = departments;
             });
-            this.departmentList = departments;
-            
-          });
-
-        }
-        this.loadingDepartments = false;
-        this.loadingMunicipalities = false;
-      }).catch((err) => {
-        console.log(err)
-        this.loadingDepartments = false; 
-        this.loadingMunicipalities = false;
-      });
+          }
+          this.loadingDepartments = false;
+          this.loadingMunicipalities = false;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.loadingDepartments = false;
+          this.loadingMunicipalities = false;
+        });
       if (this.id) {
         this.getGeofenceById(this.id).then((result) => {
-           this.loadingChild = true;
-         const parseData = {
+          this.loadingChild = true;
+          const parseData = {
             id: result.id,
             name: result.name,
             department_id: result.department_id,
             municipality_id: result.municipality_id,
-            geofence: result.geofence
+            geofence: result.geofence,
           };
-          this.editCoordinates = result.geofence
-          this.form = Object.assign({}, parseData);          
-          
-          this.loadMunicipalityByDepartment();
+          this.editCoordinates = result.geofence;
+          this.form = Object.assign({}, parseData);
 
-        }); 
-      }          
+          this.loadMunicipalityByDepartment();
+        });
+      }
     },
 
     loadMunicipalityByDepartment() {
       this.loadingMunicipalities = true;
-      const municipalities = []
+      const municipalities = [];
       this.municipalityList = [];
       this.geofenceList = [];
       this.getMunicipalityByDepartment(this.form.department_id)
         .then((result) => {
           if (result) {
-              result.map((element) => {
+            result.map((element) => {
               municipalities.push({
-              value: element.id,
-              text: element.name,
+                value: element.id,
+                text: element.name,
+              });
+              this.municipalityList = municipalities;
             });
-            this.municipalityList = municipalities;
-            
-          });             
           }
           this.loadingMunicipalities = false;
         })

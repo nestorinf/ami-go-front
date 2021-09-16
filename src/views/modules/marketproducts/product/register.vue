@@ -5,6 +5,19 @@
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
           Producto
         </h3>
+        <v-col>
+          <v-alert
+            border="left"
+            colored-border
+            type="error"
+            dense
+            dismissible
+            width="xl"
+            mode
+          >
+            Los Campos con <strong>*</strong> son obligatorios
+          </v-alert>
+        </v-col>
         <h6 class="subtitle-2 font-weight-light">
           En este formulario se registran todos los productos de Super Mercados
         </h6>
@@ -20,7 +33,7 @@
                 filled
                 required
                 v-model="form.commerce_id"
-                label="Super mercados"
+                label="Super mercados *"
                 :rules="rules.commerceRule"
                 background-color="transparent"
               ></v-select>
@@ -33,7 +46,7 @@
                 :rules="rules.categoryRule"
                 v-model="form.category_id"
                 filled
-                label="Categoria Producto Super mercados"
+                label="Categoria Producto Super mercados *"
                 background-color="transparent"
               ></v-select>
             </v-col>
@@ -42,7 +55,7 @@
             <v-col cols="12" lg="6">
               <v-text-field
                 v-model="form.name"
-                label="Nombre"
+                label="Nombre *"
                 filled
                 required
                 :rules="rules.nameRule"
@@ -76,7 +89,7 @@
               <v-text-field
                 v-model="form.price"
                 type="number"
-                label="Precio"
+                label="Precio *"
                 prefix="$"
                 required
                 min="0"
@@ -89,7 +102,6 @@
                 type="number"
                 v-model="form.weight"
                 label="Peso"
-                min="0"
                 background-color="transparent"
               ></v-text-field>
             </v-col>
@@ -103,7 +115,7 @@
                 required
                 :rules="rules.uomRule"
                 :loading="loadingUom"
-                label="Unidad de Medida"
+                label="Unidad de Medida *"
                 background-color="transparent"
               ></v-select>
             </v-col>
@@ -282,7 +294,7 @@
                 <v-btn
                   color="success"
                   @click="AddProductDetail"
-                  :disabled="!validDetail || form_detail.logo.length==0"
+                  :disabled="!validDetail || form_detail.logo.length == 0"
                   submit
                   class="text-capitalize mr-2"
                 >
@@ -542,38 +554,35 @@ export default {
       }
     },
     imagesProductBatches(item) {
-      console.log('item',item);
+      console.log("item", item);
       this.detail_index = item;
       this.dialog2 = true;
       this.imagesList = this.attachments(item.logo);
     },
     attachments(attachmentData) {
-       const attachmentsRows = [];
-       // if (this.id) {
-      attachmentData.map((element) => { 
-       console.log('element',element);
+      const attachmentsRows = [];
+      // if (this.id) {
+      attachmentData.map((element) => {
+        console.log("element", element);
         if (element) {
-          if (!element.id) { 
-
-             const reader = new FileReader()
-             var rawImg = "";
+          if (!element.id) {
+            const reader = new FileReader();
+            var rawImg = "";
 
             reader.onloadend = () => {
               rawImg = reader.result;
               attachmentsRows.push({
                 id: element.id,
                 imagen: rawImg,
-              }); 
-            }
+              });
+            };
             reader.readAsDataURL(element);
-  
-          }else{
+          } else {
             attachmentsRows.push({
               id: element.id,
-              imagen: element.url
+              imagen: element.url,
             });
           }
-               
         }
       });
       // }
@@ -593,9 +602,9 @@ export default {
       } else {
         const ImagesNew = this.ImageLogoModal;
         for (let i = 0; i < ImagesNew.length; i++) {
-          this.form.product_batches_detail[
-            this.detail_index.index
-          ].logo.push(ImagesNew[i]);
+          this.form.product_batches_detail[this.detail_index.index].logo.push(
+            ImagesNew[i]
+          );
         }
       }
 
@@ -610,7 +619,6 @@ export default {
     },
 
     AddProductDetail() {
-      
       this.$refs.form_detail.validate();
       if (this.$refs.form_detail.validate()) {
         this.form.product_batches_detail.push({
@@ -668,7 +676,6 @@ export default {
         for (let i = 0; i < this.form.product_batches_detail.length; i++) {
           let detail = this.form.product_batches_detail[i];
 
-
           if (detail["logo"]) {
             for (let ii = 0; ii < detail["logo"].length; ii++) {
               let file = detail["logo"][ii];
@@ -678,8 +685,8 @@ export default {
               );
             }
           }
-          this.$delete(detail, 'images')
-          this.$delete(detail, 'logo')
+          this.$delete(detail, "images");
+          this.$delete(detail, "logo");
           formData.append(
             "product_batches_detail[" + i + "]",
             JSON.stringify(detail)
@@ -705,7 +712,7 @@ export default {
             this.form.provider_id = "";
             this.form.category_intern_ids = [];
             this.form.product_batches_detail = [];
-            this.form.product_classification_id = null;
+            this.form.product_classification_id = "";
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
           }
@@ -1040,22 +1047,17 @@ export default {
 
       this.$refs.DialogConfirm.changeStateDialog(false);
     },
- 
-    uploadImage(file) {    
+
+    uploadImage(file) {
       var _this = this;
-      const reader = new FileReader()
+      const reader = new FileReader();
 
-         reader.onloadend = () => {
-          _this.rawImg = reader.result;
-          console.log(_this.rawImg);
-        }
-        reader.readAsDataURL(file);
-        
-        
-        
-
-    }
-
+      reader.onloadend = () => {
+        _this.rawImg = reader.result;
+        console.log(_this.rawImg);
+      };
+      reader.readAsDataURL(file);
+    },
   },
   watch: {
     productClassificationId() {
@@ -1099,7 +1101,7 @@ export default {
               colour: color != -1 ? colourList[color]["text"] : "N/A",
               size: talla != -1 ? sizeList[talla]["text"] : "N/A",
               logo: element.id ? element.attachment : element.logo,
-             });
+            });
           }
         });
       }

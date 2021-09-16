@@ -68,7 +68,7 @@ export default {
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Cobertura",
+    titleForm: "Coberturas",
     headers: [
       {
         text: "Accion",
@@ -98,7 +98,7 @@ export default {
   watch: {
     storeGeofences(data) {
       this.items = [];
-      if (data.length > 0) {        
+      if (data.length > 0) {
         this.items = data;
       }
     },

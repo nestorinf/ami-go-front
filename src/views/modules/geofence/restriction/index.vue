@@ -68,7 +68,7 @@ export default {
 
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
-    titleForm: "Restricción",
+    titleForm: "Restricciones",
     headers: [
       {
         text: "Accion",
@@ -97,20 +97,24 @@ export default {
   }),
 
   computed: {
-    ...mapGetters({ storeGeofenceRestrictions: "geofenceRestriction/getGeofenceRestrictions" }),
+    ...mapGetters({
+      storeGeofenceRestrictions: "geofenceRestriction/getGeofenceRestrictions",
+    }),
   },
   watch: {
     storeGeofenceRestrictions(data) {
       this.items = [];
-      if (data.length > 0) {        
+      if (data.length > 0) {
         this.items = data;
       }
     },
   },
   methods: {
     ...mapActions({
-      getGeofenceRestrictionData: "geofenceRestriction/getGeofenceRestrictionData",
-      removeGeofenceRestriction: "geofenceRestriction/removeGeofenceRestriction",
+      getGeofenceRestrictionData:
+        "geofenceRestriction/getGeofenceRestrictionData",
+      removeGeofenceRestriction:
+        "geofenceRestriction/removeGeofenceRestriction",
     }),
     editButton({ id }) {
       this.$router.push("restriction/edit/" + id);

@@ -4,6 +4,19 @@
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
         País
       </h3>
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registran todos los países
       </h6>
@@ -14,7 +27,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Nombre"
+              label="Nombre *"
               filled
               required
               :rules="rules.nameRule"
@@ -25,7 +38,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.code"
-              label="Código"
+              label="Código *"
               filled
               required
               :rules="rules.codeRule"
@@ -36,7 +49,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.latitude"
-              label="Latitud"
+              label="Latitud *"
               filled
               required
               :rules="rules.latitudeRule"
@@ -47,7 +60,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.longitude"
-              label="Longitud"
+              label="Longitud *"
               filled
               required
               :rules="rules.longitudeRule"
@@ -73,11 +86,7 @@
           class="text-capitalize mr-2"
           >Guardar</v-btn
         >
-        <v-btn
-          color="black"
-          class="text-capitalize"
-          to="/location/country"
-          dark
+        <v-btn color="black" class="text-capitalize" to="/location/country" dark
           >Cancelar</v-btn
         >
       </v-form>
@@ -160,17 +169,17 @@ export default {
     create(payload) {
       this.createCountry(payload)
         .then((result) => {
-          if (result) {            
+          if (result) {
             this.$refs.form.reset();
-            this.form = {
-                      id: "",
-                      name: "",
-                      code: "",
-                      latitude: "",
-                      longitude: "",
-                      is_default: 0,
-                    },
-            this.$refs.snackBarRef.changeStatusSnackbar(true);
+            (this.form = {
+              id: "",
+              name: "",
+              code: "",
+              latitude: "",
+              longitude: "",
+              is_default: 0,
+            }),
+              this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
           }
         })

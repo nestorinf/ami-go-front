@@ -4,6 +4,19 @@
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
         Clasificación
       </h3>
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registran todos las Clasificaciones
       </h6>
@@ -14,7 +27,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Clasificación"
+              label="Clasificación *"
               filled
               required
               :rules="rules.nameRule"
@@ -26,7 +39,7 @@
           <v-col cols="12" lg="6">
             <v-select
               :loading="loadingReferenceSize"
-              label="Referencia"
+              label="Referencia *"
               :items="referenceSize"
               v-model="form.reference_id"
               filled

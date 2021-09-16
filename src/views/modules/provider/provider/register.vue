@@ -5,6 +5,19 @@
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
           Proveedor
         </h3>
+        <v-col>
+          <v-alert
+            border="left"
+            colored-border
+            type="error"
+            dense
+            dismissible
+            width="xl"
+            mode
+          >
+            Los Campos con <strong>*</strong> son obligatorios
+          </v-alert>
+        </v-col>
         <h6 class="subtitle-2 font-weight-light">
           En este formulario se registran todos los proveedores de productos
         </h6>
@@ -19,15 +32,15 @@
               required
               :rules="rules.provider_type_idRule"
               :loading="loadingProviderType"
-              label="Tipo Proveedor"
+              label="Tipo Proveedor *"
               background-color="transparent"
               :error-messages="errorsBags.provider_type_id"
             ></v-select>
-            </v-col>
-             <v-col cols="12" lg="6">
+          </v-col>
+          <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.registerno"
-              label="Número Registro"
+              label="Número Registro *"
               filled
               required
               :rules="rules.registernoRule"
@@ -35,10 +48,10 @@
               :error-messages="errorsBags.registerno"
             ></v-text-field>
           </v-col>
-           <v-col cols="12" lg="6">
+          <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.nit"
-              label="NIT"
+              label="NIT *"
               filled
               required
               :rules="rules.nitRule"
@@ -49,7 +62,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.name"
-              label="Nombre del Proveedor"
+              label="Nombre del Proveedor *"
               required
               filled
               :rules="rules.nameRule"
@@ -61,7 +74,7 @@
             <v-text-field
               type="email"
               v-model="form.email"
-              label="Email del Proveedor"
+              label="Email del Proveedor *"
               required
               filled
               :rules="rules.emailRule"
@@ -72,7 +85,7 @@
           <v-col cols="6" lg="6">
             <v-text-field
               v-model="form.agent"
-              label="Persona Contacto del Proveedor"
+              label="Persona Contacto del Proveedor *"
               filled
               required
               :rules="rules.agentRule"
@@ -93,7 +106,7 @@
           <v-col cols="12" lg="6">
             <v-text-field
               v-model="form.phone"
-              label="Telefono del Proveedor"
+              label="Telefono del Proveedor *"
               filled
               required
               :rules="rules.phoneRule"
@@ -111,7 +124,7 @@
               background-color="transparent"
               :error-messages="errorsBags.description"
             ></v-text-field>
-            </v-col>
+          </v-col>
         </v-row>
         <v-btn
           color="success"
@@ -165,7 +178,7 @@ export default {
         name: "",
         agent: "",
         email: "",
-        
+
         // code_provider: "",
         phone: "",
         description: "",
@@ -185,8 +198,8 @@ export default {
             !v ||
             /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
             "el email es invalido",
-        ],  
-        description: [(v) => !!v || "este campo es obligatorio"],      
+        ],
+        description: [(v) => !!v || "este campo es obligatorio"],
       },
     };
   },

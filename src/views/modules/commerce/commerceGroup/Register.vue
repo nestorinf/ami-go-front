@@ -4,6 +4,19 @@
       <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
         Agrupar Comercios
       </h3>
+      <v-col>
+        <v-alert
+          border="left"
+          colored-border
+          type="error"
+          dense
+          dismissible
+          width="xl"
+          mode
+        >
+          Los Campos con <strong>*</strong> son obligatorios
+        </v-alert>
+      </v-col>
       <h6 class="subtitle-2 font-weight-light">
         En este formulario se registran todas las agrupaciones de comercios
       </h6>
@@ -14,7 +27,7 @@
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.name"
-              label="Nombre del Grupo"
+              label="Nombre del Grupo *"
               required
               filled
               :rules="rules.nameRule"
@@ -24,9 +37,12 @@
           <v-col cols="12" lg="12">
             <v-text-field
               v-model="form.cost_delivery"
-              label="Costo del Delivery"
+              label="Costo del Delivery *"
+              type="number"
               required
+              min="1"
               filled
+              prefix="$"
               :rules="rules.costDeliveryRule"
               background-color="transparent"
             ></v-text-field>
@@ -38,7 +54,7 @@
               dense
               chips
               small-chips
-              label="Comercios"
+              label="Comercios *"
               multiple
               solo
               required
@@ -114,7 +130,10 @@ export default {
       rules: {
         nameRule: [(v) => !!v || "este campo es obligatorio"],
         commerceRules: [(v) => !!v || "este campo es obligatorio"],
-        costDeliveryRule: [(v) => !!v || "este campo es obligatorio"],
+        costDeliveryRule: [
+          (v) => !!v || "este campo es obligatorio",
+          (v) => v > 0 || "El valor del costo delivery debe ser mayor a 0",
+        ],
       },
     };
   },
@@ -179,7 +198,7 @@ export default {
     create(payload) {
       this.createCommerceGroup(payload)
         .then((result) => {
-          if (result) { 
+          if (result) {
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
