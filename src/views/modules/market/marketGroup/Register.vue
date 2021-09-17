@@ -64,7 +64,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/commerce/commerce-group"
+          to="/market/market-group"
           dark
           >Cancelar</v-btn
         >

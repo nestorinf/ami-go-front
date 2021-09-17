@@ -61,7 +61,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/commerce/commerce-address"
+          to="/market/market-address"
           dark
           >Cancelar</v-btn
         >

@@ -246,6 +246,7 @@ export default {
           if (result) {
             // this.form = {};
             this.$refs.form.reset();
+            this.form.enabled = true;
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
 

@@ -102,7 +102,7 @@
         <v-btn
           color="black"
           class="text-capitalize"
-          to="/marketproducts/categories"
+          to="/marketproducts/categories_intern"
           dark
           >Cancelar</v-btn
         >
@@ -247,6 +247,7 @@ export default {
           if (result) {
             // this.form = {};
             this.$refs.form.reset();
+            this.form.enabled = true;
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
 
