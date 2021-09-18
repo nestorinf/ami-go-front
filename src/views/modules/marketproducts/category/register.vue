@@ -154,7 +154,7 @@ export default {
         name: "",
         description: "",
         parent_id: "",
-        enabled: false,
+        enabled: true,
         interno: 0,
         saved_imagen: true,
         view_type: "MARKET",
@@ -266,6 +266,7 @@ export default {
           if (result) {
             // this.form = {};
             this.$refs.form.reset();
+            this.form.enabled = true;
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
 
