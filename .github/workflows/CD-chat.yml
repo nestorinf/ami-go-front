@@ -30,6 +30,13 @@ jobs:
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_name_branch
+        
+      - id: string
+        uses: ASzc/change-string-case-action@v1
+        with:
+          string: ${{ steps.extract_name_branch.outputs.branch }}
+      - run: |
+          echo "${{ steps.string.outputs.lowercase }}"
 
       # This job uses Buildx layer caching
       - uses: actions/checkout@v2
@@ -37,7 +44,7 @@ jobs:
         id: prep
         run: |
           TAG=$(echo $GITHUB_SHA | head -c7)
-          IMAGE="${{ secrets.DOCKER_URL_IMAGE }}${{ steps.extract_name_branch.outputs.branch }}"
+          IMAGE="${{ secrets.DOCKER_URL_IMAGE }}${{ steps.string.outputs.lowercase }}"
           echo ::set-output name=tagged_image::${IMAGE}:${TAG},${IMAGE}:latest
           echo ::set-output name=tag::${TAG}
       - name: Set up Docker Buildx
