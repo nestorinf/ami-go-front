@@ -173,10 +173,20 @@
               ></v-checkbox>
             </v-col>
           </v-row>
+          <v-row v-if="listDetail.length==0">
+            <v-col cols="12" class="py-5">
+              <v-alert  
+                dense
+                outlined
+                type="warning"
+              >Debe Añadir detalles al producto para poder continuar</v-alert> 
+            </v-col>
+          </v-row>
+
           <v-btn
             color="success"
             @click="save"
-            :disabled="!valid"
+            :disabled="!valid || listDetail.length==0"
             submit
             class="text-capitalize mr-2"
             >Guardar</v-btn
@@ -255,7 +265,7 @@
                   v-model="form_detail.stock"
                   label="Cantidad en existencia"
                   type="number"
-                  min="0.1"
+                  min="1"
                   filled
                   required
                   :rules="rules.stockRule"
@@ -302,7 +312,13 @@
                   <v-icon small>mdi-plus</v-icon>
                 </v-btn>
               </v-col>
-
+              <v-col cols="12" lg="12" v-if="form_detail.logo.length==0">  
+                <v-alert
+                  dense
+                  outlined
+                  type="info"
+                >Debes añadir por lo menos una imagen al detalle</v-alert>               
+              </v-col>
               <v-col cols="12" lg="12">
                 <UploadImages
                   ref="VueUploadImageLogo"
