@@ -1,7 +1,7 @@
 <template>
   <v-col cols="12" lg="12">
     <div>
-      <h2>Busque una Dirección y Agregue O Seleccione en el Mapa</h2>
+      <h2>Buscar una Dirección, Agregar o Seleccionar en el Mapa</h2>
         <vuetify-google-autocomplete
           id="map"
           placeholder="Ingrese una Direccion"
