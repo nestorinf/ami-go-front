@@ -262,6 +262,7 @@ export default {
         .then((result) => {
           if (result) {
             this.$refs.form.reset();
+            this.form.enabled = true;
             handleMessage("Guardado existosamente!", 200, this);
 
             this.selectedFile = [];
