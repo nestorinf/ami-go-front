@@ -3,7 +3,7 @@ version: "3"
 services:
   ami-go-app-front_CD:
     container_name: ami-go-app-front_CD
-    image: registry.gitlab.com/appamigo/amigo_front-end/beta:latest
+    image: registry.gitlab.com/appamigo/amigo_front-end/feature/chat-websocket:latest
     restart: always
     expose:
       - "8081"
