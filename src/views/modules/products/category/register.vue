@@ -83,6 +83,13 @@
             <UploadImages v-if="displayed" :max="1" @changed="onFileSelected" />
           </v-col>
           <v-col cols="12" lg="12" class="mb-10" v-else>
+              <v-alert
+              v-if="selectedFile.length == 0 && !id"
+              dense
+              outlined
+              type="info"
+              >El campo de imagen es obligatorio</v-alert
+            >
             <UploadImages v-if="displayed" :max="1" @changed="onFileSelected" />
           </v-col>
 
@@ -262,7 +269,7 @@ export default {
         .then((result) => {
           if (result) {
             this.$refs.form.reset();
-            this.form.enabled = true;
+            this.form.enabled = 1;
             handleMessage("Guardado existosamente!", 200, this);
 
             this.selectedFile = [];

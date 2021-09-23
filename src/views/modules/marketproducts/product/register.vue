@@ -511,6 +511,7 @@ export default {
       uomRule: [(v) => !!v || "este campo es obligatorio"],
       categoryInternRule: [(v) => !!v || "este campo es obligatorio"],
       stockRule: [(v) => !!v || "este campo es obligatorio"],
+      colour_idRule: [(v) => !!v || "este campo es obligatorio"],
     },
 
     detail_index: "",
@@ -730,6 +731,8 @@ export default {
             this.form.category_intern_ids = [];
             this.form.product_batches_detail = [];
             this.form.product_classification_id = "";
+            this.form.enabled = 1;
+            this.form.on_stock = 1;
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
           }
