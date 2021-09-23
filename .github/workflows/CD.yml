@@ -84,16 +84,16 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
       
-#       - name: deployment sh via ssh
-#         uses: fifsky/ssh-action@master
-#         with:
-#           command: |
-#             sh ${{ secrets.DEPLOY_SH }}
-#           host: ${{ secrets.HOST }}
-#           port: ${{ secrets.PORT }}
-#           user: ${{ secrets.USERNAME }}
-#           key: ${{ secrets.PRIVATE_KEY}}
-#           args: "-tt -vvv"
+      - name: deployment sh via ssh
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            sh ${{ secrets.DEPLOY_SH }}
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          user: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY}}
+          args: "-tt -vvv"
       
       - uses: act10ns/slack@v1
         with:
