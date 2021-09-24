@@ -213,6 +213,9 @@ export default {
           if (result) {
             this.form = {};
             this.$refs.form.reset();
+            this.form.images = [];
+            this.imagesList = [];
+            this.$refs.VueUploadImages.Imgs = [];
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
           }

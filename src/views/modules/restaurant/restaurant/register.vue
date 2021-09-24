@@ -100,6 +100,8 @@
               v-model="form.phone"
               label="Teléfono principal del Restaurante *"
               filled
+              required
+              :rules="rules.phoneRules"
               background-color="transparent"
               :error-messages="errorsBags.phone"
             ></v-text-field>
@@ -125,13 +127,13 @@
               background-color="transparent"
             ></v-text-field>
           </v-col>
-          <v-switch
-            v-model="form.enabled"
-            inset
-            label="Habilitado"
-            :error-messages="errorsBags.enabled"
-            hide-details
-          ></v-switch>
+          <v-col cols="12" lg="6">
+            <v-checkbox
+              v-model="form.enabled"
+              required
+              label="Habilitado"
+            ></v-checkbox>
+          </v-col>
         </v-row>
 
         <v-row>
@@ -254,6 +256,7 @@ export default {
         precisionQtyRule: [
           (v) => (!!v && v > 0) || "este campo es obligatorio",
         ],
+        phoneRules: [(v) => (!!v && v > 0) || "este campo es obligatorio"],
       },
     };
   },
@@ -348,13 +351,20 @@ export default {
       });
       if (this.id) {
         this.getRestaurantById(this.id).then((result) => {
-          this.form = Object.assign(
-            {
-              logo: [],
-              cover: [],
-            },
-            result
-          );
+          this.form = {
+            id: result.id,
+            name: result.name,
+            restaurant_type_id: result.restaurant_type_id,
+            department_id: result.department_id,
+            municipality_id: result.municipality_id,
+            description: result.description,
+            precision_qty: result.precision_qty,
+            phone: result.phone || "",
+            phone_2: result.phone_2 || "",
+            enabled: result.enabled,
+            logo: [],
+            cover: [],
+          };
         });
       }
     },
@@ -379,6 +389,8 @@ export default {
           if (result) {
             this.form = {};
             this.$refs.form.reset();
+            this.$refs.VueUploadImageLogo.Imgs = [];
+            this.$refs.VueUploadImagesCover.Imgs = [];
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
           }
@@ -400,6 +412,8 @@ export default {
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
+            this.$refs.VueUploadImageLogo.Imgs = [];
+            this.$refs.VueUploadImagesCover.Imgs = [];
             this.textSnackBar = "Actualizado existosamente!";
           }
         })
