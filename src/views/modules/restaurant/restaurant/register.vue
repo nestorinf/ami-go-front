@@ -125,13 +125,13 @@
               background-color="transparent"
             ></v-text-field>
           </v-col>
-          <v-switch
-            v-model="form.enabled"
-            inset
-            label="Habilitado"
-            :error-messages="errorsBags.enabled"
-            hide-details
-          ></v-switch>
+          <v-col cols="12" lg="6">
+            <v-checkbox
+              v-model="form.enabled"
+              required
+              label="Habilitado"
+            ></v-checkbox>
+          </v-col>
         </v-row>
 
         <v-row>
@@ -245,7 +245,7 @@ export default {
         precision_qty: 1,
         phone: "",
         phone_2: "",
-        enabled: true,
+        enabled: 1,
         logo: [],
         cover: [],
       },
