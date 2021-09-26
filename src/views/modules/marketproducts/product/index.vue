@@ -73,7 +73,7 @@ export default {
         value: "action",
       },
       {
-        text: "Comercio",
+        text: "Super Mercado",
         align: "start",
         sortable: true,
         value: "commerce",

@@ -73,6 +73,12 @@ export default {
         value: "action",
       },
       {
+        text: "Comercio",
+        align: "start",
+        sortable: true,
+        value: "commerce",
+      },
+      {
         text: "Nombre",
         align: "start",
         sortable: false,
