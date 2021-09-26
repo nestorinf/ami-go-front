@@ -175,8 +175,8 @@ export default {
             type: result.type,
             to_entities: result.to_entities,
             expire_date: result.expire_date,
-            commerces_id: result.commerces_id,
-            restaurates_id: result.restaurates_id,
+            commerces_id: (result.commerces_id)?result.commerces_id:[],
+            restaurates_id: (result.restaurates_id)?result.restaurates_id:[],
             commerce_id: result.commerce_id,
             promotions_products: (result.promotions_products)?result.promotions_products:[],
           };
@@ -256,6 +256,7 @@ export default {
     },
   },
   watch: {
+    
     storeCommerce(data) {
       const rows = [];      
       if (data.length > 0) { 
@@ -264,7 +265,7 @@ export default {
             id: element.id,
             name: element.name,
             type: element.commerce_type_name,
-            seleted: this.form.commerce_id.includes(element.id)
+            seleted: this.form.commerces_id.includes(element.id)
           });
           this.ListEntities = rows;
         });
