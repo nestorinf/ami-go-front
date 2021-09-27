@@ -19,7 +19,7 @@
     <br>
     <GmapMap
       :center='this.center'
-      :zoom='13'
+      :zoom='this.center.zoom'
       style='width:100%;  height: 400px;'
       @click="updateCoordinates"      
     >
@@ -65,9 +65,10 @@ export default {
     
     getAddressData: function (addressData) {
                 this.address = addressData;
+                this.addMarker();
             },
     setPlace(place) {
-      this.currentPlace = place;
+      this.currentPlace = place;      
     },
     updateCoordinates(location) {
     this.markers = []
@@ -81,10 +82,11 @@ export default {
     addMarker() {
     this.markers = []
       if (this.address) {
-        const coordinate = {
+       const coordinate = {
           lat: this.address.latitude,
           lng: this.address.longitude,
           country: this.center.country,
+          zoom: this.center.zoom,
         };        
         this.markers.push({ position: coordinate });
         this.places.push(this.currentPlace);
@@ -95,25 +97,33 @@ export default {
       
     },
     Coordinates() {
-      this.markers = []        
-          const coordinateedit = {
-            lat: parseFloat(this.editCoordinates.lat),
-            lng: parseFloat(this.editCoordinates.lng),
-          }
-      this.markers.push({ position: coordinateedit });
-      
+      this.markers = []      
       this.getCountryData().then((result => {
         const country = result.filter(country =>  country.is_default === 1  );
-        
-        this.center = {
-        lat: parseFloat(country[0].latitude), 
-        lng: parseFloat(country[0].longitude),
-        country: country[0].code,
-      }        
+        if (Object.entries(this.editCoordinates).length != 0) {
+            this.center = {
+                lat: parseFloat(this.editCoordinates.lat), 
+                lng: parseFloat(this.editCoordinates.lng),
+                country: country[0].code,
+                zoom: 14,
+            } 
+            const coordinateedit = {
+            lat: parseFloat(this.editCoordinates.lat),
+            lng: parseFloat(this.editCoordinates.lng),
+            }
+           this.markers.push({ position: coordinateedit });
+       } else {
+            this.center = {
+              lat: parseFloat(country[0].latitude), 
+              lng: parseFloat(country[0].longitude),
+              country: country[0].code,
+              zoom: 13,
+            } 
+       }        
       }))
     }
 
-    
+
     //geolocate: function() {
     //  navigator.geolocation.getCurrentPosition(position => {
     //    this.center = {
