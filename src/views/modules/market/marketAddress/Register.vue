@@ -50,7 +50,7 @@
           </v-col>
           <v-col cols="12" lg="12">
             <GoogleMap
-              v-if="loadingChild"
+              v-if="loadingChildRegister || loadingChildEdit"
               @coordinates="coordinates"
               :title="'Titulo Marcador'"
               :editCoordinates="editCoordinates"
@@ -111,7 +111,8 @@ export default {
       valid: true,
       errorsBags: [],
       loadingCommerces: false,
-      loadingChild: false,
+      loadingChildRegister: false,
+       loadingChildEdit: false,
       commerceList: [],
       editCoordinates: {},
       center: {},
@@ -166,7 +167,7 @@ export default {
       const rows = [];
       this.getCommercesData(1)
         .then((result) => {
-          this.loadingChild = true;
+          // this.loadingChildRegister = true;
           if (result) {
             result.map((element) => {
               rows.push({
@@ -184,7 +185,7 @@ export default {
         });
       if (this.id) {
         this.getCommerceAddressById(this.id).then((result) => {
-          this.loadingChild = true;
+          // this.loadingChildRegister = true;
           this.form = {
             id: result.id,
             name: result.name,
@@ -196,7 +197,11 @@ export default {
             lat: result.latitude,
             lng: result.longitude,
           };
+
+          this.loadingChildEdit = true;
         });
+      } else {
+         this.loadingChildRegister = true;
       }
     },
 
