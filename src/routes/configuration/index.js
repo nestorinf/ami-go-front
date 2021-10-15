@@ -95,11 +95,13 @@ export default {
     group: "/configuration",
     title: "Configuración",
     icon: "mdi-cog",
+    roles: ['ROLE_ROOT'],
     children: [
       {
         title: "Referencia",
         icon: "mdi-comment-outline",
         to: "reference",
+        roles: ['ROLE_ROOT']
       },
       {
         title: "Lista Referencia",
