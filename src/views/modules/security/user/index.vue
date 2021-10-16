@@ -119,7 +119,7 @@ export default {
         case "markets":
           data = {
             name: "Super Mercados",
-            slug: "ROLE_COMMERCE",
+            slug: "ROLE_MARKET",
           };
           break;
         case "restaurants":
