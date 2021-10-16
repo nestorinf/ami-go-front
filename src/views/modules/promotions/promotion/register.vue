@@ -24,7 +24,7 @@
     <v-card-text>
       <v-form ref="form" v-model="valid" lazy-validation>
         <v-row>
-          <v-col cols="12" lg="12" v-if="ExpirePromotion">
+          <v-col cols="12" lg="12" v-if="expired">
             <v-alert outlined type="warning" prominent border="left">
               No se puede editar una promoción que ya ha expirado.
             </v-alert>
@@ -36,7 +36,7 @@
               label="Nombre de la promoción *"
               required
               filled
-              :disabled="ExpirePromotion"
+              :disabled="expired"
               :rules="rules.nameRule"
               background-color="transparent"
               :error-messages="errorsBags.name"
@@ -47,7 +47,7 @@
               v-model="form.description"
               label="Descripción de la promoción"
               filled
-              :disabled="ExpirePromotion"
+              :disabled="expired"
               background-color="transparent"
               :error-messages="errorsBags.description"
             ></v-text-field>
@@ -61,7 +61,7 @@
               filled
               :disabled="
                 (!!id && form.type == 'products') ||
-                ExpirePromotion ||
+                expired ||
                 form.entities > 0
               "
               required
@@ -95,6 +95,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
                   v-model="form.expire_date"
+                  :disabled="expired"
                   label="Fecha de expiración (Dejar en blanco si no aplica)"
                   hint="Dejar en blanco si no aplica..."
                   readonly
@@ -120,7 +121,7 @@
               v-model="form.type_descuent"
               filled
               required
-              :disabled="ExpirePromotion"
+              :disabled="expired"
               :rules="rules.type_descuentRule"
               background-color="transparent"
               :error-messages="errorsBags.type_descuent"
@@ -134,7 +135,7 @@
               filled
               required
               min="0"
-              :disabled="ExpirePromotion"
+              :disabled="expired"
               :rules="rules.amountRule"
               background-color="transparent"
               :error-messages="errorsBags.amount"
@@ -146,7 +147,7 @@
             <v-checkbox
               v-model="form.is_cupon"
               required
-              :disabled="ExpirePromotion"
+              :disabled="expired"
               label="¿Acepta Cupones?"
             ></v-checkbox>
           </v-col>
@@ -156,7 +157,7 @@
               label="Código del Cupon"
               filled
               required
-              :disabled="ExpirePromotion"
+              :disabled="expired"
               :rules="rules.code_cuponRule"
               background-color="transparent"
               :error-messages="errorsBags.code_cupon"
@@ -170,7 +171,7 @@
               filled
               required
               min="0"
-              :disabled="ExpirePromotion"
+              :disabled="expired"
               :rules="rules.total_cuponRule"
               background-color="transparent"
               :error-messages="errorsBags.total_cupon"
@@ -183,7 +184,7 @@
               label="Visible en *"
               :items="types_visible"
               v-model="form.visible"
-              :disabled="ExpirePromotion"
+              :disabled="expired"
               filled
               required
               :rules="rules.types_visibleRule"
@@ -193,7 +194,7 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="!ExpirePromotion">
+        <v-row v-if="!expired">
           <v-col cols="12" lg="12">
             <ShowsImages
               :items="imagesList"
@@ -249,7 +250,7 @@
         <v-row class="pt-10">
           <v-col cols="12" lg="12">
             <v-btn
-              v-if="!ExpirePromotion"
+              v-if="!expired"
               color="success"
               @click="save"
               :disabled="!valid"
@@ -281,6 +282,7 @@ import { mapActions, mapGetters } from "vuex";
 import UploadImages from "vue-upload-drop-images";
 import ShowsImages from "../../components/ShowsImages";
 import SnackBar from "@/views/modules/components/SnackBar";
+// import moment from "moment";
 export default {
   name: "RegisterPromotion",
   props: {
@@ -296,7 +298,7 @@ export default {
     return {
       titleForm: "Promoción",
       menu2: false,
-      date_expired: false,
+      expired: false,
 
       displayed: true,
       selectedFile: [],
@@ -403,16 +405,19 @@ export default {
     this.setData();
   },
   computed: {
-    ...mapGetters({ storePromotion: "promotion/getPromotion" }),
-
-    ExpirePromotion() {
-      var date_expired = this.date_expired;
-      return date_expired;
-    },
+    ...mapGetters({
+      storePromotion: "promotion/getPromotion",
+      ExpirePromotion: "promotion/getPromotion",
+    }),
   },
   watch: {
+    ExpirePromotion() {
+      if (this.storePromotion.expired) {
+        this.expired = true;
+      }
+    },
     storePromotion(data) {
-      if (data.attachment.length > 0) {
+      if (data.logo.length > 0) {
         this.imagesList = Object.assign([], this.attachments(data.attachment));
       }
     },
@@ -463,7 +468,6 @@ export default {
     setData() {
       if (this.id) {
         this.getPromotionById(this.id).then((result) => {
-          this.date_expired = result.expired;
           this.form = {
             id: result.id,
             name: result.name,
@@ -538,6 +542,7 @@ export default {
             // this.form = {};
             this.$refs.form.reset();
             this.form.expire_date = "";
+            this.form.expired = false;
             this.form.is_cupon = false;
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
@@ -573,7 +578,7 @@ export default {
               result.expire_date == null ? "" : result.expire_date;
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Actualizado existosamente!";
-
+            this.form.expired = false;
             this.selectedFile = [];
             this.displayed = false;
             this.$nextTick(() => {

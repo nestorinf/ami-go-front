@@ -160,33 +160,31 @@
           <v-row>
             <v-col cols="12" lg="3">
               <v-checkbox
-                v-model="form.enabled"
+                v-model="enabled"
                 required
                 label="Habilitado"
               ></v-checkbox>
             </v-col>
             <v-col cols="12" lg="3">
               <v-checkbox
-                v-model="form.on_stock"
+                v-model="on_stock"
                 required
                 label="En Stock"
               ></v-checkbox>
             </v-col>
           </v-row>
-          <v-row v-if="listDetail.length==0">
+          <v-row v-if="listDetail.length == 0">
             <v-col cols="12" class="py-5">
-              <v-alert  
-                dense
-                outlined
-                type="warning"
-              >Debe Añadir detalles al producto para poder continuar</v-alert> 
+              <v-alert dense outlined type="warning"
+                >Debe Añadir detalles al producto para poder continuar</v-alert
+              >
             </v-col>
           </v-row>
 
           <v-btn
             color="success"
             @click="save"
-            :disabled="!valid || listDetail.length==0"
+            :disabled="!valid || listDetail.length == 0"
             submit
             class="text-capitalize mr-2"
             >Guardar</v-btn
@@ -312,12 +310,10 @@
                   <v-icon small>mdi-plus</v-icon>
                 </v-btn>
               </v-col>
-              <v-col cols="12" lg="12" v-if="form_detail.logo.length==0">  
-                <v-alert
-                  dense
-                  outlined
-                  type="info"
-                >Debes añadir por lo menos una imagen al detalle</v-alert>               
+              <v-col cols="12" lg="12" v-if="form_detail.logo.length == 0">
+                <v-alert dense outlined type="info"
+                  >Debes añadir por lo menos una imagen al detalle</v-alert
+                >
               </v-col>
               <v-col cols="12" lg="12">
                 <UploadImages
@@ -472,11 +468,11 @@ export default {
     loadingProviders: false,
     loadingUom: false,
     loadingClassification: false,
+    enabled: 1 || 0,
+    on_stock: 1 || 0,
     form: {
       name: "",
       sku: "",
-      enabled: 1 || 0,
-      on_stock: 1 || 0,
       owns_batch: 1,
       description: "",
       conditions: "",
@@ -668,8 +664,8 @@ export default {
 
         formData.append("name", this.form.name);
         formData.append("sku", this.form.sku);
-        formData.append("enabled", this.form.enabled);
-        formData.append("on_stock", this.form.on_stock);
+        formData.append("enabled", this.enabled);
+        formData.append("on_stock", this.on_stock);
         formData.append("owns_batch", this.form.owns_batch);
         formData.append("description", this.form.description);
         formData.append("conditions", this.form.conditions);
@@ -731,8 +727,9 @@ export default {
             this.form.category_intern_ids = [];
             this.form.product_batches_detail = [];
             this.form.product_classification_id = "";
-            this.form.enabled = 1;
-            this.form.on_stock = 1;
+
+            this.enabled = true;
+            this.on_stock = true;
 
             this.$refs.snackBarRef.changeStatusSnackbar(true);
             this.textSnackBar = "Guardado existosamente!";
@@ -771,7 +768,8 @@ export default {
               expired_date: result.expired_date,
               product_classification_id: result.product_classification_id,
             };
-
+            this.enabled = result.enabled;
+            this.on_stock = result.on_stock;
             this.form = Object.assign({}, parseData);
 
             // this.$router.push("/products/categories");
@@ -825,7 +823,8 @@ export default {
             expired_date: result.expired_date,
             product_classification_id: result.product_classification_id,
           };
-
+          this.enabled = result.enabled;
+          this.on_stock = result.on_stock;
           this.form = Object.assign({}, parseData);
 
           this.loadCategoriesIntern();
