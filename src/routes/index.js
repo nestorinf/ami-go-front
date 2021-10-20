@@ -14,7 +14,7 @@ import marketproduct from "./marketproduct";
 import location from "./location";
 import driver from "./driver";
 import home from "./home";
-
+import orderControl from "./orderControl"
 // import { readFileSync } from 'fs'
 
 // const dd = () => {
@@ -23,6 +23,7 @@ import home from "./home";
 
 export default {
   home,
+  orderControl,
   configuration,
   location,
   geofence,
