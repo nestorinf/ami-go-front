@@ -319,6 +319,7 @@ import DataTable from "./components/DataTable";
 import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 import DialogConfirm from "../../components/DialogConfirm";
+import { handleMessage } from "@/utils";
 export default {
   name: "RegisterProduct",
   props: {
@@ -495,12 +496,15 @@ export default {
           if (result) { 
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Guardado existosamente!";
+            handleMessage("Guardado existosamente!", 200, this);
           }
         })
         .catch((err) => {
-          this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = err.response.data.errors;
+          const {
+            data: { message },
+            status,
+          } = err.response;
+          handleMessage(message, status, this);
         });
     },
 
@@ -509,7 +513,7 @@ export default {
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Actualizado existosamente!";
+            handleMessage("Actualizado existosamente!", 200, this);
 
             const parseData = {
               id: result.id,
@@ -539,8 +543,11 @@ export default {
           }
         })
         .catch((err) => {
-          this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = err.response.data.errors;
+          const {
+            data: { message },
+            status,
+          } = err.response;
+          handleMessage(message, status, this);
         });
     },
 
@@ -825,22 +832,20 @@ export default {
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Eliminado existosamente!";
+            handleMessage("Eliminado existosamente!", 200, this);
 
             const idDelete = this.idDelete ;
             const detalle = this.form.product_batches_detail.findIndex((x) => x.id === idDelete);
             this.form.product_batches_detail.splice(detalle, 1);
 
           }
-        }).catch((err) => {
-          if (err.response) {
-            this.errorsBags = err.response.data.errors;
-            setTimeout(() => {
-              this.errorsBags = [];
-            }, 4000);
-          }
-          this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = "Disculpe, ha ocurrido un error";
+        })
+        .catch((err) => {
+          const {
+            data: { message },
+            status,
+          } = err.response;
+          handleMessage(message, status, this);
         });
 
       this.$refs.DialogConfirm.changeStateDialog(false); 
