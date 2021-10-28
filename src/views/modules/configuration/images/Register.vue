@@ -45,6 +45,7 @@
 import UploadImages from "vue-upload-drop-images";
 import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
+import { handleMessage } from "@/utils";
 export default {
   name: "RegisterImageType",
   props: {
@@ -118,13 +119,15 @@ export default {
               this.displayed = true;
             });
             this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Guardado existosamente!";
+            handleMessage("Guardado existosamente!", 200, this);
           }
         })
         .catch((err) => {
-          console.log(err);
-          this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = "Disculpe, ha ocurrido un error";
+          const {
+            data: { message },
+            status,
+          } = err.response;
+          handleMessage(message, status, this);
         });
     },
 
@@ -137,13 +140,15 @@ export default {
               this.displayed = true;
             });
             this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Actualizado existosamente!";
+            handleMessage("Actualizado existosamente!", 200, this);
           }
         })
         .catch((err) => {
-          console.log(err);
-          this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = "Disculpe, ha ocurrido un error";
+          const {
+            data: { message },
+            status,
+          } = err.response;
+          handleMessage(message, status, this);
         });
     },
 
