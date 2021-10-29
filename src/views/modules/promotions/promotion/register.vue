@@ -282,6 +282,7 @@ import { mapActions, mapGetters } from "vuex";
 import UploadImages from "vue-upload-drop-images";
 import ShowsImages from "../../components/ShowsImages";
 import SnackBar from "@/views/modules/components/SnackBar";
+import { handleMessage } from "@/utils";
 // import moment from "moment";
 export default {
   name: "RegisterPromotion",
@@ -545,7 +546,7 @@ export default {
             this.form.expired = false;
             this.form.is_cupon = false;
             this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Guardado existosamente!";
+            handleMessage("Guardado existosamente!", 200, this);
 
             this.selectedFile = [];
             this.displayed = false;
@@ -557,15 +558,11 @@ export default {
           }
         })
         .catch((err) => {
-          if (err.response) {
-            this.errorsBags = err.response.data.errors;
-            setTimeout(() => {
-              this.errorsBags = [];
-            }, 4000);
-          }
-          console.log(err);
-          this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = "Disculpe, ha ocurrido un error";
+          const {
+            data: { message },
+            status,
+          } = err.response;
+          handleMessage(message, status, this);
         });
     },
 
@@ -577,7 +574,7 @@ export default {
             this.form.expire_date =
               result.expire_date == null ? "" : result.expire_date;
             this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Actualizado existosamente!";
+            handleMessage("Actualizado existosamente!", 200, this);
             this.form.expired = false;
             this.selectedFile = [];
             this.displayed = false;
@@ -589,15 +586,11 @@ export default {
           }
         })
         .catch((err) => {
-          if (err.response) {
-            this.errorsBags = err.response.data.errors;
-            setTimeout(() => {
-              this.errorsBags = [];
-            }, 4000);
-          }
-          console.log(err);
-          this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = "Disculpe, ha ocurrido un error";
+          const {
+            data: { message },
+            status,
+          } = err.response;
+          handleMessage(message, status, this);
         });
     },
     onFileSelected(event) {

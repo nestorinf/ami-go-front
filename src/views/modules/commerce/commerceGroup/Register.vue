@@ -98,6 +98,7 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
+import { handleMessage } from "@/utils";
 
 export default {
   name: "RegisterCommerceGroup",
@@ -201,18 +202,15 @@ export default {
           if (result) {
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Guardado existosamente!";
+            handleMessage("Guardado existosamente!", 200, this);
           }
         })
         .catch((err) => {
-          if (err.response) {
-            this.errorsBags = err.response.data.errors;
-            setTimeout(() => {
-              this.errorsBags = [];
-            }, 4000);
-          }
-          this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = "Disculpe, ha ocurrido un error";
+          const {
+            data: { message },
+            status,
+          } = err.response;
+          handleMessage(message, status, this);
         });
     },
 
@@ -221,18 +219,15 @@ export default {
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Actualizado existosamente!";
+            handleMessage("Actualizado existosamente!", 200, this);
           }
         })
         .catch((err) => {
-          if (err.response) {
-            this.errorsBags = err.response.data.errors;
-            setTimeout(() => {
-              this.errorsBags = [];
-            }, 4000);
-          }
-          this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = "Disculpe, ha ocurrido un error";
+          const {
+            data: { message },
+            status,
+          } = err.response;
+          handleMessage(message, status, this);
         });
     },
   },
