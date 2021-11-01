@@ -144,6 +144,7 @@
 import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
 import DialogConfirm from "../../components/DialogConfirm";
+import { handleMessage } from "@/utils";
 export default {
   name: "RegisterDriverCarCar",
   props: {
@@ -238,19 +239,16 @@ export default {
         .then((result) => {
           if (result) {
             this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Eliminado existosamente!";
+             handleMessage("Eliminado existosamente!", 200, this);
             this.$refs.form.reset();
           }
         })
         .catch((err) => {
-          if (err.response) {
-            this.errorsBags = err.response.data.errors;
-            setTimeout(() => {
-              this.errorsBags = [];
-            }, 4000);
-          }
-          this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = "Disculpe, ha ocurrido un error";
+          const {
+            data: { message },
+            status,
+          } = err.response;
+          handleMessage(message, status, this);
         });
 
       this.$refs.DialogConfirm.changeStateDialog(false);
@@ -314,18 +312,15 @@ export default {
           if (result) {
             this.form = result;
             this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Actualizado existosamente!";
+            handleMessage("Actualizado existosamente!", 200, this);
           }
         })
         .catch((err) => {
-          if (err.response) {
-            this.errorsBags = err.response.data.errors;
-            setTimeout(() => {
-              this.errorsBags = [];
-            }, 4000);
-          }
-          this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = "Disculpe, ha ocurrido un error";
+          const {
+            data: { message },
+            status,
+          } = err.response;
+          handleMessage(message, status, this);
         });
     },
   },

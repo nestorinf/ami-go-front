@@ -83,6 +83,7 @@
 <script>
 import { mapActions } from "vuex";
 import SnackBar from "@/views/modules/components/SnackBar";
+import { handleMessage } from "@/utils";
 export default {
   name: "RegisterFoodFeature",
   props: {
@@ -165,18 +166,15 @@ export default {
             this.TypeFeatureSelected = "";
             this.$refs.form.reset();
             this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Guardado existosamente!";
+            handleMessage("Guardado existosamente!", 200, this);
           }
         })
         .catch((err) => {
-          if (err.response) {
-            this.errorsBags = err.response.data.errors;
-            setTimeout(() => {
-              this.errorsBags = [];
-            }, 4000);
-          }
-          this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = "Disculpe, ha ocurrido un error";
+          const {
+            data: { message },
+            status,
+          } = err.response;
+          handleMessage(message, status, this);
         });
     },
 
