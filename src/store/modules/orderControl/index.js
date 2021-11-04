@@ -35,15 +35,15 @@ const actions = {
     });
   },
 
-  getOrderById({ commit, dispatch }, id) {
+  getOrderById({ commit, dispatch }, data) {
     return new Promise((resolve, reject) => {
       dispatch("loading/loadingState", true, { root: true });
-      OrderControlService.getById(id)
+      OrderControlService.getById(data)
         .then(({ data }) => {
-          const company = data.payload;
-
+          const orders = data.payload;
+          console.log('data.payload',data.payload)
           dispatch("loading/loadingState", false, { root: true });
-          commit("setorder", company);
+          commit("setorder", orders);
 
           resolve(data.payload);
         })

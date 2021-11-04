@@ -7,11 +7,12 @@ export default {
             path: "order-control/index",
             component: () => import("../../views/modules/orderControl/index")
         },
-        // {
-        //     name: 'Promotion Register',
-        //     path: "promotions/promotion/register",
-        //     component: () => import("../../views/modules/promotions/promotion/register")
-        // },
+        {
+            name: 'Show Order Control',
+            path: "order-control/edit/:type/:id",
+            props: true,
+            component: () => import("../../views/modules/orderControl/edit")
+        },
         // {
         //     name: 'Promotion Edit',
         //     path: "promotions/promotion/edit/:id",
