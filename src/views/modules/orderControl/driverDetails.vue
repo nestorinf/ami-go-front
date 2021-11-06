@@ -8,7 +8,7 @@
     <v-card class="mb-7">
       <v-card-text class="pa-5 border-bottom">
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-          {{ titleForm }}
+          {{ titleForm }} 
         </h3>
       </v-card-text>
 
@@ -18,17 +18,6 @@
             label="Filtrar Por Tipo Comercio"
             :items="TiposList"
             v-model="select_type"
-            filled
-            required
-            background-color="transparent"
-          ></v-select>
-        </v-col>
-        <v-col cols="6">
-          <v-select
-            :loading="loadingStatusSlug"
-            label="Filtrar Por Estatus"
-            :items="StatusList"
-            v-model="select_status"
             filled
             required
             background-color="transparent"
@@ -54,6 +43,7 @@ import DataTableOrderControl from "./components/DataTable";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
+  props: ['id'],
   name: "PaymentType",
   components: {
     DataTableOrderControl,
@@ -70,18 +60,14 @@ export default {
         to: "#",
       },
       {
-        text: "Lsitados de Ordenes Generadas",
+        text: "Ganacias por Conductor",
         disabled: true,
       },
     ],
     messageDialog: "",
 
-    titleForm: "Listado de Ordenes",
+    titleForm: "Listado de ordenes entregas a cliente ",
     headers: [
-      {
-        text: "Accion",
-        value: "action",
-      },
       {
         text: "Nro. Orden",
         value: "order",
@@ -101,14 +87,9 @@ export default {
         value: "date_order",
       },
       {
-        text: "Monto Total",
-        value: "grand_total",
-      },
-      {
-        text: "Estatus",
-        value: "state",
-      },
-
+        text: "Costo Delivery",
+        value: "amount_delivery",
+      }
       // { text: "Categoria Padre", value: "category_father" },
     ],
     items: [],
@@ -123,20 +104,12 @@ export default {
         text: 'Restaurantes',
     }],
     idDelete: "",
-    select_status: "todos",
     select_type: "todos",
-      loadingStatusSlug: true,
-      StatusList: [],
   }),
   computed: {
     ...mapGetters({ storeOrderControl: "orderControl/getOrders" }),
     Lists () {
       var rows = this.items;
-      if(this.select_status!='todos'){   
-
-        rows = rows.filter(notification => notification.state==this.select_status); 
-
-      }
       if(this.select_type!='todos'){
         rows = rows.filter(notification => notification.entity==this.select_type);
       }
@@ -155,30 +128,8 @@ export default {
     },
   },
   methods: {
-    loadStatus() {
-      const slugName = "ORDER_STATUS";
-      const rows = [];
-      this.getLoadStatus(slugName).then((response) => {
-        
-        rows.push({
-          value: 'todos',
-          text: 'Todos los Estatus',
-        }); 
-
-        response.map((element) => {
-          if(element.alternative=='order-commerce'){
-            rows.push({
-              value: element.json_value.status,
-              text: element.value,
-            }); 
-          }
-          this.loadingStatusSlug = false;
-          this.StatusList = rows;
-        });
-      });
-    },
     ...mapActions({
-      getOrdersData: "orderControl/getOrdersData",
+      getOrdersData: "orderControl/getOrdersDriverDetailData",
       getLoadStatus: "referenceList/getReferenceListByReferenceSlugData",
     }),
     detailButton(data) {
@@ -196,8 +147,8 @@ export default {
     },
   },
   mounted() {
-    this.getOrdersData();
-      this.loadStatus();
+    console.log(this.id);
+    this.getOrdersData(this.id);
   }, 
 };
 </script>
