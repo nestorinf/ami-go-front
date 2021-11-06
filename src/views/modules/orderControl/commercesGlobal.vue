@@ -23,17 +23,6 @@
             background-color="transparent"
           ></v-select>
         </v-col>
-        <v-col cols="6">
-          <v-select
-            :loading="loadingStatusSlug"
-            label="Filtrar Por Estatus"
-            :items="StatusList"
-            v-model="select_status"
-            filled
-            required
-            background-color="transparent"
-          ></v-select>
-        </v-col>
       </v-row>
 
       <v-row  class="pa-5">
@@ -70,26 +59,17 @@ export default {
         to: "#",
       },
       {
-        text: "Lsitados de Ordenes Generadas",
+        text: "Ganacias por Comercio/Restaurante",
         disabled: true,
       },
     ],
     messageDialog: "",
 
-    titleForm: "Listado de Ordenes",
+    titleForm: "Listado de Comercio/Restaurante",
     headers: [
       {
         text: "Accion",
         value: "action",
-      },
-      {
-        text: "Nro. Orden",
-        value: "order",
-      },
-      {
-        text: "Cliente",
-        align: "start",
-        value: "client",
       },
       {
         text: "Comercio / Restaurante",
@@ -97,17 +77,13 @@ export default {
         value: "commerce",
       },
       {
-        text: "Fecha Orden",
-        value: "date_order",
+        text: "Nros Ordenes",
+        value: "orders",
       },
       {
         text: "Monto Total",
-        value: "grand_total",
-      },
-      {
-        text: "Estatus",
-        value: "state",
-      },
+        value: "amount",
+      }
 
       // { text: "Categoria Padre", value: "category_father" },
     ],
@@ -123,20 +99,12 @@ export default {
         text: 'Restaurantes',
     }],
     idDelete: "",
-    select_status: "todos",
     select_type: "todos",
-      loadingStatusSlug: true,
-      StatusList: [],
   }),
   computed: {
     ...mapGetters({ storeOrderControl: "orderControl/getOrders" }),
     Lists () {
       var rows = this.items;
-      if(this.select_status!='todos'){   
-
-        rows = rows.filter(notification => notification.state==this.select_status); 
-
-      }
       if(this.select_type!='todos'){
         rows = rows.filter(notification => notification.entity==this.select_type);
       }
@@ -155,36 +123,14 @@ export default {
     },
   },
   methods: {
-    loadStatus() {
-      const slugName = "ORDER_STATUS";
-      const rows = [];
-      this.getLoadStatus(slugName).then((response) => {
-        
-        rows.push({
-          value: 'todos',
-          text: 'Todos los Estatus',
-        }); 
-
-        response.map((element) => {
-          if(element.alternative=='order-commerce'){
-            rows.push({
-              value: element.json_value.status,
-              text: element.value,
-            }); 
-          }
-          this.loadingStatusSlug = false;
-          this.StatusList = rows;
-        });
-      });
-    },
     ...mapActions({
-      getOrdersData: "orderControl/getOrdersData",
+      getOrdersData: "orderControl/getOrdersDataByCommerces",
       getLoadStatus: "referenceList/getReferenceListByReferenceSlugData",
     }),
     detailButton(data) {
       console.log('data',data);
        
-      this.$router.push("/order-control/edit/"+data.entity+"/" + data.order);
+      this.$router.push("/order-control/orders/"+data.entity+"/" + data.commerce_id);
     },
     acceptRemovePaymentType(item) {
       this.idDelete = item.id;
@@ -197,7 +143,6 @@ export default {
   },
   mounted() {
     this.getOrdersData();
-      this.loadStatus();
   }, 
 };
 </script>

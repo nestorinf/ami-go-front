@@ -8,7 +8,9 @@
     <v-card class="mb-7">
       <v-card-text class="pa-5 border-bottom">
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
-          {{ titleForm }}
+          {{ titleForm }}  <v-icon small @click="getOrdersData()" class="mr-2"
+              >mdi-feature-search-outline</v-icon
+            >
         </h3>
       </v-card-text>
 
@@ -18,17 +20,6 @@
             label="Filtrar Por Tipo Comercio"
             :items="TiposList"
             v-model="select_type"
-            filled
-            required
-            background-color="transparent"
-          ></v-select>
-        </v-col>
-        <v-col cols="6">
-          <v-select
-            :loading="loadingStatusSlug"
-            label="Filtrar Por Estatus"
-            :items="StatusList"
-            v-model="select_status"
             filled
             required
             background-color="transparent"
@@ -51,9 +42,10 @@
 // import ButtonRegister from "../../components/ButtonRegister";
 // import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DataTableOrderControl from "./components/DataTable";
-import { mapGetters, mapActions } from "vuex";
+import { mapActions } from "vuex";
 
 export default {
+  props: ['type','id'],
   name: "PaymentType",
   components: {
     DataTableOrderControl,
@@ -70,18 +62,14 @@ export default {
         to: "#",
       },
       {
-        text: "Lsitados de Ordenes Generadas",
+        text: "Comercio/Restaurante",
         disabled: true,
       },
     ],
     messageDialog: "",
 
-    titleForm: "Listado de Ordenes",
+    titleForm: "Listado de ordenes entregas a cliente",
     headers: [
-      {
-        text: "Accion",
-        value: "action",
-      },
       {
         text: "Nro. Orden",
         value: "order",
@@ -92,23 +80,13 @@ export default {
         value: "client",
       },
       {
-        text: "Comercio / Restaurante",
-        align: "start",
-        value: "commerce",
-      },
-      {
         text: "Fecha Orden",
         value: "date_order",
       },
       {
-        text: "Monto Total",
+        text: "Monto total",
         value: "grand_total",
-      },
-      {
-        text: "Estatus",
-        value: "state",
-      },
-
+      }
       // { text: "Categoria Padre", value: "category_father" },
     ],
     items: [],
@@ -123,20 +101,11 @@ export default {
         text: 'Restaurantes',
     }],
     idDelete: "",
-    select_status: "todos",
     select_type: "todos",
-      loadingStatusSlug: true,
-      StatusList: [],
   }),
   computed: {
-    ...mapGetters({ storeOrderControl: "orderControl/getOrders" }),
-    Lists () {
+     Lists () {
       var rows = this.items;
-      if(this.select_status!='todos'){   
-
-        rows = rows.filter(notification => notification.state==this.select_status); 
-
-      }
       if(this.select_type!='todos'){
         rows = rows.filter(notification => notification.entity==this.select_type);
       }
@@ -144,41 +113,10 @@ export default {
       return rows;
 
     },
-  },
-  watch: {
-    storeOrderControl(data) {
-      console.log('data',data);
-      this.items = [];
-      if (data.length > 0) {
-        this.items = data;
-      }
-    },
-  },
+  }, 
   methods: {
-    loadStatus() {
-      const slugName = "ORDER_STATUS";
-      const rows = [];
-      this.getLoadStatus(slugName).then((response) => {
-        
-        rows.push({
-          value: 'todos',
-          text: 'Todos los Estatus',
-        }); 
-
-        response.map((element) => {
-          if(element.alternative=='order-commerce'){
-            rows.push({
-              value: element.json_value.status,
-              text: element.value,
-            }); 
-          }
-          this.loadingStatusSlug = false;
-          this.StatusList = rows;
-        });
-      });
-    },
     ...mapActions({
-      getOrdersData: "orderControl/getOrdersData",
+      getOrdersData: "orderControl/getOrdersDataCommerceByID",
       getLoadStatus: "referenceList/getReferenceListByReferenceSlugData",
     }),
     detailButton(data) {
@@ -196,8 +134,14 @@ export default {
     },
   },
   mounted() {
-    this.getOrdersData();
-      this.loadStatus();
+    console.log(this.id);
+    
+        this.getOrdersData({'type':this.type, 'id':this.id}).then((result) => {
+         console.log(result);
+         this.items = result;
+        });
+
+    this.getOrdersData({'type':this.type, 'id':this.id});
   }, 
 };
 </script>

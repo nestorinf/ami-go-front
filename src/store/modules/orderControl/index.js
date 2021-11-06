@@ -34,11 +34,87 @@ const actions = {
         });
     });
   },
+  getOrdersDataByCommerces({ commit, dispatch }) {
+    return new Promise((resolve, reject) => {
+      dispatch("loading/loadingState", true, { root: true });
+      OrderControlService.allOrdersByCommerces()
+        .then(({ data }) => {
+          const orders = data.payload;
 
+          dispatch("loading/loadingState", false, { root: true });
+          commit("setOrders", orders);
+
+          resolve(data.payload);
+        })
+        .catch((err) => {
+          dispatch("loading/loadingState", false, { root: true });
+          reject(err);
+          // commit('setorders', [])
+        });
+    });
+  },
+  getOrdersDriverDetailData({ commit, dispatch },id) {
+    console.log('as',id);
+    return new Promise((resolve, reject) => {
+      dispatch("loading/loadingState", true, { root: true });
+      OrderControlService.allDetailsDriver(id)
+        .then(({ data }) => {
+          const orders = data.payload;
+
+          dispatch("loading/loadingState", false, { root: true });
+          commit("setOrders", orders);
+
+          resolve(data.payload);
+        })
+        .catch((err) => {
+          dispatch("loading/loadingState", false, { root: true });
+          reject(err);
+          // commit('setorders', [])
+        });
+    });
+  },
+  getOrdersDriverData({ commit, dispatch }) {
+    return new Promise((resolve, reject) => {
+      dispatch("loading/loadingState", true, { root: true });
+      OrderControlService.allDriver()
+        .then(({ data }) => {
+          const orders = data.payload;
+
+          dispatch("loading/loadingState", false, { root: true });
+          commit("setOrders", orders);
+
+          resolve(data.payload);
+        })
+        .catch((err) => {
+          dispatch("loading/loadingState", false, { root: true });
+          reject(err);
+          // commit('setorders', [])
+        });
+    });
+  },
   getOrderById({ commit, dispatch }, data) {
     return new Promise((resolve, reject) => {
       dispatch("loading/loadingState", true, { root: true });
       OrderControlService.getById(data)
+        .then(({ data }) => {
+          const orders = data.payload;
+          console.log('data.payload',data.payload)
+          dispatch("loading/loadingState", false, { root: true });
+          commit("setorder", orders);
+
+          resolve(data.payload);
+        })
+        .catch((err) => {
+          dispatch("loading/loadingState", false, { root: true });
+          reject(err);
+          // commit('setorderType', {})
+        });
+    });
+  },
+  getOrdersDataCommerceByID({ commit, dispatch }, data) {
+    return new Promise((resolve, reject) => {
+      dispatch("loading/loadingState", true, { root: true });
+      OrderControlService.OrdersDataCommerceByID(data)
         .then(({ data }) => {
           const orders = data.payload;
           console.log('data.payload',data.payload)
@@ -100,6 +176,9 @@ const actions = {
 };
 const getters = {
   getOrders: (state) => {
+    return state.orders;
+  },
+  getOrdersDriver: (state) => {
     return state.orders;
   },
   getOrder: (state) => {
