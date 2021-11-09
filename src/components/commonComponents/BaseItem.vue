@@ -5,6 +5,7 @@
     :target="href && href !== '#' ? '_blank' : undefined"
     :to="item.to"
     :active-class="``"
+    v-if="permission"
   >
     <v-list-item-icon v-if="item.icon">
       <v-icon v-text="item.icon" />
@@ -32,6 +33,7 @@ export default {
         icon: undefined,
         title: undefined,
         to: undefined,
+        roles: undefined,
       }),
     },
     text: {
@@ -41,6 +43,16 @@ export default {
   },
 
   computed: {
+    permission() {
+      
+      if(this.item.roles!=undefined){
+        const rolesAuthorized = sessionStorage.getItem("role_user");
+        return rolesAuthorized.includes(this.item.roles);
+      }else{
+        return true;
+      }
+
+    },
     href() {
       return this.item.href || (!this.item.to ? "#" : undefined);
     },

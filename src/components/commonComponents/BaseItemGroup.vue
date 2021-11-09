@@ -4,6 +4,7 @@
     :prepend-icon="item.icon"
     :sub-group="subGroup"
     :active-class="`primary white--text`"
+    v-if="permission"
   >
     <template v-slot:activator>
       <v-list-item-icon v-if="item.sicon" class="sicon">
@@ -70,6 +71,16 @@ export default {
     },
     group() {
       return this.genGroup(this.item.children);
+    },
+    
+    permission() {      
+      if(this.item.roles!=undefined){
+        const rolesAuthorized = sessionStorage.getItem("role_user");
+        return rolesAuthorized.includes(this.item.roles);
+      }else{
+        return true;
+      }
+
     },
   },
 

@@ -31,6 +31,7 @@ export default {
         icon: "mdi-car",
         to: '/drivers',
         title: "Conductores",
+        roles: ['ROLE_ROOT']
 
     }
 }

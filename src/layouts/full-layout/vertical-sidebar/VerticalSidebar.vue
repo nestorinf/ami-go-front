@@ -20,9 +20,10 @@
 
       <v-list-item-content class="white--text">
         <v-list-item-title>{{ user.name }}</v-list-item-title>
-        <!-- <v-list-item-subtitle class="caption white--text"
-          >Webdesigner</v-list-item-subtitle
-        > -->
+        <v-list-item-subtitle class="caption white--text"
+          >
+          <span v-for="(item, i) in role_user" :key="i">{{ item.name }}</span>  </v-list-item-subtitle
+        >
       </v-list-item-content>
     </v-list-item>
     <!---USer Area -->
@@ -93,6 +94,7 @@ export default {
       type: Boolean,
       default: false,
       user: Object,
+      role_user: [],
     },
   },
   data: () => ({
@@ -120,6 +122,7 @@ export default {
   created() {
     // console.log(this.items);
     this.user = JSON.parse(sessionStorage.getItem("user"));
+    this.role_user = JSON.parse(sessionStorage.getItem("role_user"));
   },
   watch: {
     "$vuetify.breakpoint.smAndDown"(val) {
