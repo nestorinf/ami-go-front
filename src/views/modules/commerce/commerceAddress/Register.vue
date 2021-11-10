@@ -166,7 +166,7 @@ export default {
     setData() {
       this.loadingCommerces = true;
       const rows = [];
-      this.getCommercesData()
+      this.getCommercesData(0)
         .then((result) => {
           // this.loadingChildRegister = true;
           if (result) {
