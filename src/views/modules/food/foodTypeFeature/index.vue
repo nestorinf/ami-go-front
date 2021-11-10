@@ -90,19 +90,19 @@ export default {
         text: "Requerido",
         align: "start",
         sortable: false,
-        value: "values.is_required",
+        value: "json_value.is_required",
       },
       {
         text: "Multiple",
         align: "start",
         sortable: false,
-        value: "values.is_multiple",
+        value: "json_value.is_multiple",
       },
       {
         text: "Acepta Precio",
         align: "start",
         sortable: false,
-        value: "values.price",
+        value: "json_value.price",
       }, 
       {
         text: "Habilitado",
