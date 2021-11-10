@@ -42,6 +42,7 @@
             :items="Lists.commerces"
             v-model="filtros.byCommercesId"
             filled
+            clearable
             required
             background-color="transparent"
           ></v-select>
@@ -137,7 +138,7 @@ export default {
             if(byDateEnd!=''){
               ordenes = ordenes.filter(items => items.date_delivery<=byDateEnd);
             }
-            if(byCommercesId!=''){
+            if(byCommercesId!='' && byCommercesId!=null){
               ordenes = ordenes.filter(items => items.address==byCommercesId);
             }
 
