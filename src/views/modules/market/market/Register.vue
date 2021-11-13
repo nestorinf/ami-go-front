@@ -103,6 +103,65 @@
           </v-col>
         </v-row>
 
+        <hr class="my-10">
+
+        <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
+         Horario del Comercio
+        </h3>
+ 
+        <v-simple-table>
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th class="text-left">
+                    Dia de Semana    
+                  </th>
+                  <th class="text-left">
+                    Dia Laboral   
+                  </th>
+                  <th class="text-left">
+                    Hora Inicio
+                  </th>
+                  <th class="text-left">
+                    Hora fin
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                   v-for="(items, index) in form.schedule_entities" :key="index"
+                >
+                  <td>{{items.day}} </td>
+                  <td> 
+                      <v-checkbox
+                        v-model="items.enabled"
+                        aria-required=""
+                      ></v-checkbox>
+                  </td>
+                  <td>
+                    <v-text-field
+                      v-model="items.hour_start"
+                      type="time"
+                      filled
+                      required
+                      background-color="transparent"
+                    ></v-text-field>
+                  </td>
+                  <td>
+                    <v-text-field
+                      v-model="items.hour_end"
+                      type="time"
+                      filled
+                      required
+                      background-color="transparent"
+                    ></v-text-field>
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+
+
         <v-row>
           <v-col cols="12">
             <v-btn
@@ -167,6 +226,15 @@ export default {
         phone: "",
         logo: [],
         cover: [],
+        schedule_entities: [
+          {day: "Lunes", enabled: 1,hour_start: "08:00",hour_end: "17:00"},
+          {day: "Martes", enabled: 1,hour_start: "08:00",hour_end: "17:00"},
+          {day: "Miercoles", enabled: 1,hour_start: "08:00",hour_end: "17:00"},
+          {day: "Jueves", enabled: 1,hour_start: "08:00",hour_end: "17:00"},
+          {day: "Viernes", enabled: 1,hour_start: "08:00",hour_end: "17:00"},
+          {day: "Sabado", enabled: 1,hour_start: "08:00",hour_end: "17:00"},
+          {day: "Domingo", enabled: 1,hour_start: "08:00",hour_end: "17:00"},
+        ],
       },
 
       rules: {
@@ -228,6 +296,7 @@ export default {
         formData.append("agent", this.form.agent);
         formData.append("email", this.form.email);
         formData.append("phone", this.form.phone);
+        formData.append("schedule_entities", JSON.stringify(this.form.schedule_entities));
 
         for (let i = 0; i < this.form.logo.length; i++) {
           let file = this.form.logo[i];
@@ -256,6 +325,7 @@ export default {
             email: result.email,
             phone: result.phone,
             commerce_type_id: result.commerce_type_id,
+            schedule_entities: result.schedule,
             logo: [],
             cover: [],
           };
@@ -284,6 +354,15 @@ export default {
         .then((result) => {
           if (result) {
             this.$refs.form.reset();
+            this.form.schedule_entities = [
+              {day: "Lunes", enabled: 1,hour_start: "08:00",hour_end: "17:00"},
+              {day: "Martes", enabled: 1,hour_start: "08:00",hour_end: "17:00"},
+              {day: "Miercoles", enabled: 1,hour_start: "08:00",hour_end: "17:00"},
+              {day: "Jueves", enabled: 1,hour_start: "08:00",hour_end: "17:00"},
+              {day: "Viernes", enabled: 1,hour_start: "08:00",hour_end: "17:00"},
+              {day: "Sabado", enabled: 1,hour_start: "08:00",hour_end: "17:00"},
+              {day: "Domingo", enabled: 1,hour_start: "08:00",hour_end: "17:00"},
+            ];
             this.$refs.VueUploadImagesCover.Imgs = [];
             this.$refs.VueUploadImageLogo.Imgs = [];
             this.$refs.snackBarRef.changeStatusSnackbar(true);
