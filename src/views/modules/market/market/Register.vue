@@ -106,6 +106,24 @@
         <hr class="my-10">
 
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
+        Tipos de Entregas 
+        </h3>
+ 
+ 
+        <v-row>
+          <v-col cols="3" lg="3" v-for="(item, index) in delivery_types" :key="index">
+            <v-checkbox              
+              v-model="form.deliverys_types"
+              :label="item.text"
+              :value="item.value"
+            ></v-checkbox>
+          </v-col>
+        </v-row>
+      
+        <hr class="my-10">
+
+
+        <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
          Horario del Comercio
         </h3>
  
@@ -215,6 +233,7 @@ export default {
       valid: true,
       imagesListLogo: [],
       imagesListCover: [],
+      delivery_types: [],
       displayedLogo: true,
       displayedCover: true,
       form: {
@@ -226,6 +245,7 @@ export default {
         phone: "",
         logo: [],
         cover: [],
+        deliverys_types: [],
         schedule_entities: [
           {day: "Lunes", enabled: 1,hour_start: "08:00",hour_end: "17:00"},
           {day: "Martes", enabled: 1,hour_start: "08:00",hour_end: "17:00"},
@@ -255,6 +275,7 @@ export default {
 
   mounted() {
     this.setData();
+    this.loadDelivery();
   },
   computed: {
     ...mapGetters({
@@ -283,6 +304,7 @@ export default {
       getCommerceById: "commerce/getCommerceById",
       updateCommerce: "commerce/updateCommerce",
       removeAttachment: "attachment/removeAttachment",
+      deliveryData: "referenceList/getReferenceListByReferenceSlugData",
     }),
     save() {
       this.$refs.form.validate();
@@ -296,6 +318,7 @@ export default {
         formData.append("agent", this.form.agent);
         formData.append("email", this.form.email);
         formData.append("phone", this.form.phone);
+        formData.append("deliverys_types", JSON.stringify(this.form.deliverys_types));
         formData.append("schedule_entities", JSON.stringify(this.form.schedule_entities));
 
         for (let i = 0; i < this.form.logo.length; i++) {
@@ -326,6 +349,7 @@ export default {
             phone: result.phone,
             commerce_type_id: result.commerce_type_id,
             schedule_entities: result.schedule,
+            deliverys_types: (result.deliverys_types)?result.deliverys_types:[],
             logo: [],
             cover: [],
           };
@@ -426,6 +450,27 @@ export default {
         }
       });
     },
+    
+    loadDelivery() {
+      const rows = [];      
+      const referenceId = "DELIVERY_METHOD";
+      this.deliveryData(referenceId)
+        .then((result) => {
+          if (result) {
+            result.map((element) => {
+              rows.push({
+                value: element.id,
+                text: element.value,
+              });
+              this.delivery_types = rows;
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
   },
 };
 </script>

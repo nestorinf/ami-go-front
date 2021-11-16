@@ -176,6 +176,22 @@
         <hr class="my-10">
 
         <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
+        Tipos de Entregas 
+        </h3>
+  
+        <v-row>
+          <v-col cols="3" lg="3" v-for="(item, index) in delivery_types" :key="index">
+            <v-checkbox              
+              v-model="form.deliverys_types"
+              :label="item.text"
+              :value="item.value"
+            ></v-checkbox>
+          </v-col>
+        </v-row>
+      
+        <hr class="my-10">
+
+        <h3 class="title blue-grey--text text--darken-2 font-weight-regular">
          Horario del Comercio
         </h3>
  
@@ -295,6 +311,7 @@ export default {
       errorsBags: [],
       imagesListLogo: [],
       imagesListCover: [],
+      delivery_types: [],
       displayedLogo: true,
       displayedCover: true,
       form: {
@@ -307,6 +324,7 @@ export default {
         precision_qty: 1,
         phone: "",
         phone_2: "",
+        deliverys_types: [],
         enabled: true,
         logo: [],
         cover: [],
@@ -332,6 +350,7 @@ export default {
 
   mounted() {
     this.setData();
+    this.loadDelivery();
   },
 
   methods: {
@@ -344,6 +363,7 @@ export default {
       getMunicipalitiesData: "municipality/getMunicipalitiesData",
       createImage: "image/createImage",
       removeAttachment: "commerceType/removeAttachment",
+      deliveryData: "referenceList/getReferenceListByReferenceSlugData",
     }),
     save() {
       if (this.$refs.form.validate()) {
@@ -360,6 +380,7 @@ export default {
         formData.append("phone_2", this.form.phone_2);
         formData.append("enabled", this.form.enabled);
         formData.append("precision_qty", this.form.precision_qty);
+        formData.append("deliverys_types", JSON.stringify(this.form.deliverys_types));
         formData.append("schedule_entities", JSON.stringify(this.form.schedule_entities));
 
         for (let i = 0; i < this.form.logo.length; i++) {
@@ -432,6 +453,7 @@ export default {
             phone: result.phone || "",
             phone_2: result.phone_2 || "",
             enabled: result.enabled,
+            deliverys_types: (result.deliverys_types)?result.deliverys_types:[],
             logo: [],
             cover: [],
             schedule_entities: result.schedule,
@@ -530,6 +552,25 @@ export default {
           this.imagesListCover = attachments;
         }
       });
+    },
+    loadDelivery() {
+      const rows = [];      
+      const referenceId = "DELIVERY_METHOD";
+      this.deliveryData(referenceId)
+        .then((result) => {
+          if (result) {
+            result.map((element) => {
+              rows.push({
+                value: element.id,
+                text: element.value,
+              });
+              this.delivery_types = rows;
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
   watch: {
