@@ -64,13 +64,13 @@ jobs:
             ${{ runner.os }}-single-buildx
   
       
-      - name: Build & Push production image
+      - name: Build & Push beta image
         id: Build-and-Push-Image
         uses: docker/build-push-action@v2
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
-          file: docker/production.DockerFile
+          file: docker/development.DockerFile
           push: true # This would be set to true in a real world deployment scenario.
           tags: ${{ steps.prep.outputs.tagged_image }}
           cache-from: type=local,src=/tmp/.buildx-cache
