@@ -148,9 +148,9 @@ export default {
             this.textSnackBar = "Eliminado existosamente!";
           }
         })
-        .catch(() => {          
+        .catch((result) => {       
           this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = "Disculpe, ha ocurrido un error";
+          this.textSnackBar = result.response.data.message;
         });
 
       this.$refs.DialogConfirm.changeStateDialog(false);
