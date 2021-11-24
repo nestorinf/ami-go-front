@@ -24,7 +24,7 @@
         loading-text="Loading... Please wait"
         class="border"
       >
-        <template v-slot:[`item.action`]="{ item }">
+        <template v-slot:[`item.action`]="{ item }" nowrap>
           <ButtonCrudTable
             :item="item"
             @handler-edit="editButton(item)"
