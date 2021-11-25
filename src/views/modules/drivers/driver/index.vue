@@ -139,15 +139,16 @@ export default {
     removeButton() {
       this.removeDriver(this.idDelete)
         .then((result) => {
-          if (result) {
-            this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Eliminado existosamente!";
-          }
-        })
-        .catch(() => {          
-          this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = "Disculpe, ha ocurrido un error";
-        });
+    if (result) {
+    this.$refs.snackBarRef.changeStatusSnackbar(true);
+    this.textSnackBar = "Eliminado existosamente!";
+    }
+})
+.catch((result) => {       
+    this.$refs.snackBarRef.changeStatusSnackbar(true);
+    this.textSnackBar = result.response.data.message;
+});
+
 
       this.$refs.DialogConfirm.changeStateDialog(false);
     }, 
