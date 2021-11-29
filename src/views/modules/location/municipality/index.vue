@@ -31,6 +31,12 @@
       @handler-dialog-confirm="removeButton"
       :message="messageDialog"
     ></DialogConfirm>
+    <SnackBar
+    :text="textSnackBar"
+    ref="snackBarRef"
+    :snackbar="true"
+    ></SnackBar>
+
   </v-container>
 </template>
 
@@ -40,12 +46,15 @@ import ButtonRegister from "../../components/ButtonRegister";
 import ButtonCrudTable from "../../components/ButtonCrudTable";
 import DialogConfirm from "../../components/DialogConfirm";
 import { mapGetters, mapActions } from "vuex";
+import SnackBar from "@/views/modules/components/SnackBar";
+
 
 export default {
   name: "Municipality",
   components: {
     DataTable,
     DialogConfirm,
+    SnackBar,
   },
 
   data: () => ({
@@ -64,6 +73,7 @@ export default {
       },
     ],
     messageDialog: "",
+    textSnackBar: "",
     ButtonRegister: ButtonRegister,
     ButtonCrud: ButtonCrudTable,
     titleForm: "Municipio",
@@ -103,8 +113,18 @@ export default {
       this.idDelete = item.id;
       this.$refs.DialogConfirm.changeStateDialog(true);
     },
-    removeButton() {
-      this.removeMunicipality(this.idDelete);
+    removeButton() { 
+      this.removeMunicipality(this.idDelete)
+      .then((result) => {
+          if (result) {
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = "Eliminado existosamente!";
+          }
+      })
+      .catch((result) => {       
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = result.response.data.message;
+      });
       this.$refs.DialogConfirm.changeStateDialog(false);
       // this.getMunicipalitiesData();
     },

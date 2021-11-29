@@ -676,7 +676,8 @@ export default {
         formData.append("uom_id", this.form.uom_id);
         formData.append("category_id", this.form.category_id);
         formData.append("provider_id", this.form.provider_id);
-        formData.append("category_intern_ids", this.form.category_intern_ids);
+        formData.append("category_intern_ids", JSON.stringify(this.form.category_intern_ids));
+        // formData.append("category_intern_ids", this.form.category_intern_ids);
         formData.append("description_batches", this.form.description_batches);
         formData.append("expired_date", this.form.expired_date);
         formData.append(

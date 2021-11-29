@@ -129,22 +129,17 @@ export default {
       this.$refs.DialogConfirm.changeStateDialog(true);
     },    
     removeButton() {      
-       this.removeCategory(this.idDelete)
-        .then((result) => {
+      this.removeCategory(this.idDelete)
+      .then((result) => {
           if (result) {
-            this.$refs.snackBarRef.changeStatusSnackbar(true);
-            this.textSnackBar = "Eliminado existosamente!";
-          }
-        }).catch((err) => { 
-          if (err.response) {
-            this.errorsBags = err.response.data.errors;
-            setTimeout(() => {
-              this.errorsBags = [];
-            }, 4000);
-          }
           this.$refs.snackBarRef.changeStatusSnackbar(true);
-          this.textSnackBar = "Disculpe, No se puede eliminar esta Categoria";
-        });
+          this.textSnackBar = "Eliminado existosamente!";
+          }
+      })
+      .catch((result) => {       
+          this.$refs.snackBarRef.changeStatusSnackbar(true);
+          this.textSnackBar = result.response.data.message;
+      });
 
       this.$refs.DialogConfirm.changeStateDialog(false); 
     },
