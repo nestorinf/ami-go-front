@@ -277,7 +277,6 @@
                   :items="colourList"
                   v-model="form_detail.colour_id"
                   filled
-                  :rules="rules.colour_idRule"
                   background-color="transparent"
                   :error-messages="errorsBags.colour_id"
                 ></v-select>
@@ -293,7 +292,6 @@
                   :items="sizeList"
                   v-model="form_detail.size_id"
                   filled
-                  :rules="rules.size_idRule"
                   background-color="transparent"
                   :error-messages="errorsBags.size_id"
                 ></v-select>
