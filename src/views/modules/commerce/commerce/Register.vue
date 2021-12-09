@@ -93,7 +93,7 @@
         </v-row>
         <v-row>
           <v-col cols="6" lg="6">
-            <label for="logo">Logo</label>
+            <label for="logo">Logo *</label>
             <ShowsImages
               :items="imagesListLogo"
               v-if="true"
@@ -110,7 +110,7 @@
           </v-col>
 
           <v-col cols="6" lg="6">
-            <label for="cover">Cover</label>
+            <label for="cover">Cover *</label>
             <ShowsImages
               :items="imagesListCover"
               v-if="true"
@@ -209,7 +209,7 @@
             <v-btn
               color="success"
               @click="save"
-              :disabled="!valid"
+              :disabled="!valid || form.logo.length == 0 || form.cover.length == 0" 
               submit
               class="text-capitalize mr-2"
               >Guardar</v-btn

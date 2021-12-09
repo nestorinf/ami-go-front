@@ -185,7 +185,7 @@
             <v-btn
               color="success"
               @click="save"
-              :disabled="!valid"
+              :disabled="!valid || form.logo.length == 0 || form.cover.length == 0" 
               submit
               class="text-capitalize mr-2"
               >Guardar</v-btn
